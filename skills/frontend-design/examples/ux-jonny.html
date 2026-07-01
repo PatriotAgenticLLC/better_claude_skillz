@@ -1,0 +1,866 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>faux.moni — Portfolio</title>
+    <meta name="description" content="Designer portfolio landing page." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      :root {
+        --font-sans:
+          'Geist', Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+      }
+      body {
+        font-family: var(--font-sans);
+      }
+      .font-geist-mono {
+        font-family: 'Geist Mono', monospace !important;
+      }
+      /* Smooth scrolling */
+      html {
+        scroll-behavior: smooth;
+      }
+      /* 3D Canvas Container - Absolute within Hero */
+      #canvas-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      /* Custom scrollbar for webkit */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f5f5f5;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #d4d4d4;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #a3a3a3;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-white text-neutral-900 antialiased selection:bg-neutral-200 selection:text-black"
+  >
+    <!-- Hero Section with Contained 3D Background -->
+    <header
+      class="relative w-full h-screen flex flex-col justify-between p-6 sm:p-12 z-10 pointer-events-none overflow-hidden bg-white"
+    >
+      <!-- 3D Background (Now inside Header) -->
+      <div id="canvas-container"></div>
+
+      <!-- Top Nav -->
+      <div
+        class="flex justify-between items-start pointer-events-auto w-full max-w-[1400px] mx-auto z-10"
+      >
+        <div class="text-lg font-bold tracking-tight text-black">ux.jonny</div>
+        <nav
+          class="hidden sm:flex gap-8 text-xs font-medium text-neutral-500 uppercase tracking-wide"
+        >
+          <a href="#main-content" class="hover:text-black transition-colors"
+            >sobre</a
+          >
+          <a href="#work" class="hover:text-black transition-colors"
+            >projetos</a
+          >
+          <a
+            href="https://www.linkedin.com/in/jonathan-fernandes-a8208410a/"
+            class="hover:text-black transition-colors"
+            >Linkedin</a
+          >
+          <a
+            href="https://api.whatsapp.com/send/?phone=5521972139499&amp;text=Preciso+de+ajuda+com+a+plataforma+Gamble+Sports&amp;type=phone_number&amp;app_absent=0"
+            class="hover:text-black transition-colors"
+            >contato</a
+          >
+        </nav>
+      </div>
+
+      <!-- Hero Footer Content -->
+      <div
+        class="flex flex-col md:flex-row justify-between items-end gap-12 pointer-events-auto w-full max-w-[1400px] mx-auto mb-4 z-10"
+      >
+        <!-- Left Info -->
+        <div class="max-w-xs space-y-8">
+          <p class="text-sm leading-relaxed text-neutral-600 font-medium">
+            Senior Product Designer na Allos. Construo Design Systems e
+            experiências de produto escaláveis, aplicando IA para criar,
+            acelerar consistência, documentação e entrega.
+          </p>
+          <button
+            onclick="document.getElementById('main-content').scrollIntoView()"
+            class="group flex items-center gap-2 text-xs font-bold tracking-widest uppercase border-b border-black pb-1 hover:text-neutral-600 hover:border-neutral-400 transition-all cursor-pointer"
+          >
+            Explorar
+            <span
+              class="group-hover:translate-y-0.5 transition-transform duration-300"
+              >↓</span
+            >
+          </button>
+        </div>
+
+        <!-- Right Title -->
+        <div class="text-right">
+          <h1
+            class="text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tighter leading-[0.85] text-black"
+          >
+            <span class="block">Product Designer</span>
+            <span class="block">&amp; Design System</span>
+          </h1>
+          <p
+            class="text-2xl md:text-4xl text-neutral-400 font-normal mt-3 tracking-tight"
+          >
+            since 2018
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Side Rail Navigation (Fixed, Light Theme) -->
+    <aside class="hidden lg:block fixed left-6 top-1/2 -translate-y-1/2 z-30">
+      <div
+        class="flex flex-col gap-2 bg-white border-neutral-200 border rounded-full p-2 shadow-lg items-center"
+      >
+        <button
+          class="group grid place-items-center hover:text-black hover:bg-neutral-100 transition relative text-neutral-400 w-10 h-10 rounded-full cursor-pointer"
+          onclick="window.scrollTo(0, 0)"
+          role="button"
+        >
+          <i data-lucide="home" class="w-4 h-4"></i>
+          <span
+            class="absolute left-12 bg-neutral-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none font-geist-mono"
+            >Home</span
+          >
+        </button>
+        <button
+          class="group grid place-items-center hover:text-black hover:bg-neutral-100 transition relative text-neutral-400 w-10 h-10 rounded-full cursor-pointer"
+          onclick="window.location.href = '#work'"
+          role="button"
+        >
+          <i data-lucide="briefcase" class="w-4 h-4"></i>
+          <span
+            class="absolute left-12 bg-neutral-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none font-geist-mono"
+            >Work</span
+          >
+        </button>
+        <button
+          class="group grid place-items-center hover:text-black hover:bg-neutral-100 transition relative text-neutral-400 w-10 h-10 rounded-full cursor-pointer"
+          onclick="window.location.href = '#about'"
+          role="button"
+        >
+          <i data-lucide="user" class="w-4 h-4"></i>
+          <span
+            class="absolute left-12 bg-neutral-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none font-geist-mono"
+            >About</span
+          >
+        </button>
+        <button
+          class="group grid place-items-center hover:text-black hover:bg-neutral-100 transition relative text-neutral-400 w-10 h-10 rounded-full cursor-pointer"
+          onclick="window.location.href = '#contact'"
+          role="button"
+        >
+          <i data-lucide="mail" class="w-4 h-4"></i>
+          <span
+            class="absolute left-12 bg-neutral-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none font-geist-mono"
+            >Contact</span
+          >
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Flow -->
+    <main id="main-content" class="relative z-20 bg-white">
+      <!-- Profile & Intro Section -->
+      <section class="sm:px-8 px-6 pt-20 pb-16 border-t border-neutral-100">
+        <div class="max-w-6xl mx-auto">
+          <div
+            class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
+          >
+            <!-- Portrait Section -->
+            <div class="lg:col-span-5">
+              <div
+                class="relative overflow-hidden bg-neutral-100 rounded-2xl aspect-[4/5]"
+              >
+                <img
+                  src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/27df3787-21a9-4fa7-b980-f3d42a608eed_800w.png"
+                  alt="Portrait"
+                  class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                />
+              </div>
+            </div>
+
+            <!-- Content Section -->
+            <div class="lg:col-span-7">
+              <div class="flex flex-col justify-center h-full">
+                <div class="flex items-center gap-3 mb-6">
+                  <i
+                    data-lucide="arrow-down-right"
+                    class="w-4 h-4 text-neutral-400"
+                  ></i>
+                  <div class="h-px flex-1 bg-neutral-200"></div>
+                </div>
+
+                <h2
+                  class="text-3xl font-semibold text-neutral-900 mb-6 tracking-tight"
+                >
+                  Product Designer
+                </h2>
+                <p
+                  class="text-lg leading-relaxed text-neutral-600 mb-8 font-geist-mono"
+                >
+                  Sou Product Designer com 9 anos de experiência e atualmente
+                  atuo como Senior Product Designer na Allos. Crio interfaces
+                  escaláveis com Design Systems sólidos — de tokens a
+                  componentes — garantindo consistência, eficiência e
+                  experiências digitais de alta qualidade para times de produto
+                  e tecnologia.
+                </p>
+
+                <!-- Skills/Services -->
+                <div class="grid grid-cols-2 gap-4 mb-10">
+                  <div class="space-y-3">
+                    <h3
+                      class="text-sm font-semibold text-neutral-900 font-geist-mono uppercase tracking-wide"
+                    >
+                      SKILLS
+                    </h3>
+                    <ul class="text-sm text-neutral-500 space-y-2">
+                      <li class="font-geist-mono">• UI/UX Design</li>
+                      <li class="font-geist-mono">• UX/AI Design</li>
+                      <li class="font-geist-mono">• Design Systems</li>
+                    </ul>
+                  </div>
+                  <div class="space-y-3">
+                    <h3
+                      class="text-sm font-semibold text-neutral-900 font-geist-mono uppercase tracking-wide"
+                    >
+                      INDUSTRIAS
+                    </h3>
+                    <ul class="text-sm text-neutral-500 space-y-2">
+                      <li class="font-geist-mono">• Seguros</li>
+                      <li class="font-geist-mono">• Shopping Centers</li>
+                      <li class="font-geist-mono">• Enterprise Solutions</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="flex gap-4">
+                  <a
+                    href="#work"
+                    class="px-6 py-3 rounded-lg bg-neutral-900 text-white font-medium hover:bg-neutral-800 transition-colors font-geist-mono text-sm"
+                  >
+                    Ver portfolio
+                  </a>
+                  <a
+                    href="https://api.whatsapp.com/send/?phone=5521972139499&amp;text=Preciso+de+ajuda+com+a+plataforma+Gamble+Sports&amp;type=phone_number&amp;app_absent=0"
+                    class="px-6 py-3 rounded-lg border border-neutral-200 text-neutral-900 font-medium hover:bg-neutral-50 transition-colors font-geist-mono text-sm"
+                  >
+                    Falar no Whatsapp
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Services Section (Light Theme) -->
+      <section class="sm:px-8 px-6 bg-neutral-50 border-t border-neutral-200">
+        <div class="py-24 max-w-6xl mx-auto">
+          <div class="mb-16">
+            <div class="flex items-center gap-3 mb-6">
+              <span
+                class="text-xs font-bold text-neutral-400 uppercase tracking-widest font-geist-mono"
+                >Services</span
+              >
+              <div class="h-px flex-1 bg-neutral-200"></div>
+            </div>
+            <h2
+              class="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900 mb-4"
+            >
+              Habilidades
+            </h2>
+            <p class="text-lg text-neutral-500 font-geist-mono max-w-2xl">
+              Design, identity, development, and growth — crafted as polished,
+              cohesive experiences.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- UX/UI Design -->
+            <div
+              class="group bg-white border border-neutral-200 rounded-2xl p-6 hover:shadow-xl transition-all duration-300"
+            >
+              <div
+                class="h-48 mb-6 bg-neutral-100 rounded-xl overflow-hidden relative border border-neutral-100"
+              >
+                <div
+                  class="absolute inset-4 bg-white shadow-sm rounded-lg border border-neutral-200 p-3"
+                >
+                  <div class="flex gap-1.5 mb-3">
+                    <div class="w-2 h-2 rounded-full bg-red-400/80"></div>
+                    <div class="w-2 h-2 rounded-full bg-amber-400/80"></div>
+                    <div class="w-2 h-2 rounded-full bg-green-400/80"></div>
+                  </div>
+                  <div class="space-y-2">
+                    <div class="h-2 w-1/3 bg-neutral-200 rounded-full"></div>
+                    <div class="grid grid-cols-2 gap-2">
+                      <div
+                        class="h-16 bg-neutral-50 rounded border border-neutral-100"
+                      ></div>
+                      <div
+                        class="h-16 bg-neutral-50 rounded border border-neutral-100"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="inline-flex gap-2 bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-medium font-geist-mono mb-4 border border-blue-100"
+              >
+                <i data-lucide="paintbrush" class="w-3 h-3"></i> Design
+              </div>
+              <h3 class="text-xl font-semibold text-neutral-900 mb-3">
+                UX/UI Design
+              </h3>
+              <p
+                class="text-neutral-500 text-sm leading-relaxed font-geist-mono"
+              >
+                Creating intuitive interfaces that offer a frictionless
+                experience. We combine creativity with usability.
+              </p>
+            </div>
+
+            <!-- Web Development -->
+            <div
+              class="group bg-white border border-neutral-200 rounded-2xl p-6 hover:shadow-xl transition-all duration-300"
+            >
+              <div
+                class="h-48 mb-6 bg-neutral-900 rounded-xl overflow-hidden relative border border-neutral-800 flex flex-col"
+              >
+                <div
+                  class="flex items-center px-3 py-2 border-b border-neutral-800 bg-neutral-900/50"
+                >
+                  <div class="flex gap-1.5">
+                    <div class="w-2 h-2 rounded-full bg-red-500"></div>
+                    <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
+                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                  </div>
+                </div>
+                <div
+                  class="p-3 font-geist-mono text-[10px] text-neutral-400 leading-relaxed"
+                >
+                  <span class="text-purple-400">const</span>
+                  <span class="text-blue-400">App</span> = () =&gt; {<br />
+                  &nbsp;&nbsp;<span class="text-purple-400">return</span>
+                  (<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="text-red-400"
+                    >div</span
+                  >
+                  <span class="text-amber-400">className</span>=<span
+                    class="text-green-400"
+                    >"hero"</span
+                  >&gt;<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span
+                    class="text-red-400"
+                    >h1</span
+                  >&gt;Hello&lt;/<span class="text-red-400">h1</span>&gt;<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="text-red-400"
+                    >div</span
+                  >&gt;<br />
+                  &nbsp;&nbsp;)<br />
+                  }
+                </div>
+              </div>
+              <div
+                class="inline-flex gap-2 bg-purple-50 text-purple-600 px-3 py-1 rounded-full text-xs font-medium font-geist-mono mb-4 border border-purple-100"
+              >
+                <i data-lucide="code-2" class="w-3 h-3"></i> Development
+              </div>
+              <h3 class="text-xl font-semibold text-neutral-900 mb-3">
+                Web Development
+              </h3>
+              <p
+                class="text-neutral-500 text-sm leading-relaxed font-geist-mono"
+              >
+                Beautiful, performant websites tailored to your brand. Seamless
+                user experiences that engage visitors.
+              </p>
+            </div>
+
+            <!-- Branding -->
+            <div
+              class="group bg-white border border-neutral-200 rounded-2xl p-6 hover:shadow-xl transition-all duration-300"
+            >
+              <div
+                class="h-48 mb-6 bg-neutral-100 rounded-xl overflow-hidden relative border border-neutral-100 flex items-center justify-center p-4"
+              >
+                <div class="grid grid-cols-3 gap-3 w-full max-w-[200px]">
+                  <div
+                    class="aspect-square rounded-full bg-neutral-900 shadow-lg"
+                  ></div>
+                  <div
+                    class="aspect-square rounded-full bg-neutral-400 shadow-lg"
+                  ></div>
+                  <div
+                    class="aspect-square rounded-full bg-neutral-200 shadow-lg"
+                  ></div>
+                  <div
+                    class="col-span-3 h-2 rounded-full bg-gradient-to-r from-neutral-900 via-neutral-500 to-neutral-200 mt-2"
+                  ></div>
+                </div>
+              </div>
+              <div
+                class="inline-flex gap-2 bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-xs font-medium font-geist-mono mb-4 border border-emerald-100"
+              >
+                <i data-lucide="layout" class="w-3 h-3"></i> Branding
+              </div>
+              <h3 class="text-xl font-semibold text-neutral-900 mb-3">
+                Brand Identity
+              </h3>
+              <p
+                class="text-neutral-500 text-sm leading-relaxed font-geist-mono"
+              >
+                Cohesive brand systems with crafted color palettes, typography,
+                and visual elements that resonate.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Selected Work Section -->
+      <section
+        id="work"
+        class="px-6 sm:px-8 bg-white border-t border-neutral-200"
+      >
+        <div class="mx-auto max-w-6xl py-24">
+          <div class="mb-16">
+            <div class="flex items-center gap-3 mb-6">
+              <span
+                class="text-xs font-bold text-neutral-400 uppercase tracking-widest font-geist-mono"
+                >Selected Work</span
+              >
+              <div class="h-px flex-1 bg-neutral-200"></div>
+            </div>
+            <h2
+              class="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900 mb-4"
+            >
+              Projetos
+            </h2>
+            <p class="text-lg text-neutral-500 max-w-2xl font-geist-mono">
+              A collection of my latest design and development work.
+            </p>
+          </div>
+
+          <div class="space-y-12">
+            <!-- Project 1 -->
+            <div
+              class="group grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+            >
+              <div class="order-2 lg:order-1">
+                <div class="flex items-center gap-2 mb-4">
+                  <span
+                    class="text-xs text-neutral-500 font-geist-mono font-medium"
+                    >2024</span
+                  >
+                  <div class="h-1 w-1 rounded-full bg-neutral-300"></div>
+                  <span
+                    class="text-xs text-neutral-500 font-geist-mono font-medium"
+                    >Fintech</span
+                  >
+                </div>
+                <h3 class="text-2xl font-bold text-neutral-900 mb-4">
+                  SaaS Dashboard
+                </h3>
+                <p
+                  class="text-neutral-600 mb-6 leading-relaxed font-geist-mono"
+                >
+                  A comprehensive dashboard design for a fintech startup,
+                  featuring real-time analytics, user management, and financial
+                  insights.
+                </p>
+                <div class="flex flex-wrap gap-2 mb-8">
+                  <span
+                    class="px-3 py-1 text-xs bg-neutral-100 text-neutral-600 border border-neutral-200 rounded-full font-geist-mono"
+                    >React</span
+                  >
+                  <span
+                    class="px-3 py-1 text-xs bg-neutral-100 text-neutral-600 border border-neutral-200 rounded-full font-geist-mono"
+                    >TypeScript</span
+                  >
+                  <span
+                    class="px-3 py-1 text-xs bg-neutral-100 text-neutral-600 border border-neutral-200 rounded-full font-geist-mono"
+                    >D3.js</span
+                  >
+                </div>
+                <a
+                  href="#"
+                  class="inline-flex items-center gap-2 text-sm font-semibold text-neutral-900 hover:text-blue-600 transition-colors border-b border-transparent hover:border-blue-600 pb-0.5"
+                >
+                  Ver projeto <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+              </div>
+              <div class="order-1 lg:order-2">
+                <div
+                  class="rounded-xl overflow-hidden border border-neutral-200 shadow-xl bg-neutral-50 group-hover:-translate-y-2 transition-transform duration-500"
+                >
+                  <img
+                    src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&amp;h=600&amp;fit=crop"
+                    alt="Project"
+                    class="w-full h-auto object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Project 2 -->
+            <div
+              class="group grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+            >
+              <div class="order-2">
+                <div class="flex items-center gap-2 mb-4">
+                  <span
+                    class="text-xs text-neutral-500 font-geist-mono font-medium"
+                    >2024</span
+                  >
+                  <div class="h-1 w-1 rounded-full bg-neutral-300"></div>
+                  <span
+                    class="text-xs text-neutral-500 font-geist-mono font-medium"
+                    >E-commerce</span
+                  >
+                </div>
+                <h3 class="text-2xl font-bold text-neutral-900 mb-4">
+                  Fashion Platform
+                </h3>
+                <p
+                  class="text-neutral-600 mb-6 leading-relaxed font-geist-mono"
+                >
+                  A modern e-commerce platform for a luxury fashion brand,
+                  featuring advanced filtering and AR try-on capabilities.
+                </p>
+                <div class="flex flex-wrap gap-2 mb-8">
+                  <span
+                    class="px-3 py-1 text-xs bg-neutral-100 text-neutral-600 border border-neutral-200 rounded-full font-geist-mono"
+                    >Next.js</span
+                  >
+                  <span
+                    class="px-3 py-1 text-xs bg-neutral-100 text-neutral-600 border border-neutral-200 rounded-full font-geist-mono"
+                    >Shopify</span
+                  >
+                  <span
+                    class="px-3 py-1 text-xs bg-neutral-100 text-neutral-600 border border-neutral-200 rounded-full font-geist-mono"
+                    >Framer Motion</span
+                  >
+                </div>
+                <a
+                  href="#"
+                  class="inline-flex items-center gap-2 text-sm font-semibold text-neutral-900 hover:text-blue-600 transition-colors border-b border-transparent hover:border-blue-600 pb-0.5"
+                >
+                  Ver projeto <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+              </div>
+              <div class="order-1">
+                <div
+                  class="rounded-xl overflow-hidden border border-neutral-200 shadow-xl bg-neutral-50 group-hover:-translate-y-2 transition-transform duration-500"
+                >
+                  <img
+                    src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&amp;h=600&amp;fit=crop"
+                    alt="Project"
+                    class="w-full h-auto object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center mt-20">
+            <a
+              href="#"
+              class="inline-flex items-center gap-2 px-8 py-4 bg-white border border-neutral-200 rounded-full text-neutral-900 hover:bg-neutral-50 transition-all font-geist-mono text-sm shadow-sm hover:shadow-md"
+            >
+              Ver todos os projetos <i data-lucide="plus" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Testimonial Section -->
+      <section class="bg-neutral-50 border-t border-neutral-200 px-6 sm:px-8">
+        <div class="max-w-4xl mx-auto py-24 text-center">
+          <div class="mb-10">
+            <i
+              data-lucide="quote"
+              class="w-8 h-8 mx-auto text-neutral-300 mb-6"
+            ></i>
+            <h3
+              class="text-3xl md:text-4xl font-medium text-neutral-900 leading-tight mb-8"
+            >
+              "Jonathan é um dos melhores profissionais com quem tive a
+              oportunidade de trabalhar, principalmente por sua capacidade de
+              superar expectativas observando detalhes que poucos se atentam.
+              Seu olhar do todo agrega resultados efetivos ao negócio. Além de
+              ser um ser humano íntegro e que veste a camisa do time em que
+              atua."
+            </h3>
+            <div class="flex items-center justify-center gap-4">
+              <div
+                class="w-12 h-12 rounded-full bg-neutral-200 overflow-hidden"
+              >
+                <img
+                  src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/cf795bec-e9bc-4ecf-9989-d83620709311_320w.jpg"
+                  alt="Client"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <div class="text-left">
+                <div class="font-bold text-neutral-900 text-sm">
+                  Victor Gonçalves
+                </div>
+                <div class="text-neutral-500 text-xs font-geist-mono">
+                  Chief Digital Officer @Verity
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="bg-white border-t border-neutral-200 px-6 sm:px-8">
+        <div class="mx-auto max-w-6xl py-12 md:py-20">
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 gap-10 justify-between items-center"
+          >
+            <div>
+              <div class="font-bold text-lg tracking-tight mb-2">ux.jonny</div>
+              <p class="text-neutral-500 text-sm font-geist-mono">
+                © 2026 All rights reserved.
+              </p>
+            </div>
+            <div
+              class="flex flex-col md:flex-row gap-6 md:justify-end items-start md:items-center text-sm font-medium text-neutral-600"
+            >
+              <div
+                class="flex items-center gap-2 px-3 py-1 rounded-full bg-green-50 text-green-700 border border-green-200 text-xs font-geist-mono"
+              >
+                <span class="relative flex h-2 w-2">
+                  <span
+                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
+                  ></span>
+                  <span
+                    class="relative inline-flex rounded-full h-2 w-2 bg-green-500"
+                  ></span>
+                </span>
+                Disponível para oportunidades
+              </div>
+              <nav class="flex gap-6">
+                <a
+                  href="https://www.instagram.com/ux.jonny/"
+                  class="hover:text-black transition"
+                  >Instagram</a
+                >
+                <a
+                  href="https://www.linkedin.com/in/jonathan-fernandes-a8208410a/"
+                  class="hover:text-black transition"
+                  >Linkedin</a
+                >
+              </nav>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <script>
+      // Lucide Icons
+      lucide.createIcons();
+
+      // Three.js Logic adapted for Hero Section Containment
+      const initThreeJS = () => {
+        const container = document.getElementById('canvas-container');
+        if (!container) return;
+
+        const scene = new THREE.Scene();
+
+        // Fog color matched to white background
+        scene.fog = new THREE.FogExp2(0xffffff, 0.002);
+
+        // Calculate dimensions based on container
+        let width = container.clientWidth;
+        let height = container.clientHeight;
+
+        const camera = new THREE.PerspectiveCamera(
+          75,
+          width / height,
+          0.1,
+          1000,
+        );
+        camera.position.z = 30;
+
+        const renderer = new THREE.WebGLRenderer({
+          antialias: true,
+          alpha: true,
+        });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        // Set clear color to white
+        renderer.setClearColor(0xffffff, 1);
+        container.appendChild(renderer.domElement);
+
+        // 1. Main Geometry: Wireframe Torus Knot
+        const geometry = new THREE.TorusKnotGeometry(9, 2.5, 120, 16);
+
+        // Material adapted for light theme: Darker grey wireframe
+        const material = new THREE.MeshPhysicalMaterial({
+          color: 0x888888, // Medium grey
+          emissive: 0x000000,
+          metalness: 0.5,
+          roughness: 0.1,
+          wireframe: true,
+          transparent: true,
+          opacity: 0.3, // Subtle lines
+        });
+        const torusKnot = new THREE.Mesh(geometry, material);
+        scene.add(torusKnot);
+
+        // 2. Particle System: "Sparks"
+        const sparkCount = 100;
+        const sparkGeo = new THREE.CircleGeometry(0.15, 3);
+        const sparkMat = new THREE.MeshBasicMaterial({
+          color: 0xd4af37, // Gold
+          side: THREE.DoubleSide,
+          blending: THREE.NormalBlending,
+          transparent: true,
+          opacity: 1,
+          depthTest: false,
+        });
+        const sparks = new THREE.InstancedMesh(sparkGeo, sparkMat, sparkCount);
+        torusKnot.add(sparks);
+
+        // Spark Movement Logic
+        const dummy = new THREE.Object3D();
+        const sparkData = [];
+        const radialSegments = 16;
+        const tubularSegments = 120;
+
+        for (let i = 0; i < sparkCount; i++) {
+          sparkData.push({
+            speed: 0.001 + Math.random() * 0.002,
+            progress: Math.random(),
+            pathIndex: Math.floor(Math.random() * radialSegments),
+          });
+        }
+
+        const posAttribute = geometry.attributes.position;
+        const stride = radialSegments + 1;
+        const v1 = new THREE.Vector3();
+        const v2 = new THREE.Vector3();
+
+        function updateSparks() {
+          sparkData.forEach((spark, i) => {
+            spark.progress += spark.speed;
+            if (spark.progress >= 1) spark.progress = 0;
+
+            const exactInd = spark.progress * tubularSegments;
+            const u = Math.floor(exactInd);
+            const nextU = (u + 1) % tubularSegments;
+            const v = spark.pathIndex;
+
+            const idx1 = (u * stride + v) * 3;
+            const idx2 = (nextU * stride + v) * 3;
+
+            v1.fromArray(posAttribute.array, idx1);
+            v2.fromArray(posAttribute.array, idx2);
+            v1.lerp(v2, exactInd - u);
+
+            dummy.position.copy(v1);
+            dummy.lookAt(v2);
+            dummy.updateMatrix();
+            sparks.setMatrixAt(i, dummy.matrix);
+          });
+          sparks.instanceMatrix.needsUpdate = true;
+        }
+
+        // 3. Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+        scene.add(ambientLight);
+
+        const pLight1 = new THREE.PointLight(0xd4af37, 1, 50);
+        pLight1.position.set(10, 10, 10);
+        scene.add(pLight1);
+
+        // 4. Interaction
+        let mouseX = 0,
+          mouseY = 0;
+        let targetX = 0,
+          targetY = 0;
+        const windowHalfX = window.innerWidth / 2;
+        const windowHalfY = window.innerHeight / 2;
+
+        document.addEventListener('mousemove', (e) => {
+          mouseX = (e.clientX - windowHalfX) * 0.0005;
+          mouseY = (e.clientY - windowHalfY) * 0.0005;
+        });
+
+        // 5. Animation Loop
+        const animate = () => {
+          requestAnimationFrame(animate);
+
+          targetX = mouseX * 0.5;
+          targetY = mouseY * 0.5;
+
+          torusKnot.rotation.y +=
+            0.05 * (targetX - torusKnot.rotation.y) + 0.002;
+          torusKnot.rotation.x +=
+            0.05 * (targetY - torusKnot.rotation.x) + 0.001;
+
+          updateSparks();
+          renderer.render(scene, camera);
+        };
+
+        animate();
+
+        // Resizing based on container
+        const onResize = () => {
+          width = container.clientWidth;
+          height = container.clientHeight;
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+          renderer.setSize(width, height);
+        };
+
+        window.addEventListener('resize', onResize);
+      };
+
+      window.addEventListener('DOMContentLoaded', initThreeJS);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus — Pricing</title>
+<meta name="description" content="Nexus — Transparent, usage-based pricing for enterprise cloud infrastructure. Plans that scale with your team.">
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&amp;family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<!-- Iconify -->
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+fontFamily: {
+sans: ["Inter", "sans-serif"],
+serif: ["Instrument Serif", "serif"],
+display: ["Space Grotesk", "sans-serif"],
+},
+colors: {
+neutral: {
+850: "#1f1f1f",
+950: "#0a0a0a",
+},
+},
+},
+},
+};
+</script>
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+:root {
+--mouse-x: 0px;
+--mouse-y: 0px;
+}
+body {
+background-color: #050505;
+color: #e5e5e5;
+overflow-x: hidden;
+}
+/* Film Grain */
+@keyframes grain {
+0%,
+100% {
+transform: translate(0, 0);
+}
+10% {
+transform: translate(-5%, -10%);
+}
+20% {
+transform: translate(-15%, 5%);
+}
+30% {
+transform: translate(7%, -25%);
+}
+40% {
+transform: translate(-5%, 25%);
+}
+50% {
+transform: translate(-15%, 10%);
+}
+60% {
+transform: translate(15%, 0%);
+}
+70% {
+transform: translate(0%, 15%);
+}
+80% {
+transform: translate(3%, 35%);
+}
+90% {
+transform: translate(-10%, 10%);
+}
+}
+.bg-grain::after {
+content: "";
+background-image: url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png");
+height: 300%;
+width: 300%;
+position: fixed;
+top: -100%;
+left: -100%;
+opacity: 0.04;
+animation: grain 8s steps(10) infinite;
+pointer-events: none;
+z-index: 9998;
+}
+/* Glass utilities */
+.glass-panel {
+background: rgba(255, 255, 255, 0.03);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+border: 1px solid rgba(255, 255, 255, 0.08);
+}
+/* Spotlight Card */
+.spotlight-card {
+position: relative;
+overflow: hidden;
+background: rgba(20, 20, 20, 0.4);
+border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.spotlight-card::before {
+content: "";
+position: absolute;
+inset: 0;
+background: radial-gradient(
+600px circle at var(--mouse-x) var(--mouse-y),
+rgba(255, 255, 255, 0.08),
+transparent 40%
+);
+opacity: 0;
+transition: opacity 0.5s;
+pointer-events: none;
+z-index: 2;
+}
+.spotlight-card:hover::before {
+opacity: 1;
+}
+/* Clean mono ambient */
+.section-aura {
+position: absolute;
+inset: 0;
+pointer-events: none;
+z-index: 0;
+opacity: 0.9;
+background: radial-gradient(
+80% 70% at 20% 30%,
+rgba(255, 255, 255, 0.06),
+transparent 55%
+),
+radial-gradient(
+70% 70% at 75% 70%,
+rgba(255, 255, 255, 0.04),
+transparent 60%
+);
+filter: contrast(1.05);
+}
+.section-grid {
+position: absolute;
+inset: 0;
+pointer-events: none;
+z-index: 0;
+opacity: 0.22;
+background: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+background-size: 72px 72px;
+-webkit-mask-image: radial-gradient(
+ellipse at 50% 30%,
+#000 35%,
+transparent 72%
+);
+mask-image: radial-gradient(ellipse at 50% 30%, #000 35%, transparent 72%);
+}
+/* Reveal targets */
+[data-reveal] {
+opacity: 0;
+transform: translateY(22px);
+will-change: transform, opacity;
+}
+/* Hairline shimmer (animated via GSAP) */
+.hairline {
+height: 1px;
+background: rgba(255, 255, 255, 0.10);
+position: relative;
+overflow: hidden;
+}
+.hairline::after {
+content: "";
+position: absolute;
+inset: 0;
+background: linear-gradient(
+90deg,
+transparent,
+rgba(255, 255, 255, 0.55),
+transparent
+);
+transform: translateX(-120%);
+}
+/* Buttons focus */
+a:focus-visible,
+button:focus-visible {
+outline: none;
+box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.22),
+0 0 0 10px rgba(255, 255, 255, 0.06);
+border-radius: 9999px;
+}
+/* Marquee mask */
+.marquee-mask {
+mask-image: linear-gradient(
+90deg,
+transparent,
+white 18%,
+white 82%,
+transparent
+);
+-webkit-mask-image: linear-gradient(
+90deg,
+transparent,
+white 18%,
+white 82%,
+transparent
+);
+}
+@keyframes marqueeLeft {
+from {
+transform: translateX(0);
+}
+to {
+transform: translateX(-50%);
+}
+}
+@keyframes marqueeRight {
+from {
+transform: translateX(-50%);
+}
+to {
+transform: translateX(0);
+}
+}
+.animate-marquee-left {
+animation: marqueeLeft 34s linear infinite;
+}
+.animate-marquee-right {
+animation: marqueeRight 38s linear infinite;
+}
+.marquee-group:hover .animate-marquee-left,
+.marquee-group:hover .animate-marquee-right {
+animation-play-state: paused;
+}
+/* Small utility */
+.text-glow {
+text-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
+}
+/* Orbit ring */
+.ring {
+position: absolute;
+inset: 0;
+border-radius: 9999px;
+border: 1px solid rgba(255, 255, 255, 0.08);
+transform: translateZ(0);
+}
+/* Make horizontal scroller feel premium */
+.hscroll {
+scrollbar-width: none;
+}
+.hscroll::-webkit-scrollbar {
+display: none;
+}
+</style></head>
+
+  <body class="bg-grain antialiased selection:bg-white selection:text-black">
+    <!-- Mobile / Tablet Header -->
+<header class="fixed top-0 left-0 right-0 z-50 lg:hidden px-4 pt-4" id="mobile-header">
+  <!-- Toggle -->
+  <input id="nav-toggle" type="checkbox" class="peer hidden">
+
+  <div class="glass-panel rounded-full px-5 py-3 flex items-center justify-between shadow-2xl">
+    <a href="index.html" class="font-display font-bold text-lg tracking-tight">
+      NEXUS.
+    </a>
+
+    <!-- Burger / Close trigger -->
+    <label for="nav-toggle" class="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-xl border border-white/10 hover:bg-white/15 transition cursor-pointer select-none" aria-label="Toggle menu">
+      <!-- Burger -->
+      <iconify-icon icon="solar:hamburger-menu-linear" width="22" class="burger-icon transition-all duration-300"></iconify-icon>
+
+      <!-- Close -->
+      <iconify-icon icon="solar:close-circle-linear" width="22" class="close-icon absolute opacity-0 scale-75 transition-all duration-300"></iconify-icon>
+    </label>
+  </div>
+
+  <!-- Backdrop -->
+  <label for="nav-toggle" class="backdrop fixed inset-0 bg-black/40 opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"></label>
+
+  <!-- Menu panel -->
+  <nav id="mobile-menu" class="absolute top-20 left-4 right-4 glass-panel rounded-[2rem] p-5 border border-white/10 origin-top opacity-0 scale-[0.98] -translate-y-2 pointer-events-none transition-all duration-300" aria-label="Mobile navigation">
+    <!-- Top row inside panel -->
+    <div class="mb-2">
+  <div class="text-[11px] uppercase tracking-[0.22em] font-semibold text-white/40">
+    Menu
+  </div>
+</div>
+
+    <div class="flex flex-col gap-2 text-center">
+      <a href="/Features" class="py-3 text-lg font-medium hover:text-white transition">
+        Features
+      </a>
+      <a href="/Solutions" class="py-3 text-lg font-medium hover:text-white transition">
+        Solutions
+      </a>
+      <a href="/Workflow" class="py-3 text-lg font-medium hover:text-white transition">
+        Workflow
+      </a>
+      <a href="/Company" class="py-3 text-lg font-medium hover:text-white transition">
+        Company
+      </a>
+      <a href="/Pricing" class="py-3 text-lg font-medium hover:text-white transition">
+        Pricing
+      </a>
+    </div>
+
+    <!-- CTA button -->
+    <div class="mt-5 pt-4 border-t border-white/10 flex justify-center">
+      <a href="sign-in.html" class="inline-flex w-full max-w-[360px] items-center justify-center gap-3 rounded-full bg-white text-black font-semibold text-base px-6 py-4 shadow-[0_18px_40px_rgba(0,0,0,0.22)] hover:scale-[1.02] transition-all duration-300">
+        <span>Start Free Trial</span>
+        <iconify-icon icon="solar:arrow-right-linear" width="22"></iconify-icon>
+      </a>
+    </div>
+  </nav>
+
+  <style class="">
+    /* When checked: show backdrop + menu */
+    #mobile-header .peer:checked ~ .backdrop {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #mobile-header .peer:checked ~ #mobile-menu {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    /* Swap burger to close */
+    #mobile-header .peer:checked ~ div label .burger-icon {
+      opacity: 0;
+      transform: scale(0.75);
+    }
+
+    #mobile-header .peer:checked ~ div label .close-icon {
+      opacity: 1;
+      transform: scale(1);
+    }
+  </style>
+</header>
+    <!-- =========================================================
+     DESKTOP LEFT NAV (2 SEPARATE BOXES, NO LAYOUT BREAK)
+     - Buttons stay fixed size (no rail resizing)
+     - Labels expand as a floating pill to the right (smooth)
+     - CTA is a separate box below (hovering it does NOT affect top)
+     - Scroll spy highlights current section (top rail only)
+========================================================= -->
+
+    <!-- DESKTOP LEFT NAV -->
+    <nav class="hidden lg:block fixed top-1/2 -translate-y-1/2 left-6 z-50" aria-label="Section navigation" id="rail-nav">
+      <style class="">
+        #rail-nav {
+          isolation: isolate;
+        }
+        #rail-nav .rail-box {
+          position: relative;
+          width: 72px;
+          padding: 12px 10px;
+          border-radius: 18px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.03);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 10px;
+          user-select: none;
+          overflow: visible;
+        }
+        #rail-nav .rail-box::before {
+          content: "";
+          position: absolute;
+          inset: 8px;
+          border-radius: 14px;
+          background: linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.07),
+            transparent 55%,
+            rgba(255, 255, 255, 0.05)
+          );
+          opacity: 0;
+          pointer-events: none;
+          z-index: 0;
+        }
+        #rail-nav .rail-btn {
+          position: relative;
+          z-index: 1;
+          width: 50px;
+          height: 50px;
+          border-radius: 18px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.02);
+          display: grid;
+          place-items: center;
+          cursor: pointer;
+          outline: none;
+          transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+            background-color 260ms cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 260ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #rail-nav .rail-btn:hover,
+        #rail-nav .rail-btn:focus-visible {
+          transform: translateX(2px);
+          background: rgba(255, 255, 255, 0.05);
+          border-color: rgba(255, 255, 255, 0.16);
+        }
+        #rail-nav .rail-icon {
+          width: 34px;
+          height: 34px;
+          border-radius: 12px;
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.03);
+          display: grid;
+          place-items: center;
+        }
+        #rail-nav .rail-icon iconify-icon {
+          color: rgba(255, 255, 255, 0.9);
+        }
+        #rail-nav .rail-btn.is-active {
+          background: rgba(255, 255, 255, 0.06);
+          border-color: rgba(255, 255, 255, 0.18);
+        }
+        #rail-nav .rail-btn.is-active .rail-icon {
+          background: rgba(255, 255, 255, 0.92);
+          border-color: rgba(255, 255, 255, 0.22);
+          box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.06), 0 18px 40px rgba(0, 0, 0, 0.35);
+        }
+        #rail-nav .rail-btn.is-active .rail-icon iconify-icon {
+          color: #0a0a0a;
+        }
+
+        #rail-nav .rail-label {
+          position: absolute;
+          left: calc(100% + 12px);
+          top: 50%;
+          transform: translateY(-50%) scaleX(0.92);
+          transform-origin: left center;
+          height: 42px;
+          display: inline-flex;
+          align-items: center;
+          padding: 0 14px;
+          border-radius: 14px;
+          background: linear-gradient(
+              180deg,
+              rgba(255, 255, 255, 0.14),
+              rgba(255, 255, 255, 0.06) 45%,
+              rgba(255, 255, 255, 0.03)
+            ),
+            radial-gradient(120% 140% at 20% 10%, rgba(255, 255, 255, 0.1), transparent 55%);
+          border: 1px solid rgba(255, 255, 255, 0.16);
+          backdrop-filter: blur(18px) saturate(1.2);
+          -webkit-backdrop-filter: blur(18px) saturate(1.2);
+          box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.18),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+          color: rgba(255, 255, 255, 0.92);
+          font-size: 12px;
+          font-weight: 800;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          white-space: nowrap;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 220ms cubic-bezier(0.16, 1, 0.3, 1),
+            transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #rail-nav .rail-btn:hover .rail-label,
+        #rail-nav .rail-btn:focus-visible .rail-label {
+          opacity: 1;
+          transform: translateY(-50%) scaleX(1);
+        }
+
+        #rail-nav .cta-wrap {
+          margin-top: 16px;
+        }
+        #rail-nav .rail-btn.cta .rail-icon {
+          background: rgba(255, 255, 255, 0.92);
+          border-color: rgba(255, 255, 255, 0.22);
+          box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.06), 0 18px 40px rgba(0, 0, 0, 0.35);
+        }
+        #rail-nav .rail-btn.cta .rail-icon iconify-icon {
+          color: #0a0a0a;
+        }
+      </style>
+
+      <div class="rail-box" id="rail-sections">
+        <a class="rail-btn" href="index.html" data-target="#home">
+          <span class="rail-icon"><iconify-icon icon="solar:home-angle-2-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Home</span>
+        </a>
+        <a class="rail-btn" href="features.html" data-target="#features">
+          <span class="rail-icon"><iconify-icon icon="solar:widget-3-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Features</span>
+        </a>
+        <a class="rail-btn" href="solutions.html" data-target="#solutions">
+          <span class="rail-icon"><iconify-icon icon="solar:layers-linear" width="18"></iconify-icon></span>
+          <span class="rail-label">Solutions</span>
+        </a>
+        <a class="rail-btn" href="workflow.html" data-target="#workflow">
+          <span class="rail-icon"><iconify-icon icon="solar:graph-new-up-linear" width="18"></iconify-icon></span>
+          <span class="rail-label">Workflow</span>
+        </a>
+        <a class="rail-btn" href="company.html" data-target="#company">
+          <span class="rail-icon"><iconify-icon icon="solar:buildings-3-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Company</span>
+        </a>
+        <a class="rail-btn is-active" href="pricing.html" data-target="#pricing">
+          <span class="rail-icon"><iconify-icon icon="solar:tag-price-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Pricing</span>
+        </a>
+      </div>
+
+      <div class="cta-wrap">
+        <div class="rail-box">
+          <a class="rail-btn cta" href="sign-in.html" data-target="#contact">
+  <span class="rail-icon cursor-pointer" onclick="window.location.href='sign-in.html'" role="button"><iconify-icon icon="solar:arrow-right-linear" width="18" class=""></iconify-icon></span>
+  <span class="rail-label">Start Free Trial</span>
+</a>
+        </div>
+      </div>
+
+      <script class="">
+        (() => {
+          const sectionRail = document.getElementById("rail-sections");
+          if (!sectionRail) return;
+
+          const allBtns = Array.from(document.querySelectorAll("#rail-nav .rail-btn")).filter(
+            (a) => a.dataset.target
+          );
+
+          allBtns.forEach((a) => {
+            a.addEventListener("click", (e) => {
+              const el = document.querySelector(a.dataset.target);
+              if (!el) return;
+              e.preventDefault();
+              el.scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+          });
+
+          const spyBtns = Array.from(sectionRail.querySelectorAll(".rail-btn"));
+          const spyTargets = spyBtns.map((a) => document.querySelector(a.dataset.target)).filter(Boolean);
+
+          let activeIndex = 0;
+          const setActive = (idx) => {
+            activeIndex = Math.max(0, Math.min(spyBtns.length - 1, idx));
+            spyBtns.forEach((a, i) => a.classList.toggle("is-active", i === activeIndex));
+          };
+
+          const io = new IntersectionObserver(
+            (entries) => {
+              const visible = entries.filter((e) => e.isIntersecting);
+              if (!visible.length) return;
+
+              const mid = window.innerHeight * 0.52;
+              visible.sort((a, b) => {
+                const da = Math.abs(a.boundingClientRect.top + a.boundingClientRect.height / 2 - mid);
+                const db = Math.abs(b.boundingClientRect.top + b.boundingClientRect.height / 2 - mid);
+                return da - db;
+              });
+
+              const best = visible[0].target;
+              const idx = spyTargets.indexOf(best);
+              if (idx !== -1 && idx !== activeIndex) setActive(idx);
+            },
+            { threshold: [0.22, 0.35, 0.5, 0.65] }
+          );
+
+          spyTargets.forEach((s) => io.observe(s));
+        })();
+      </script>
+    </nav>
+
+    <!-- HERO / HOME -->
+    <section id="home" class="relative w-full min-h-screen bg-black flex items-end pb-32 pt-32 lg:pt-0 overflow-hidden">
+      <div class="section-aura"></div>
+      <div class="section-grid"></div>
+      <div class="absolute inset-0 pointer-events-none z-[1] overflow-hidden">
+        <div id="hero-scanline" class="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" style="top:40%"></div>
+      </div>
+      <div class="max-w-7xl mx-auto px-6 w-full relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-end">
+          <div class="lg:col-span-7">
+            <div class="inline-flex items-center gap-3 mb-8" data-reveal="">
+              <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase text-white/65 glass-panel border border-white/10">
+                Pricing
+              </span>
+              <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">
+                Transparent &amp; Scalable
+              </span>
+            </div>
+            <h1 class="text-5xl md:text-6xl lg:text-[5.5rem] font-display font-semibold tracking-tighter text-white leading-[0.92] mb-8" data-reveal="" id="pricing-hero-headline" style=" filter: blur(0px);">
+              Pricing that
+              <br>
+              <span class="text-neutral-500 font-serif italic tracking-normal text-5xl lg:text-6xl">
+                scales with your
+              </span>
+              <br>
+              infrastructure.
+            </h1>
+          </div>
+          <div class="lg:col-span-5 lg:pb-2">
+            <p class="text-lg text-neutral-400 leading-relaxed mb-8" data-reveal="">
+              Simple, usage-based pricing with no surprises. Start free, scale
+              to enterprise — pay only for what you consume.
+            </p>
+            <div class="flex flex-wrap gap-3" data-reveal="">
+              <span class="px-4 py-2 rounded-full glass-panel border border-white/10 text-[11px] font-mono uppercase tracking-widest text-white/50">
+                Usage-based
+              </span>
+              <span class="px-4 py-2 rounded-full glass-panel border border-white/10 text-[11px] font-mono uppercase tracking-widest text-white/50">
+                Enterprise-ready
+              </span>
+              <span class="px-4 py-2 rounded-full glass-panel border border-white/10 text-[11px] font-mono uppercase tracking-widest text-white/50">
+                No lock-in
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES (magnetic cards + stagger + subtle clip reveal) -->
+    <section class="overflow-hidden bg-neutral-950 border-white/5 border-t pt-32 pb-32 relative" id="features">
+      <div class="section-aura" style="opacity:.5"></div>
+      <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <div class="text-center mb-16">
+          <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35 mb-4 block" data-reveal="">
+            Plans
+          </span>
+          <h2 class="text-3xl md:text-4xl font-display font-semibold text-white tracking-tight" data-reveal="">
+            Choose your starting point.
+          </h2>
+          <p class="mt-4 text-neutral-400 max-w-2xl mx-auto" data-reveal="">
+            Every plan includes core infrastructure primitives. Scale up as your
+            needs grow.
+          </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6 gap-x-5 gap-y-5 items-stretch" id="plan-cards">
+          <!-- Starter -->
+          <div class="plan-card glass-panel border border-white/10 rounded-3xl p-8 flex flex-col justify-between spotlight-card transition-all duration-500 hover:border-white/20 hover:-translate-y-2 hover:shadow-2xl" data-reveal="" style=" filter: blur(0px);">
+            <div>
+              <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35 mb-6 block">
+                Starter
+              </span>
+              <div class="flex items-baseline gap-1 mb-2">
+                <span class="text-4xl font-display font-semibold text-white tracking-tight">
+                  $0
+                </span>
+                <span class="text-sm text-neutral-500">/month</span>
+              </div>
+              <p class="text-sm text-neutral-400 leading-relaxed mb-8">
+                For developers exploring the platform. Generous free tier with
+                all core features.
+              </p>
+              <div class="space-y-3 mb-8">
+                <div class="flex items-center gap-3">
+                  <div class="w-5 h-5 rounded-md bg-white/5 border border-white/10 flex items-center justify-center">
+                    <iconify-icon icon="solar:check-read-linear" width="12" class="text-white/70"></iconify-icon>
+                  </div>
+                  <span class="text-sm text-neutral-300">
+                    1,000 compute hours/mo
+                  </span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="w-5 h-5 rounded-md bg-white/5 border border-white/10 flex items-center justify-center">
+                    <iconify-icon icon="solar:check-read-linear" width="12" class="text-white/70"></iconify-icon>
+                  </div>
+                  <span class="text-sm text-neutral-300">
+                    10 GB storage included
+                  </span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="w-5 h-5 rounded-md bg-white/5 border border-white/10 flex items-center justify-center">
+                    <iconify-icon icon="solar:check-read-linear" width="12" class="text-white/70"></iconify-icon>
+                  </div>
+                  <span class="text-sm text-neutral-300">
+                    Community support
+                  </span>
+                </div>
+              </div>
+            </div>
+            <a href="#" class="block w-full text-center px-6 py-3.5 rounded-full border border-white/10 text-white text-sm font-medium hover:bg-white/5 transition">
+              Get Started Free
+            </a>
+          </div>
+          <!-- Scale -->
+          <div class="plan-card glass-panel border-white/[0.15] flex flex-col spotlight-card transition-all duration-500 hover:border-white/25 hover:-translate-y-2 hover:shadow-2xl border rounded-3xl pt-8 pr-8 pb-8 pl-8 relative justify-between overflow-visible" data-reveal="" style=" filter: blur(0px);">
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
+              <span class="px-4 py-1.5 rounded-full bg-white text-black text-[10px] font-mono uppercase tracking-widest font-semibold">
+                Popular
+              </span>
+            </div>
+            <div class="">
+              <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35 mb-6 block">
+                Scale
+              </span>
+              <div class="flex items-baseline gap-1 mb-2">
+                <span class="text-4xl font-display font-semibold text-white tracking-tight">
+                  $299
+                </span>
+                <span class="text-sm text-neutral-500">/month</span>
+              </div>
+              <p class="text-sm text-neutral-400 leading-relaxed mb-8">
+                For growing teams running production workloads across multiple
+                regions.
+              </p>
+              <div class="space-y-3 mb-8">
+                <div class="flex items-center gap-3">
+                  <div class="w-5 h-5 rounded-md bg-white/5 border border-white/10 flex items-center justify-center">
+                    <iconify-icon icon="solar:check-read-linear" width="12" class="text-white/70"></iconify-icon>
+                  </div>
+                  <span class="text-sm text-neutral-300">
+                    50,000 compute hours/mo
+                  </span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="w-5 h-5 rounded-md bg-white/5 border border-white/10 flex items-center justify-center">
+                    <iconify-icon icon="solar:check-read-linear" width="12" class="text-white/70"></iconify-icon>
+                  </div>
+                  <span class="text-sm text-neutral-300">
+                    500 GB storage included
+                  </span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="w-5 h-5 rounded-md bg-white/5 border border-white/10 flex items-center justify-center">
+                    <iconify-icon icon="solar:check-read-linear" width="12" class="text-white/70"></iconify-icon>
+                  </div>
+                  <span class="text-sm text-neutral-300">
+                    Priority support + SLA
+                  </span>
+                </div>
+              </div>
+            </div>
+            <a href="#" class="block w-full text-center px-6 py-3.5 rounded-full bg-white text-black text-sm font-medium hover:bg-neutral-200 transition">
+              Start Free Trial
+            </a>
+          </div>
+          <!-- Enterprise -->
+          <div class="plan-card glass-panel border border-white/10 rounded-3xl p-8 flex flex-col justify-between spotlight-card transition-all duration-500 hover:border-white/20 hover:-translate-y-2 hover:shadow-2xl" data-reveal="" style=" filter: blur(0px);">
+            <div class="">
+              <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35 mb-6 block">
+                Enterprise
+              </span>
+              <div class="flex items-baseline gap-1 mb-2">
+                <span class="text-4xl font-display font-semibold text-white tracking-tight">
+                  Custom
+                </span>
+              </div>
+              <p class="text-sm text-neutral-400 leading-relaxed mb-8">
+                For organizations with complex compliance, security, and scale
+                requirements.
+              </p>
+              <div class="space-y-3 mb-8">
+                <div class="flex items-center gap-3">
+                  <div class="w-5 h-5 rounded-md bg-white/5 border border-white/10 flex items-center justify-center">
+                    <iconify-icon icon="solar:check-read-linear" width="12" class="text-white/70"></iconify-icon>
+                  </div>
+                  <span class="text-sm text-neutral-300">
+                    Unlimited compute &amp; storage
+                  </span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="w-5 h-5 rounded-md bg-white/5 border border-white/10 flex items-center justify-center">
+                    <iconify-icon icon="solar:check-read-linear" width="12" class="text-white/70"></iconify-icon>
+                  </div>
+                  <span class="text-sm text-neutral-300">
+                    Dedicated account team
+                  </span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="w-5 h-5 rounded-md bg-white/5 border border-white/10 flex items-center justify-center">
+                    <iconify-icon icon="solar:check-read-linear" width="12" class="text-white/70"></iconify-icon>
+                  </div>
+                  <span class="text-sm text-neutral-300">Custom SLA + BAA</span>
+                </div>
+              </div>
+            </div>
+            <a href="#" class="block w-full text-center px-6 py-3.5 rounded-full border border-white/10 text-white text-sm font-medium hover:bg-white/5 transition">
+              Contact Sales
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOLUTIONS (pinned “spec sheet” + horizontal cards) -->
+    <section id="solutions" class="relative py-32 bg-black border-t border-white/5 overflow-hidden">
+      <div class="section-aura" style="opacity:.45"></div>
+      <div class="section-grid" style="opacity:.15"></div>
+      <div class="max-w-5xl mx-auto px-6 relative z-10">
+        <div class="text-center mb-14">
+          <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35 mb-4 block" data-reveal="">
+            Usage Pricing
+          </span>
+          <h2 class="text-3xl md:text-4xl font-display font-semibold text-white tracking-tight" data-reveal="">
+            Pay precisely for what you use.
+          </h2>
+          <p class="mt-4 text-neutral-400 max-w-2xl mx-auto" data-reveal="">
+            Metered billing across compute, storage, and requests. No hidden
+            fees, no overages — just clear, predictable costs.
+          </p>
+        </div>
+        <!-- Billing Toggle -->
+        <div class="flex items-center justify-center gap-1 mb-10" data-reveal="">
+          <button id="billing-monthly" class="billing-toggle px-5 py-2.5 rounded-full text-xs font-mono uppercase tracking-widest transition-all duration-300 bg-white/10 border border-white/15 text-white" onclick="setBilling('monthly')">
+            Monthly
+          </button>
+          <button id="billing-annual" class="billing-toggle px-5 py-2.5 rounded-full text-xs font-mono uppercase tracking-widest transition-all duration-300 border border-white/5 text-white/40 hover:text-white/60" onclick="setBilling('annual')">
+            Annual
+            <span class="text-white/30 ml-1">Save 20%</span>
+          </button>
+        </div>
+        <!-- Usage Table -->
+        <div class="glass-panel border border-white/10 rounded-3xl overflow-hidden shadow-2xl" data-reveal="">
+          <div class="px-7 py-4 border-b border-white/5 flex items-center justify-between">
+            <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/55">
+              Resource
+            </span>
+            <div class="flex items-center gap-12">
+              <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35 hidden sm:block">
+                Included
+              </span>
+              <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35 w-24 text-right">
+                Unit Price
+              </span>
+            </div>
+          </div>
+          <div class="divide-y divide-white/5">
+            <div class="px-7 py-5 flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <div class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+                  <iconify-icon icon="solar:cpu-bolt-linear" width="18" class="text-white/80"></iconify-icon>
+                </div>
+                <div>
+                  <div class="text-white font-medium text-sm">
+                    Compute Hours
+                  </div>
+                  <div class="text-[11px] text-neutral-500">
+                    vCPU-hours per month
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-12">
+                <span class="text-sm text-neutral-300 hidden sm:block usage-included" data-monthly="1,000 hrs" data-annual="12,000 hrs">
+                  1,000 hrs
+                </span>
+                <span class="text-sm text-white/70 w-24 text-right font-mono usage-price" data-monthly="$0.048" data-annual="$0.038">
+                  /hr
+                </span>
+              </div>
+            </div>
+            <div class="px-7 py-5 flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <div class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+                  <iconify-icon icon="solar:database-linear" width="18" class="text-white/80"></iconify-icon>
+                </div>
+                <div>
+                  <div class="text-white font-medium text-sm">Storage</div>
+                  <div class="text-[11px] text-neutral-500">
+                    GB-months persistent
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-12">
+                <span class="text-sm text-neutral-300 hidden sm:block usage-included" data-monthly="10 GB" data-annual="120 GB">
+                  10 GB
+                </span>
+                <span class="text-sm text-white/70 w-24 text-right font-mono usage-price" data-monthly="$0.12" data-annual="$0.096">
+                  /GB
+                </span>
+              </div>
+            </div>
+            <div class="px-7 py-5 flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <div class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+                  <iconify-icon icon="solar:transfer-horizontal-linear" width="18" class="text-white/80"></iconify-icon>
+                </div>
+                <div>
+                  <div class="text-white font-medium text-sm">API Requests</div>
+                  <div class="text-[11px] text-neutral-500">
+                    Per million requests
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-12">
+                <span class="text-sm text-neutral-300 hidden sm:block usage-included" data-monthly="5M" data-annual="60M">
+                  5M
+                </span>
+                <span class="text-sm text-white/70 w-24 text-right font-mono usage-price" data-monthly="$3.50" data-annual="$2.80">
+                  /M
+                </span>
+              </div>
+            </div>
+            <div class="px-7 py-5 flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <div class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+                  <iconify-icon icon="solar:cloud-download-linear" width="18" class="text-white/80"></iconify-icon>
+                </div>
+                <div>
+                  <div class="text-white font-medium text-sm">
+                    Data Transfer
+                  </div>
+                  <div class="text-[11px] text-neutral-500">Egress per GB</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-12">
+                <span class="text-sm text-neutral-300 hidden sm:block usage-included" data-monthly="100 GB" data-annual="1.2 TB">
+                  100 GB
+                </span>
+                <span class="text-sm text-white/70 w-24 text-right font-mono usage-price" data-monthly="$0.09" data-annual="$0.072">
+                  /GB
+                </span>
+              </div>
+            </div>
+          </div>
+          <!-- Animated counter bar -->
+          <div class="px-7 py-5 border-t border-white/5">
+            <div class="grid grid-cols-3 gap-6">
+              <div class="text-center">
+                <div class="text-2xl font-display font-semibold text-white tracking-tight" id="usage-counter-1">
+                  0
+                </div>
+                <div class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35 mt-1">
+                  Avg compute hrs/mo
+                </div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-display font-semibold text-white tracking-tight" id="usage-counter-2">
+                  0
+                </div>
+                <div class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35 mt-1">
+                  TB transferred/mo
+                </div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-display font-semibold text-white tracking-tight" id="usage-counter-3">
+                  0%
+                </div>
+                <div class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35 mt-1">
+                  Avg savings vs AWS
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKFLOW (timeline + pinned bar + orbit) -->
+    <section id="workflow" class="relative py-32 bg-neutral-950 border-t border-white/5 overflow-hidden">
+      <div class="section-aura" style="opacity:.45"></div>
+      <div class="max-w-6xl mx-auto px-6 relative z-10">
+        <div class="text-center mb-14">
+          <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35 mb-4 block" data-reveal="">
+            Compare
+          </span>
+          <h2 class="text-3xl md:text-4xl font-display font-semibold text-white tracking-tight" data-reveal="">
+            Feature comparison.
+          </h2>
+          <p class="mt-4 text-neutral-400 max-w-2xl mx-auto" data-reveal="">
+            Every tier includes the essentials. Higher plans unlock advanced
+            capabilities.
+          </p>
+        </div>
+        <div class="hairline rounded-full mb-10" id="compare-hairline" data-reveal="" style=" transform-origin: 0% 50%;"></div>
+        <div class="glass-panel border border-white/10 rounded-3xl overflow-hidden shadow-2xl" data-reveal="">
+          <!-- Header Row -->
+          <div class="grid grid-cols-4 px-7 py-5 border-b border-white/5">
+            <div class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/40">
+              Feature
+            </div>
+            <div class="text-center text-[10px] font-mono uppercase tracking-[0.22em] text-white/40">
+              Starter
+            </div>
+            <div class="text-center text-[10px] font-mono uppercase tracking-[0.22em] text-white/40">
+              Scale
+            </div>
+            <div class="text-center text-[10px] font-mono uppercase tracking-[0.22em] text-white/40">
+              Enterprise
+            </div>
+          </div>
+          <div class="divide-y divide-white/5" id="feature-comparison-rows">
+            <div class="grid grid-cols-4 px-7 py-4 items-center">
+              <span class="text-sm text-neutral-300">Multi-region deploy</span>
+              <span class="text-center text-white/25">—</span>
+              <span class="text-center">
+                <iconify-icon icon="solar:check-circle-linear" width="18" class="text-white/60"></iconify-icon>
+              </span>
+              <span class="text-center">
+                <iconify-icon icon="solar:check-circle-linear" width="18" class="text-white/60"></iconify-icon>
+              </span>
+            </div>
+            <div class="grid grid-cols-4 px-7 py-4 items-center">
+              <span class="text-sm text-neutral-300">Auto-scaling</span>
+              <span class="text-center">
+                <iconify-icon icon="solar:check-circle-linear" width="18" class="text-white/60"></iconify-icon>
+              </span>
+              <span class="text-center">
+                <iconify-icon icon="solar:check-circle-linear" width="18" class="text-white/60"></iconify-icon>
+              </span>
+              <span class="text-center">
+                <iconify-icon icon="solar:check-circle-linear" width="18" class="text-white/60"></iconify-icon>
+              </span>
+            </div>
+            <div class="grid grid-cols-4 px-7 py-4 items-center">
+              <span class="text-sm text-neutral-300">SOC 2 audit logs</span>
+              <span class="text-center text-white/25">—</span>
+              <span class="text-center">
+                <iconify-icon icon="solar:check-circle-linear" width="18" class="text-white/60"></iconify-icon>
+              </span>
+              <span class="text-center">
+                <iconify-icon icon="solar:check-circle-linear" width="18" class="text-white/60"></iconify-icon>
+              </span>
+            </div>
+            <div class="grid grid-cols-4 px-7 py-4 items-center">
+              <span class="text-sm text-neutral-300">Custom RBAC policies</span>
+              <span class="text-center text-white/25">—</span>
+              <span class="text-center text-white/25">—</span>
+              <span class="text-center">
+                <iconify-icon icon="solar:check-circle-linear" width="18" class="text-white/60"></iconify-icon>
+              </span>
+            </div>
+            <div class="grid grid-cols-4 px-7 py-4 items-center">
+              <span class="text-sm text-neutral-300">
+                Dedicated support engineer
+              </span>
+              <span class="text-center text-white/25">—</span>
+              <span class="text-center text-white/25">—</span>
+              <span class="text-center">
+                <iconify-icon icon="solar:check-circle-linear" width="18" class="text-white/60"></iconify-icon>
+              </span>
+            </div>
+            <div class="grid grid-cols-4 px-7 py-4 items-center">
+              <span class="text-sm text-neutral-300">99.99% SLA guarantee</span>
+              <span class="text-center text-white/25">—</span>
+              <span class="text-center">
+                <iconify-icon icon="solar:check-circle-linear" width="18" class="text-white/60"></iconify-icon>
+              </span>
+              <span class="text-center">
+                <iconify-icon icon="solar:check-circle-linear" width="18" class="text-white/60"></iconify-icon>
+              </span>
+            </div>
+            <div class="grid grid-cols-4 px-7 py-4 items-center">
+              <span class="text-sm text-neutral-300">
+                SSO / SAML integration
+              </span>
+              <span class="text-center text-white/25">—</span>
+              <span class="text-center">
+                <iconify-icon icon="solar:check-circle-linear" width="18" class="text-white/60"></iconify-icon>
+              </span>
+              <span class="text-center">
+                <iconify-icon icon="solar:check-circle-linear" width="18" class="text-white/60"></iconify-icon>
+              </span>
+            </div>
+            <div class="grid grid-cols-4 px-7 py-4 items-center">
+              <span class="text-sm text-neutral-300">
+                Private networking (VPC)
+              </span>
+              <span class="text-center text-white/25">—</span>
+              <span class="text-center text-white/25">—</span>
+              <span class="text-center">
+                <iconify-icon icon="solar:check-circle-linear" width="18" class="text-white/60"></iconify-icon>
+              </span>
+            </div>
+            <div class="grid grid-cols-4 px-7 py-4 items-center">
+              <span class="text-sm text-neutral-300">
+                BAA / HIPAA compliance
+              </span>
+              <span class="text-center text-white/25">—</span>
+              <span class="text-center text-white/25">—</span>
+              <span class="text-center">
+                <iconify-icon icon="solar:check-circle-linear" width="18" class="text-white/60"></iconify-icon>
+              </span>
+            </div>
+            <div class="grid grid-cols-4 px-7 py-4 items-center">
+              <span class="text-sm text-neutral-300">
+                Custom data residency
+              </span>
+              <span class="text-center text-white/25">—</span>
+              <span class="text-center text-white/25">—</span>
+              <span class="text-center">
+                <iconify-icon icon="solar:check-circle-linear" width="18" class="text-white/60"></iconify-icon>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPANY (icons grid reveal + subtle line sweep) -->
+    <section id="company" class="relative py-32 bg-black border-t border-white/5 overflow-hidden">
+      <div class="section-aura" style="opacity:.5"></div>
+      <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+          <div class="lg:col-span-5">
+            <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35 mb-6 block" data-reveal="">
+              Enterprise
+            </span>
+            <h2 class="text-3xl md:text-4xl font-display font-semibold text-white tracking-tight leading-snug" data-reveal="">
+              Built for organizations
+              <br>
+              that can't afford downtime.
+            </h2>
+            <p class="mt-6 text-neutral-400 leading-relaxed max-w-md" data-reveal="">
+              Need custom SLAs, dedicated infrastructure, or specific compliance
+              requirements? Our enterprise team designs pricing around your
+              architecture — not the other way around.
+            </p>
+            <div class="mt-8 space-y-3" data-reveal="">
+              <div class="flex items-center gap-3">
+                <div class="w-5 h-5 rounded-md bg-white/5 border border-white/10 flex items-center justify-center">
+                  <iconify-icon icon="solar:check-read-linear" width="12" class="text-white/70"></iconify-icon>
+                </div>
+                <span class="text-sm text-neutral-300">
+                  Volume discounts &amp; committed use
+                </span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-5 h-5 rounded-md bg-white/5 border border-white/10 flex items-center justify-center">
+                  <iconify-icon icon="solar:check-read-linear" width="12" class="text-white/70"></iconify-icon>
+                </div>
+                <span class="text-sm text-neutral-300">
+                  Custom compliance frameworks
+                </span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-5 h-5 rounded-md bg-white/5 border border-white/10 flex items-center justify-center">
+                  <iconify-icon icon="solar:check-read-linear" width="12" class="text-white/70"></iconify-icon>
+                </div>
+                <span class="text-sm text-neutral-300">
+                  Dedicated infrastructure options
+                </span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-5 h-5 rounded-md bg-white/5 border border-white/10 flex items-center justify-center">
+                  <iconify-icon icon="solar:check-read-linear" width="12" class="text-white/70"></iconify-icon>
+                </div>
+                <span class="text-sm text-neutral-300">
+                  24/7 named support engineer
+                </span>
+              </div>
+            </div>
+            <div class="mt-10" data-reveal="">
+              <a href="#" class="inline-flex px-8 py-4 rounded-full bg-white text-black font-medium hover:bg-neutral-200 transition text-sm">
+                Talk to Sales
+              </a>
+            </div>
+          </div>
+          <div class="lg:col-span-7">
+            <div id="enterprise-glass-block" class="glass-panel border border-white/10 rounded-3xl p-8 md:p-10 shadow-2xl relative overflow-hidden" data-reveal="">
+              <!-- Mock enterprise UI -->
+              <div class="space-y-5">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/40">
+                    Custom Agreement
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/8 border border-white/12 text-white/70">
+                    Draft
+                  </span>
+                </div>
+                <div class="hairline rounded-full"></div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="glass-panel border border-white/8 rounded-2xl p-5">
+                    <div class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35 mb-2">
+                      Committed Spend
+                    </div>
+                    <div class="text-2xl font-display font-semibold text-white tracking-tight">
+                      $—/yr
+                    </div>
+                  </div>
+                  <div class="glass-panel border border-white/8 rounded-2xl p-5">
+                    <div class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35 mb-2">
+                      SLA Target
+                    </div>
+                    <div class="text-2xl font-display font-semibold text-white tracking-tight">
+                      99.99%
+                    </div>
+                  </div>
+                </div>
+                <div class="glass-panel border border-white/8 rounded-2xl p-5">
+                  <div class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35 mb-3">
+                    Included Modules
+                  </div>
+                  <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/8 text-[11px] text-white/50">
+                      Compute
+                    </span>
+                    <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/8 text-[11px] text-white/50">
+                      Storage
+                    </span>
+                    <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/8 text-[11px] text-white/50">
+                      Networking
+                    </span>
+                    <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/8 text-[11px] text-white/50">
+                      Observability
+                    </span>
+                    <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/8 text-[11px] text-white/50">
+                      Security
+                    </span>
+                    <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/8 text-[11px] text-white/50">
+                      Compliance
+                    </span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="h-2 flex-1 rounded-full bg-white/8 border border-white/10 overflow-hidden">
+                    <div class="h-full w-3/4 bg-white/20 rounded-full"></div>
+                  </div>
+                  <span class="text-[10px] font-mono text-white/35">
+                    75% configured
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING (counter + reveal + subtle split) -->
+    <section id="pricing" class="relative py-32 bg-neutral-950 border-t border-white/5 overflow-hidden">
+      <div class="section-aura" style="opacity:.45"></div>
+      <div class="max-w-4xl mx-auto px-6 relative z-10">
+        <div class="text-center mb-14">
+          <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35 mb-4 block" data-reveal="">
+            FAQ
+          </span>
+          <h2 class="text-3xl md:text-4xl font-display font-semibold text-white tracking-tight" data-reveal="">
+            Common questions.
+          </h2>
+        </div>
+        <div class="space-y-3" id="faq-accordion">
+          <div class="faq-item glass-panel border border-white/10 rounded-2xl overflow-hidden" data-reveal="">
+            <button class="faq-trigger w-full px-7 py-5 flex items-center justify-between text-left cursor-pointer" onclick="toggleFaq(this)">
+              <span class="text-sm font-medium text-white">
+                Is there a free tier?
+              </span>
+              <iconify-icon icon="solar:alt-arrow-down-linear" width="18" class="text-white/40 faq-chevron transition-transform duration-300"></iconify-icon>
+            </button>
+            <div class="faq-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+              <div class="px-7 pb-5 text-sm text-neutral-400 leading-relaxed">
+                Yes. The Starter plan is completely free and includes 1,000
+                compute hours, 10 GB of storage, and 5 million API requests per
+                month. No credit card required.
+              </div>
+            </div>
+          </div>
+          <div class="faq-item glass-panel border border-white/10 rounded-2xl overflow-hidden" data-reveal="">
+            <button class="faq-trigger w-full px-7 py-5 flex items-center justify-between text-left cursor-pointer" onclick="toggleFaq(this)">
+              <span class="text-sm font-medium text-white">
+                How does usage-based billing work?
+              </span>
+              <iconify-icon icon="solar:alt-arrow-down-linear" width="18" class="text-white/40 faq-chevron transition-transform duration-300"></iconify-icon>
+            </button>
+            <div class="faq-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+              <div class="px-7 pb-5 text-sm text-neutral-400 leading-relaxed">
+                Each plan includes a baseline of resources. Usage beyond that
+                baseline is metered and billed at the per-unit rates shown
+                above. You'll always see real-time usage in your dashboard
+                before charges accrue.
+              </div>
+            </div>
+          </div>
+          <div class="faq-item glass-panel border border-white/10 rounded-2xl overflow-hidden" data-reveal="">
+            <button class="faq-trigger w-full px-7 py-5 flex items-center justify-between text-left cursor-pointer" onclick="toggleFaq(this)">
+              <span class="text-sm font-medium text-white">
+                Can I switch plans at any time?
+              </span>
+              <iconify-icon icon="solar:alt-arrow-down-linear" width="18" class="text-white/40 faq-chevron transition-transform duration-300"></iconify-icon>
+            </button>
+            <div class="faq-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+              <div class="px-7 pb-5 text-sm text-neutral-400 leading-relaxed">
+                Absolutely. Upgrade or downgrade at any point. Upgrades take
+                effect immediately, and downgrades apply at the start of your
+                next billing cycle. No penalties.
+              </div>
+            </div>
+          </div>
+          <div class="faq-item glass-panel border border-white/10 rounded-2xl overflow-hidden" data-reveal="">
+            <button class="faq-trigger w-full px-7 py-5 flex items-center justify-between text-left cursor-pointer" onclick="toggleFaq(this)">
+              <span class="text-sm font-medium text-white">
+                What's included in the Enterprise plan?
+              </span>
+              <iconify-icon icon="solar:alt-arrow-down-linear" width="18" class="text-white/40 faq-chevron transition-transform duration-300"></iconify-icon>
+            </button>
+            <div class="faq-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+              <div class="px-7 pb-5 text-sm text-neutral-400 leading-relaxed">
+                Enterprise includes everything in Scale plus unlimited
+                resources, custom SLAs, dedicated account management, private
+                networking, BAA/HIPAA compliance, and custom data residency.
+                Pricing is tailored to your usage profile.
+              </div>
+            </div>
+          </div>
+          <div class="faq-item glass-panel border border-white/10 rounded-2xl overflow-hidden" data-reveal="">
+            <button class="faq-trigger w-full px-7 py-5 flex items-center justify-between text-left cursor-pointer" onclick="toggleFaq(this)">
+              <span class="text-sm font-medium text-white">
+                Do you offer annual discounts?
+              </span>
+              <iconify-icon icon="solar:alt-arrow-down-linear" width="18" class="text-white/40 faq-chevron transition-transform duration-300"></iconify-icon>
+            </button>
+            <div class="faq-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+              <div class="px-7 pb-5 text-sm text-neutral-400 leading-relaxed">
+                Yes. Annual billing saves 20% on all plans and usage rates.
+                Committed use agreements for Enterprise customers can unlock
+                additional volume discounts.
+              </div>
+            </div>
+          </div>
+          <div class="faq-item glass-panel border border-white/10 rounded-2xl overflow-hidden" data-reveal="">
+            <button class="faq-trigger w-full px-7 py-5 flex items-center justify-between text-left cursor-pointer" onclick="toggleFaq(this)">
+              <span class="text-sm font-medium text-white">
+                Is there a commitment or contract?
+              </span>
+              <iconify-icon icon="solar:alt-arrow-down-linear" width="18" class="text-white/40 faq-chevron transition-transform duration-300"></iconify-icon>
+            </button>
+            <div class="faq-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+              <div class="px-7 pb-5 text-sm text-neutral-400 leading-relaxed">
+                No long-term contracts for Starter or Scale plans.
+                Month-to-month with no cancellation fees. Enterprise agreements
+                are custom but typically structured as annual commitments with
+                flexible terms.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT (soft entrance + button micro) -->
+    <section id="contact" class="relative py-32 bg-black border-t border-white/5 overflow-hidden">
+      <div class="section-aura" id="careers-aura" style="opacity:.6"></div>
+      <div class="max-w-4xl mx-auto px-6 relative z-10 text-center">
+        <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35 mb-6 block" data-reveal="">
+          Get Started
+        </span>
+        <h2 class="text-4xl md:text-5xl font-display font-semibold text-white tracking-tight mb-7" data-reveal="">
+          Start building without limits.
+        </h2>
+        <p class="text-neutral-400 leading-relaxed max-w-2xl mx-auto" data-reveal="">
+          Deploy your first workload in minutes. No credit card required for the
+          free tier — scale when you're ready.
+        </p>
+        <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4" data-reveal="">
+          <a href="#" class="px-8 py-4 rounded-full bg-white text-black font-medium hover:bg-neutral-200 transition">
+            Start Free Trial
+          </a>
+          <a href="#" class="px-8 py-4 rounded-full border border-white/10 text-white hover:bg-white/5 transition backdrop-blur-sm">
+            Contact Sales
+          </a>
+        </div>
+        <div class="mt-14 max-w-xl mx-auto" data-reveal="">
+          <div class="hairline rounded-full"></div>
+          <div class="mt-5 text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">
+            No credit card · 14-day trial · Cancel anytime
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="py-10 border-t border-white/5 text-center text-neutral-600 text-xs font-mono">
+      <p>© 2024 Nexus Inc. All rights reserved.</p>
+    </footer>
+
+    <script>
+      // Mouse tracking for spotlight cards
+      document.addEventListener('mousemove', (e) => {
+        document.documentElement.style.setProperty('--mouse-x', e.clientX + 'px');
+        document.documentElement.style.setProperty('--mouse-y', e.clientY + 'px');
+      });
+
+      // Billing toggle
+      let currentBilling = 'monthly';
+      function setBilling(mode) {
+        currentBilling = mode;
+        document.querySelectorAll('.billing-toggle').forEach(btn => {
+          btn.classList.remove('bg-white/10', 'border-white/15', 'text-white');
+          btn.classList.add('border-white/5', 'text-white/40');
+        });
+        const active = document.getElementById('billing-' + mode);
+        if (active) {
+          active.classList.add('bg-white/10', 'border-white/15', 'text-white');
+          active.classList.remove('border-white/5', 'text-white/40');
+        }
+        document.querySelectorAll('.usage-included').forEach(el => {
+          el.textContent = el.dataset[mode];
+        });
+        document.querySelectorAll('.usage-price').forEach(el => {
+          const price = el.dataset[mode];
+          const suffix = el.textContent.match(/\/.*$/)?.[0] || '';
+          el.textContent = price + suffix.replace(/^[^/]*/, '');
+        });
+      }
+
+      // FAQ Accordion
+      function toggleFaq(trigger) {
+        const item = trigger.closest('.faq-item');
+        const content = item.querySelector('.faq-content');
+        const chevron = item.querySelector('.faq-chevron');
+        const isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
+
+        // Close all others
+        document.querySelectorAll('.faq-item').forEach(fi => {
+          const fc = fi.querySelector('.faq-content');
+          const fch = fi.querySelector('.faq-chevron');
+          fc.style.maxHeight = '0px';
+          fch.style.transform = 'rotate(0deg)';
+        });
+
+        if (!isOpen) {
+          content.style.maxHeight = content.scrollHeight + 'px';
+          chevron.style.transform = 'rotate(180deg)';
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        gsap.registerPlugin(ScrollTrigger);
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // 1) Standard reveal (stagger per section)
+        const sections = gsap.utils.toArray('section');
+        sections.forEach((sec) => {
+          const targets = sec.querySelectorAll('[data-reveal]');
+          if (!targets.length) return;
+          gsap.fromTo(
+            targets,
+            { opacity: 0, y: 26 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 1.0,
+              ease: 'power3.out',
+              stagger: 0.08,
+              scrollTrigger: { trigger: sec, start: 'top 78%' },
+            }
+          );
+        });
+
+        // 2) Hero scanline shimmer
+        const scanline = document.getElementById('hero-scanline');
+        if (scanline && !prefersReduced) {
+          gsap.to(scanline, {
+            yPercent: 800,
+            duration: 8,
+            repeat: -1,
+            ease: 'none',
+          });
+        }
+
+        // 3) Hero headline blur reveal
+        const heroHeadline = document.getElementById('pricing-hero-headline');
+        if (heroHeadline) {
+          gsap.fromTo(heroHeadline,
+            { filter: 'blur(8px)', opacity: 0 },
+            { filter: 'blur(0px)', opacity: 1, duration: 1.4, ease: 'power3.out', delay: 0.2 }
+          );
+        }
+
+        // 4) Plan cards slide up
+        const planCards = gsap.utils.toArray('.plan-card');
+        if (planCards.length) {
+          planCards.forEach((card, i) => {
+            gsap.fromTo(card,
+              { opacity: 0, y: 60, filter: 'blur(4px)' },
+              {
+                opacity: 1, y: 0, filter: 'blur(0px)',
+                duration: 0.9,
+                ease: 'power3.out',
+                delay: i * 0.12,
+                scrollTrigger: { trigger: card, start: 'top 85%', once: true },
+              }
+            );
+          });
+        }
+
+        // 5) Usage counters
+        const counter1 = document.getElementById('usage-counter-1');
+        const counter2 = document.getElementById('usage-counter-2');
+        const counter3 = document.getElementById('usage-counter-3');
+        if (counter1) {
+          ScrollTrigger.create({
+            trigger: counter1,
+            start: 'top 85%',
+            once: true,
+            onEnter: () => {
+              const o1 = { val: 0 };
+              gsap.to(o1, { val: 847000, duration: 2, ease: 'power2.out', onUpdate: () => { counter1.textContent = Math.round(o1.val).toLocaleString(); } });
+              const o2 = { val: 0 };
+              gsap.to(o2, { val: 2.4, duration: 2, ease: 'power2.out', onUpdate: () => { counter2.textContent = o2.val.toFixed(1); } });
+              const o3 = { val: 0 };
+              gsap.to(o3, { val: 38, duration: 2, ease: 'power2.out', onUpdate: () => { counter3.textContent = Math.round(o3.val) + '%'; } });
+            },
+          });
+        }
+
+        // 6) Compare hairline draw
+        const compareHairline = document.getElementById('compare-hairline');
+        if (compareHairline) {
+          gsap.fromTo(compareHairline,
+            { scaleX: 0, transformOrigin: 'left center' },
+            {
+              scaleX: 1, duration: 1.2, ease: 'power2.out',
+              scrollTrigger: { trigger: compareHairline, start: 'top 85%', once: true },
+            }
+          );
+        }
+
+        // 7) Feature comparison rows stagger
+        const compRows = gsap.utils.toArray('#feature-comparison-rows > div');
+        if (compRows.length) {
+          gsap.fromTo(compRows,
+            { opacity: 0, x: -20 },
+            {
+              opacity: 1, x: 0, duration: 0.6, ease: 'power2.out', stagger: 0.05,
+              scrollTrigger: { trigger: '#feature-comparison-rows', start: 'top 80%', once: true },
+            }
+          );
+        }
+
+        // 8) Enterprise glass block parallax
+        const enterpriseBlock = document.getElementById('enterprise-glass-block');
+        if (enterpriseBlock && !prefersReduced) {
+          gsap.to(enterpriseBlock, {
+            y: -30,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: enterpriseBlock,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 1,
+            },
+          });
+        }
+
+        // 9) FAQ items gentle reveal
+        const faqItems = gsap.utils.toArray('.faq-item');
+        if (faqItems.length) {
+          gsap.fromTo(faqItems,
+            { opacity: 0, y: 20 },
+            {
+              opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', stagger: 0.06,
+              scrollTrigger: { trigger: '#faq-accordion', start: 'top 80%', once: true },
+            }
+          );
+        }
+
+        // 10) Careers aura slow drift
+        const careersAura = document.getElementById('careers-aura');
+        if (careersAura && !prefersReduced) {
+          gsap.to(careersAura, {
+            backgroundPosition: '60% 40%',
+            duration: 12,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut',
+          });
+        }
+
+        // 11) Hairline shimmer
+        gsap.utils.toArray('.hairline').forEach((line) => {
+          ScrollTrigger.create({
+            trigger: line,
+            start: 'top 90%',
+            once: true,
+            onEnter: () => {
+              gsap.fromTo(line, { opacity: 0.3 }, { opacity: 1, duration: 0.8, ease: 'power2.out' });
+            },
+          });
+        });
+      });
+    </script>
+  
+</body></html>

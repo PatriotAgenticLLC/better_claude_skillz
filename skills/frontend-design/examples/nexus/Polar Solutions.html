@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus — Enterprise Cloud Platform</title>
+<meta name="description" content="Nexus helps teams build, scale, and monitor applications with enterprise-grade infrastructure.">
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&amp;family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<!-- Iconify Script -->
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+fontFamily: {
+sans: ["Inter", "sans-serif"],
+serif: ["Instrument Serif", "serif"],
+display: ["Space Grotesk", "sans-serif"],
+},
+colors: {
+neutral: {
+850: "#1f1f1f",
+950: "#0a0a0a",
+},
+},
+backgroundImage: {
+"gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+},
+},
+},
+};
+</script>
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+:root {
+--mouse-x: 0px;
+--mouse-y: 0px;
+}
+body {
+background-color: #050505;
+color: #e5e5e5;
+overflow-x: hidden;
+}
+/* Hero Canvas */
+#hero-canvas {
+position: absolute;
+inset: 0;
+width: 100%;
+height: 100%;
+z-index: 0;
+opacity: 0.32;
+pointer-events: none;
+}
+/* Glass utilities */
+.glass-panel {
+background: rgba(255, 255, 255, 0.03);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+border: 1px solid rgba(255, 255, 255, 0.08);
+}
+/* Spotlight Card */
+.spotlight-card {
+position: relative;
+overflow: hidden;
+background: rgba(20, 20, 20, 0.4);
+border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.spotlight-card::before {
+content: "";
+position: absolute;
+inset: 0;
+background: radial-gradient(
+600px circle at var(--mouse-x) var(--mouse-y),
+rgba(255, 255, 255, 0.08),
+transparent 40%
+);
+opacity: 0;
+transition: opacity 0.5s;
+pointer-events: none;
+z-index: 2;
+}
+.spotlight-card:hover::before {
+opacity: 1;
+}
+/* Film Grain */
+@keyframes grain {
+0%,
+100% {
+transform: translate(0, 0);
+}
+10% {
+transform: translate(-5%, -10%);
+}
+20% {
+transform: translate(-15%, 5%);
+}
+30% {
+transform: translate(7%, -25%);
+}
+40% {
+transform: translate(-5%, 25%);
+}
+50% {
+transform: translate(-15%, 10%);
+}
+60% {
+transform: translate(15%, 0%);
+}
+70% {
+transform: translate(0%, 15%);
+}
+80% {
+transform: translate(3%, 35%);
+}
+90% {
+transform: translate(-10%, 10%);
+}
+}
+.bg-grain::after {
+content: "";
+background-image: url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png");
+height: 300%;
+width: 300%;
+position: fixed;
+top: -100%;
+left: -100%;
+opacity: 0.04;
+animation: grain 8s steps(10) infinite;
+pointer-events: none;
+z-index: 9998;
+}
+/* Utility */
+.text-glow {
+text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+/* Testimonials mask */
+.marquee-mask {
+mask-image: linear-gradient(
+90deg,
+transparent,
+white 18%,
+white 82%,
+transparent
+);
+-webkit-mask-image: linear-gradient(
+90deg,
+transparent,
+white 18%,
+white 82%,
+transparent
+);
+}
+@keyframes marqueeLeft {
+from {
+transform: translateX(0);
+}
+to {
+transform: translateX(-50%);
+}
+}
+@keyframes marqueeRight {
+from {
+transform: translateX(-50%);
+}
+to {
+transform: translateX(0);
+}
+}
+.animate-marquee-left {
+animation: marqueeLeft 36s linear infinite;
+}
+.animate-marquee-right {
+animation: marqueeRight 40s linear infinite;
+}
+.marquee-group:hover .animate-marquee-left,
+.marquee-group:hover .animate-marquee-right {
+animation-play-state: paused;
+}
+/* Existing t-reveal helper (kept) */
+@keyframes tFadeUp {
+from {
+opacity: 0;
+transform: translateY(22px) scale(0.985);
+}
+to {
+opacity: 1;
+transform: translateY(0) scale(1);
+}
+}
+.t-reveal {
+opacity: 0;
+transform: translateY(22px) scale(0.985);
+}
+.t-reveal.is-visible {
+animation: tFadeUp 700ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+/* ---------------------------------------
+CLEAN MONO ANIMATION SYSTEM (NEW)
+---------------------------------------- */
+/* Section aura: subtle moving light + hairline grid */
+.section-aura {
+position: absolute;
+inset: 0;
+pointer-events: none;
+z-index: 0;
+opacity: 0.9;
+background: radial-gradient(
+80% 70% at 20% 30%,
+rgba(255, 255, 255, 0.06),
+transparent 55%
+),
+radial-gradient(
+70% 70% at 75% 70%,
+rgba(255, 255, 255, 0.04),
+transparent 60%
+);
+filter: contrast(1.05);
+}
+.section-grid {
+position: absolute;
+inset: 0;
+pointer-events: none;
+z-index: 0;
+opacity: 0.22;
+background: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+background-size: 72px 72px;
+-webkit-mask-image: radial-gradient(
+ellipse at 50% 30%,
+#000 35%,
+transparent 72%
+);
+mask-image: radial-gradient(
+ellipse at 50% 30%,
+#000 35%,
+transparent 72%
+);
+}
+/* Stagger reveal targets */
+[data-reveal] {
+opacity: 0;
+transform: translateY(22px);
+will-change: transform, opacity;
+}
+/* Micro hover polish on mono chips */
+.mono-chip {
+border: 1px solid rgba(255, 255, 255, 0.12);
+background: rgba(255, 255, 255, 0.04);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+}
+/* Orbital ring used in workflow */
+.ring {
+position: absolute;
+inset: 0;
+border-radius: 9999px;
+border: 1px solid rgba(255, 255, 255, 0.08);
+transform: translateZ(0);
+}
+/* “Shimmer line” that we animate via GSAP */
+.hairline {
+height: 1px;
+background: rgba(255, 255, 255, 0.10);
+position: relative;
+overflow: hidden;
+}
+.hairline::after {
+content: "";
+position: absolute;
+inset: 0;
+background: linear-gradient(
+90deg,
+transparent,
+rgba(255, 255, 255, 0.55),
+transparent
+);
+transform: translateX(-120%);
+}
+/* Slightly nicer focus for buttons */
+a:focus-visible,
+button:focus-visible {
+outline: none;
+box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.22),
+0 0 0 10px rgba(255, 255, 255, 0.06);
+border-radius: 9999px;
+}
+/* Shared border gradient helper */
+[style*="--border-gradient"]::before {
+content: "";
+position: absolute;
+inset: 0;
+padding: 1px;
+border-radius: var(--border-radius-before, inherit);
+-webkit-mask: linear-gradient(#fff 0 0) content-box,
+linear-gradient(#fff 0 0);
+-webkit-mask-composite: xor;
+mask-composite: exclude;
+background: var(--border-gradient);
+pointer-events: none;
+}
+</style>
+<style id="border-gradient-shared-style">
+[style*="--border-gradient"]::before {
+content: "";
+position: absolute;
+inset: 0;
+padding: 1px;
+border-radius: var(--border-radius-before, inherit);
+-webkit-mask: linear-gradient(#fff 0 0) content-box,
+linear-gradient(#fff 0 0);
+-webkit-mask-composite: xor;
+mask-composite: exclude;
+background: var(--border-gradient);
+pointer-events: none;
+}</style></head>
+
+  <body class="bg-grain antialiased selection:bg-white selection:text-black">
+    <!-- Mobile / Tablet Header -->
+<header class="fixed top-0 left-0 right-0 z-50 lg:hidden px-4 pt-4" id="mobile-header">
+  <!-- Toggle -->
+  <input id="nav-toggle" type="checkbox" class="peer hidden">
+
+  <div class="glass-panel rounded-full px-5 py-3 flex items-center justify-between shadow-2xl">
+    <a href="index.html" class="font-display font-bold text-lg tracking-tight">
+      NEXUS.
+    </a>
+
+    <!-- Burger / Close trigger -->
+    <label for="nav-toggle" class="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-xl border border-white/10 hover:bg-white/15 transition cursor-pointer select-none" aria-label="Toggle menu">
+      <!-- Burger -->
+      <iconify-icon icon="solar:hamburger-menu-linear" width="22" class="burger-icon transition-all duration-300"></iconify-icon>
+
+      <!-- Close -->
+      <iconify-icon icon="solar:close-circle-linear" width="22" class="close-icon absolute opacity-0 scale-75 transition-all duration-300"></iconify-icon>
+    </label>
+  </div>
+
+  <!-- Backdrop -->
+  <label for="nav-toggle" class="backdrop fixed inset-0 bg-black/40 opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"></label>
+
+  <!-- Menu panel -->
+  <nav id="mobile-menu" class="absolute top-20 left-4 right-4 glass-panel rounded-[2rem] p-5 border border-white/10 origin-top opacity-0 scale-[0.98] -translate-y-2 pointer-events-none transition-all duration-300" aria-label="Mobile navigation">
+    <!-- Top row inside panel -->
+    <div class="mb-2">
+  <div class="text-[11px] uppercase tracking-[0.22em] font-semibold text-white/40">
+    Menu
+  </div>
+</div>
+
+    <div class="flex flex-col gap-2 text-center">
+      <a href="/Features" class="py-3 text-lg font-medium hover:text-white transition">
+        Features
+      </a>
+      <a href="/Solutions" class="py-3 text-lg font-medium hover:text-white transition">
+        Solutions
+      </a>
+      <a href="/Workflow" class="py-3 text-lg font-medium hover:text-white transition">
+        Workflow
+      </a>
+      <a href="/Company" class="py-3 text-lg font-medium hover:text-white transition">
+        Company
+      </a>
+      <a href="/Pricing" class="py-3 text-lg font-medium hover:text-white transition">
+        Pricing
+      </a>
+    </div>
+
+    <!-- CTA button -->
+    <div class="mt-5 pt-4 border-t border-white/10 flex justify-center">
+      <a href="sign-in.html" class="inline-flex w-full max-w-[360px] items-center justify-center gap-3 rounded-full bg-white text-black font-semibold text-base px-6 py-4 shadow-[0_18px_40px_rgba(0,0,0,0.22)] hover:scale-[1.02] transition-all duration-300">
+        <span>Start Free Trial</span>
+        <iconify-icon icon="solar:arrow-right-linear" width="22"></iconify-icon>
+      </a>
+    </div>
+  </nav>
+
+  <style class="">
+    /* When checked: show backdrop + menu */
+    #mobile-header .peer:checked ~ .backdrop {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #mobile-header .peer:checked ~ #mobile-menu {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    /* Swap burger to close */
+    #mobile-header .peer:checked ~ div label .burger-icon {
+      opacity: 0;
+      transform: scale(0.75);
+    }
+
+    #mobile-header .peer:checked ~ div label .close-icon {
+      opacity: 1;
+      transform: scale(1);
+    }
+  </style>
+</header>
+    <!-- =========================================================
+     DESKTOP LEFT NAV (2 SEPARATE BOXES, NO LAYOUT BREAK)
+     - Buttons stay fixed size (no rail resizing)
+     - Labels expand as a floating pill to the right (smooth)
+     - CTA is a separate box below (hovering it does NOT affect top)
+     - Scroll spy highlights current section (top rail only)
+========================================================= -->
+
+    <!-- DESKTOP LEFT NAV -->
+    <nav class="hidden lg:block fixed top-1/2 -translate-y-1/2 left-6 z-50" aria-label="Section navigation" id="rail-nav">
+      <style class="">
+        #rail-nav {
+          isolation: isolate;
+        }
+        #rail-nav .rail-box {
+          position: relative;
+          width: 72px;
+          padding: 12px 10px;
+          border-radius: 18px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.03);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 10px;
+          user-select: none;
+          overflow: visible;
+        }
+        #rail-nav .rail-box::before {
+          content: "";
+          position: absolute;
+          inset: 8px;
+          border-radius: 14px;
+          background: linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.07),
+            transparent 55%,
+            rgba(255, 255, 255, 0.05)
+          );
+          opacity: 0;
+          pointer-events: none;
+          z-index: 0;
+        }
+        #rail-nav .rail-btn {
+          position: relative;
+          z-index: 1;
+          width: 50px;
+          height: 50px;
+          border-radius: 18px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.02);
+          display: grid;
+          place-items: center;
+          cursor: pointer;
+          outline: none;
+          transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+            background-color 260ms cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 260ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #rail-nav .rail-btn:hover,
+        #rail-nav .rail-btn:focus-visible {
+          transform: translateX(2px);
+          background: rgba(255, 255, 255, 0.05);
+          border-color: rgba(255, 255, 255, 0.16);
+        }
+        #rail-nav .rail-icon {
+          width: 34px;
+          height: 34px;
+          border-radius: 12px;
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.03);
+          display: grid;
+          place-items: center;
+        }
+        #rail-nav .rail-icon iconify-icon {
+          color: rgba(255, 255, 255, 0.9);
+        }
+        #rail-nav .rail-btn.is-active {
+          background: rgba(255, 255, 255, 0.06);
+          border-color: rgba(255, 255, 255, 0.18);
+        }
+        #rail-nav .rail-btn.is-active .rail-icon {
+          background: rgba(255, 255, 255, 0.92);
+          border-color: rgba(255, 255, 255, 0.22);
+          box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.06), 0 18px 40px rgba(0, 0, 0, 0.35);
+        }
+        #rail-nav .rail-btn.is-active .rail-icon iconify-icon {
+          color: #0a0a0a;
+        }
+
+        #rail-nav .rail-label {
+          position: absolute;
+          left: calc(100% + 12px);
+          top: 50%;
+          transform: translateY(-50%) scaleX(0.92);
+          transform-origin: left center;
+          height: 42px;
+          display: inline-flex;
+          align-items: center;
+          padding: 0 14px;
+          border-radius: 14px;
+          background: linear-gradient(
+              180deg,
+              rgba(255, 255, 255, 0.14),
+              rgba(255, 255, 255, 0.06) 45%,
+              rgba(255, 255, 255, 0.03)
+            ),
+            radial-gradient(120% 140% at 20% 10%, rgba(255, 255, 255, 0.1), transparent 55%);
+          border: 1px solid rgba(255, 255, 255, 0.16);
+          backdrop-filter: blur(18px) saturate(1.2);
+          -webkit-backdrop-filter: blur(18px) saturate(1.2);
+          box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.18),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+          color: rgba(255, 255, 255, 0.92);
+          font-size: 12px;
+          font-weight: 800;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          white-space: nowrap;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 220ms cubic-bezier(0.16, 1, 0.3, 1),
+            transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #rail-nav .rail-btn:hover .rail-label,
+        #rail-nav .rail-btn:focus-visible .rail-label {
+          opacity: 1;
+          transform: translateY(-50%) scaleX(1);
+        }
+
+        #rail-nav .cta-wrap {
+          margin-top: 16px;
+        }
+        #rail-nav .rail-btn.cta .rail-icon {
+          background: rgba(255, 255, 255, 0.92);
+          border-color: rgba(255, 255, 255, 0.22);
+          box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.06), 0 18px 40px rgba(0, 0, 0, 0.35);
+        }
+        #rail-nav .rail-btn.cta .rail-icon iconify-icon {
+          color: #0a0a0a;
+        }
+      </style>
+
+      <div class="rail-box" id="rail-sections">
+        <a class="rail-btn" href="index.html" data-target="#home">
+          <span class="rail-icon"><iconify-icon icon="solar:home-angle-2-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Home</span>
+        </a>
+        <a class="rail-btn" href="features.html" data-target="#features">
+          <span class="rail-icon"><iconify-icon icon="solar:widget-3-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Features</span>
+        </a>
+        <a class="rail-btn is-active" href="solutions.html" data-target="#solutions">
+          <span class="rail-icon"><iconify-icon icon="solar:layers-linear" width="18"></iconify-icon></span>
+          <span class="rail-label">Solutions</span>
+        </a>
+        <a class="rail-btn" href="workflow.html" data-target="#workflow">
+          <span class="rail-icon"><iconify-icon icon="solar:graph-new-up-linear" width="18"></iconify-icon></span>
+          <span class="rail-label">Workflow</span>
+        </a>
+        <a class="rail-btn" href="company.html" data-target="#company">
+          <span class="rail-icon"><iconify-icon icon="solar:buildings-3-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Company</span>
+        </a>
+        <a class="rail-btn" href="pricing.html" data-target="#pricing">
+          <span class="rail-icon"><iconify-icon icon="solar:tag-price-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Pricing</span>
+        </a>
+      </div>
+
+      <div class="cta-wrap">
+        <div class="rail-box">
+          <a class="rail-btn cta" href="sign-in.html" data-target="#contact">
+  <span class="rail-icon cursor-pointer" onclick="window.location.href='sign-in.html'" role="button"><iconify-icon icon="solar:arrow-right-linear" width="18" class=""></iconify-icon></span>
+  <span class="rail-label">Start Free Trial</span>
+</a>
+        </div>
+      </div>
+
+      <script class="">
+        (() => {
+          const sectionRail = document.getElementById("rail-sections");
+          if (!sectionRail) return;
+
+          const allBtns = Array.from(document.querySelectorAll("#rail-nav .rail-btn")).filter(
+            (a) => a.dataset.target
+          );
+
+          allBtns.forEach((a) => {
+            a.addEventListener("click", (e) => {
+              const el = document.querySelector(a.dataset.target);
+              if (!el) return;
+              e.preventDefault();
+              el.scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+          });
+
+          const spyBtns = Array.from(sectionRail.querySelectorAll(".rail-btn"));
+          const spyTargets = spyBtns.map((a) => document.querySelector(a.dataset.target)).filter(Boolean);
+
+          let activeIndex = 0;
+          const setActive = (idx) => {
+            activeIndex = Math.max(0, Math.min(spyBtns.length - 1, idx));
+            spyBtns.forEach((a, i) => a.classList.toggle("is-active", i === activeIndex));
+          };
+
+          const io = new IntersectionObserver(
+            (entries) => {
+              const visible = entries.filter((e) => e.isIntersecting);
+              if (!visible.length) return;
+
+              const mid = window.innerHeight * 0.52;
+              visible.sort((a, b) => {
+                const da = Math.abs(a.boundingClientRect.top + a.boundingClientRect.height / 2 - mid);
+                const db = Math.abs(b.boundingClientRect.top + b.boundingClientRect.height / 2 - mid);
+                return da - db;
+              });
+
+              const best = visible[0].target;
+              const idx = spyTargets.indexOf(best);
+              if (idx !== -1 && idx !== activeIndex) setActive(idx);
+            },
+            { threshold: [0.22, 0.35, 0.5, 0.65] }
+          );
+
+          spyTargets.forEach((s) => io.observe(s));
+        })();
+      </script>
+    </nav>
+
+    <!-- HERO -->
+    <section id="home" class="relative w-full min-h-screen bg-black overflow-hidden pt-24 lg:pt-28">
+      <style>
+        #home .hero-vignette {
+          position: absolute;
+          inset: -2px;
+          pointer-events: none;
+          z-index: 0;
+          background: radial-gradient(70% 80% at 20% 30%, rgba(255, 255, 255, 0.08), transparent 55%),
+            radial-gradient(110% 140% at 50% 120%, rgba(255, 255, 255, 0.04), transparent 55%),
+            linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.78));
+          opacity: 1;
+        }
+        #home .hero-grid {
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          pointer-events: none;
+          background: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+          background-size: 64px 64px;
+          opacity: 0.55;
+          -webkit-mask-image: radial-gradient(ellipse at 30% 30%, #000 35%, transparent 72%);
+          mask-image: radial-gradient(ellipse at 30% 30%, #000 35%, transparent 72%);
+          filter: contrast(1.05);
+        }
+        #home .hero-kicker {
+          letter-spacing: 0.22em;
+        }
+        #home .hero-title {
+          text-wrap: balance;
+        }
+        #home .solution-board {
+          transform-style: preserve-3d;
+          perspective: 1200px;
+        }
+        #home .board-shell {
+          position: relative;
+          border-radius: 28px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.03);
+          backdrop-filter: blur(18px) saturate(1.1);
+          -webkit-backdrop-filter: blur(18px) saturate(1.1);
+          box-shadow: 0 40px 120px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+          overflow: hidden;
+        }
+        #home .board-shell::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: radial-gradient(120% 140% at 10% 0%, rgba(255, 255, 255, 0.1), transparent 55%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 45%, rgba(0, 0, 0, 0.35));
+          opacity: 0.9;
+          pointer-events: none;
+        }
+        @keyframes scan {
+          0% {
+            transform: translateY(-120%);
+            opacity: 0;
+          }
+          10% {
+            opacity: 0.8;
+          }
+          55% {
+            opacity: 0.25;
+          }
+          100% {
+            transform: translateY(140%);
+            opacity: 0;
+          }
+        }
+        #home .scanline {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 0;
+          height: 140px;
+          background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.08), transparent);
+          filter: blur(0.2px);
+          opacity: 0;
+          animation: scan 6.5s ease-in-out infinite;
+          pointer-events: none;
+          mix-blend-mode: screen;
+        }
+        #home .chip {
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          background: rgba(255, 255, 255, 0.04);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+        }
+        #home .tilt {
+          transition: transform 450ms cubic-bezier(0.16, 1, 0.3, 1);
+          will-change: transform;
+        }
+      </style>
+      <style>
+        #home .hero-glow {
+          position: absolute;
+          top: 30%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 150vw;
+          height: 900px;
+          background: radial-gradient(closest-side, rgba(255, 255, 255, 0.12), transparent);
+          filter: blur(120px);
+          opacity: 0.7;
+          pointer-events: none;
+          z-index: 0;
+          mix-blend-mode: screen;
+        }
+      </style>
+
+      <div class="hero-grid"></div>
+      <canvas id="hero-canvas" width="1512" height="782"></canvas>
+      <div class="hero-vignette"></div>
+      <div class="hero-glow"></div>
+
+      <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-14 items-center min-h-[calc(100vh-6rem)]">
+          <div class="lg:col-span-6">
+            <div class="inline-flex items-center gap-3 mb-8" data-reveal="">
+              <span class="chip px-3 py-1 rounded-full text-[10px] font-mono uppercase text-white/70 hero-kicker">
+                Solutions
+              </span>
+              <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/40">
+                Built for edge-first teams
+              </span>
+            </div>
+
+            <h1 class="hero-title text-6xl md:text-7xl font-display font-semibold tracking-tight text-white leading-[1.03]" data-reveal="">
+              Solutions built for
+              <span class="block font-serif italic text-white/45 mt-2">
+                modern infrastructure
+              </span>
+            </h1>
+
+            <p class="text-lg text-neutral-400 max-w-xl leading-relaxed mt-7" data-reveal="">
+              A modular platform that adapts to your architecture. Scale
+              globally, secure by default, and ship with clarity.
+            </p>
+
+            <div class="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4" data-reveal="">
+              <a href="#pricing" class="px-7 py-3.5 rounded-full bg-white text-black font-medium hover:bg-neutral-200 transition">
+                Explore solutions
+              </a>
+              <a href="#contact" class="px-7 py-3.5 rounded-full border border-white/10 text-white hover:bg-white/5 transition backdrop-blur-sm">
+                Talk to an architect
+              </a>
+            </div>
+
+            <div class="mt-12 grid grid-cols-3 gap-6 max-w-xl" data-reveal="">
+              <div>
+                <div class="text-2xl font-display font-semibold text-white" data-count-to="50">
+                  &lt;50ms
+                </div>
+                <div class="text-xs font-mono uppercase tracking-widest text-white/40 mt-1">
+                  Global sync
+                </div>
+              </div>
+              <div>
+                <div class="text-2xl font-display font-semibold text-white" data-count-to="9999">
+                  99.99%
+                </div>
+                <div class="text-xs font-mono uppercase tracking-widest text-white/40 mt-1">
+                  Edge uptime
+                </div>
+              </div>
+              <div class="">
+                <div class="text-2xl font-display font-semibold text-white">
+                  SOC2
+                </div>
+                <div class="text-xs font-mono uppercase tracking-widest text-white/40 mt-1">
+                  Ready
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-6 lg:pl-8">
+            <div class="solution-board tilt" id="solution-board" data-reveal="" style="filter: blur(0px);">
+              <div class="board-shell p-7 md:p-9">
+                <div class="scanline"></div>
+
+                <div class="flex items-center justify-between mb-8">
+                  <div class="flex items-center gap-3">
+                    <span class="inline-flex items-center gap-2 chip px-3 py-1.5 rounded-full">
+                      <span class="w-2 h-2 rounded-full bg-white/70"></span>
+                      <span class="text-[10px] font-mono uppercase tracking-widest text-white/60">
+                        Active nodes
+                      </span>
+                    </span>
+                    <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">
+                      Rebalancing
+                    </span>
+                  </div>
+                  <div class="text-[10px] font-mono uppercase tracking-widest text-white/45">
+                    35 regions
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-12 gap-4">
+                  <div class="col-span-7 space-y-4">
+                    <div class="chip rounded-2xl p-4 border border-white/10">
+                      <div class="flex items-center justify-between">
+                        <div class="text-xs font-mono uppercase tracking-widest text-white/55">
+                          Traffic shaping
+                        </div>
+                        <div class="text-xs font-mono text-white/35">v2.1</div>
+                      </div>
+                      <div class="mt-3 h-2 rounded-full bg-white/10 overflow-hidden">
+                        <div class="h-full w-[62%] bg-white/20 rounded-full"></div>
+                      </div>
+                      <div class="mt-3 flex items-center gap-2 text-[11px] text-white/45">
+                        <span class="w-1.5 h-1.5 rounded-full bg-white/70"></span>
+                        Predictive routing engaged
+                      </div>
+                    </div>
+
+                    <div class="chip rounded-2xl p-4 border border-white/10">
+                      <div class="flex items-center justify-between">
+                        <div class="text-xs font-mono uppercase tracking-widest text-white/55">
+                          Inference fabric
+                        </div>
+                        <div class="text-xs font-mono text-white/35">
+                          stable
+                        </div>
+                      </div>
+                      <div class="mt-3 grid grid-cols-3 gap-2">
+                        <div class="h-10 rounded-xl bg-white/5 border border-white/10"></div>
+                        <div class="h-10 rounded-xl bg-white/5 border border-white/10"></div>
+                        <div class="h-10 rounded-xl bg-white/5 border border-white/10"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-span-5 space-y-4">
+                    <div class="chip rounded-2xl p-4 border border-white/10">
+                      <div class="text-xs font-mono uppercase tracking-widest text-white/55">
+                        Latency map
+                      </div>
+                      <div class="mt-3 space-y-2">
+                        <div class="flex items-center justify-between text-[11px] text-white/45">
+                          <span>NA-East</span>
+                          <span class="text-white/60">&lt; 8ms</span>
+                        </div>
+                        <div class="flex items-center justify-between text-[11px] text-white/45">
+                          <span>EU-West</span>
+                          <span class="text-white/60">&lt; 12ms</span>
+                        </div>
+                        <div class="flex items-center justify-between text-[11px] text-white/45">
+                          <span>AP-South</span>
+                          <span class="text-white/60">&lt; 18ms</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="chip rounded-2xl p-4 border border-white/10">
+                      <div class="text-xs font-mono uppercase tracking-widest text-white/55">
+                        Security posture
+                      </div>
+                      <div class="mt-3 flex items-center gap-2 text-[11px] text-white/45">
+                        <span class="w-1.5 h-1.5 rounded-full bg-white/70"></span>
+                        All policies enforced
+                      </div>
+                      <div class="mt-3 h-10 rounded-xl bg-white/5 border border-white/10"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-7 flex items-center justify-between">
+                  <span class="text-[10px] font-mono uppercase tracking-widest text-white/40">
+                    Nexus orchestration layer
+                  </span>
+                  <span class="text-[10px] font-mono uppercase tracking-widest text-white/40">
+                    Build · Scale · Observe
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <script>
+              (() => {
+                const el = document.getElementById("solution-board");
+                if (!el) return;
+
+                const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+
+                el.addEventListener("mousemove", (e) => {
+                  const r = el.getBoundingClientRect();
+                  const px = (e.clientX - r.left) / r.width;
+                  const py = (e.clientY - r.top) / r.height;
+
+                  const rx = clamp((0.5 - py) * 10, -6, 6);
+                  const ry = clamp((px - 0.5) * 14, -8, 8);
+
+                  el.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
+                });
+
+                el.addEventListener("mouseleave", () => {
+                  el.style.transform = "rotateX(0deg) rotateY(0deg) translateZ(0)";
+                });
+              })();
+            </script>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features" class="py-32 bg-black relative overflow-hidden">
+      <div class="section-aura"></div>
+      <div class="section-grid"></div>
+
+      <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
+        <div class="">
+          <h2 class="text-4xl md:text-5xl font-serif text-white mb-6" data-reveal="">
+            Cloud Native
+            <span class="italic text-neutral-500">Teams</span>
+          </h2>
+          <p class="text-neutral-400 text-lg leading-relaxed max-w-md" data-reveal="">
+            Give your engineers the primitives they need. Automated workflows,
+            ephemeral environments, and instant rollbacks.
+          </p>
+
+          <div class="mt-10 space-y-4" data-reveal="">
+            <div class="hairline rounded-full"></div>
+            <div class="flex flex-wrap gap-2">
+              <span class="mono-chip px-3 py-1.5 rounded-full text-[11px] text-white/70">
+                Ephemeral environments
+              </span>
+              <span class="mono-chip px-3 py-1.5 rounded-full text-[11px] text-white/70">
+                Instant rollbacks
+              </span>
+              <span class="mono-chip px-3 py-1.5 rounded-full text-[11px] text-white/70">
+                Policy checks
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="relative" id="features-stack">
+          <div class="glass-panel rounded-3xl p-8 border border-white/10 relative overflow-hidden">
+            <div class="absolute inset-0 pointer-events-none" style="opacity:.55;background:radial-gradient(90% 80% at 15% 20%, rgba(255,255,255,.08), transparent 58%)"></div>
+
+            <div class="grid grid-cols-2 gap-4 relative z-10">
+              <div class="feature-card h-28 rounded-2xl bg-white/5 border border-white/10 p-4" style=" transform-origin: 123.5px 56px;">
+                <div class="w-9 h-9 rounded-xl bg-white/10 mb-3 flex items-center justify-center text-white">
+                  <iconify-icon icon="solar:code-circle-linear" width="20"></iconify-icon>
+                </div>
+                <div class="h-1.5 w-16 bg-white/20 rounded"></div>
+                <div class="mt-2 h-1.5 w-24 bg-white/10 rounded"></div>
+              </div>
+
+              <div class="feature-card h-28 rounded-2xl bg-white/5 border border-white/10 p-4" style=" transform-origin: 123.5px 56px;">
+                <div class="w-9 h-9 rounded-xl bg-white/10 mb-3 flex items-center justify-center text-white">
+                  <iconify-icon icon="solar:git-commit-linear" width="20"></iconify-icon>
+                </div>
+                <div class="h-1.5 w-16 bg-white/20 rounded"></div>
+                <div class="mt-2 h-1.5 w-24 bg-white/10 rounded"></div>
+              </div>
+
+              <div class="feature-card col-span-2 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center px-4 gap-4" style=" transform-origin: 123.5px 56px;">
+                <div class="w-2 h-2 rounded-full bg-white/70"></div>
+                <div class="h-1.5 w-32 bg-white/20 rounded"></div>
+              </div>
+
+              <div class="feature-card col-span-2 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center px-4 justify-between" style=" transform-origin: 123.5px 56px;">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-xl bg-white/10"></div>
+                  <div class="h-1.5 w-44 bg-white/15 rounded"></div>
+                </div>
+                <div class="h-7 w-20 rounded-full bg-white/10 border border-white/10"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="absolute -inset-8 pointer-events-none" style="opacity:.55;background:radial-gradient(90% 80% at 15% 20%, rgba(255,255,255,.08), transparent 58%)"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOLUTIONS -->
+    <section class="overflow-hidden bg-neutral-950 pt-32 pb-32 relative" id="solutions">
+      <div class="section-aura" style="opacity:.75"></div>
+
+      <div class="max-w-7xl mx-auto px-6 relative z-10 text-center">
+        <div class="mb-16">
+          <span class="text-xs font-mono text-white/60 uppercase tracking-widest border border-white/10 px-3 py-1 rounded-full" data-reveal="">
+            Next Gen
+          </span>
+          <h2 class="text-4xl md:text-5xl font-display font-semibold text-white mt-6 tracking-tight" data-reveal="">
+            AI Infrastructure
+          </h2>
+          <p class="text-neutral-400 max-w-2xl mx-auto mt-5 leading-relaxed" data-reveal="">
+            A clean control plane that keeps inference predictable. Scale
+            capacity, track cost, and ship to global regions with confidence.
+          </p>
+        </div>
+
+        <div class="relative w-full max-w-4xl mx-auto h-[520px] glass-panel rounded-3xl border border-white/10 flex items-center justify-center overflow-hidden" id="solutions-stage">
+          <div class="absolute inset-0 pointer-events-none" style="background:
+            linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
+            background-size:44px 44px;
+            opacity:.18;"></div>
+
+          <!-- Floating labels -->
+          <div class="solution-tag absolute top-24 left-20 px-4 py-2 bg-black/50 border border-white/15 rounded-full text-xs font-mono text-white/70 shadow-xl backdrop-blur" style="background:
+            linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
+            background-size:44px 44px;
+            opacity:.18;">
+            Training Cluster
+          </div>
+          <div class="solution-tag absolute bottom-28 right-20 px-4 py-2 bg-black/50 border border-white/15 rounded-full text-xs font-mono text-white/70 shadow-xl backdrop-blur" style="background:
+            linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
+            background-size:44px 44px;
+            opacity:.18;">
+            Inference API
+          </div>
+
+          <!-- Center “core” -->
+          <div class="relative z-10" id="solutions-core">
+            <div class="absolute inset-0 -m-24 rounded-full blur-3xl" style="background:radial-gradient(circle, rgba(255,255,255,.10), transparent 60%);"></div>
+            <div class="w-72 h-72 rounded-full border border-white/10 bg-white/5 backdrop-blur flex items-center justify-center">
+              <div class="w-44 h-44 rounded-full border border-white/10 bg-black/40 flex items-center justify-center">
+                <iconify-icon icon="solar:cpu-bolt-linear" width="64" class="text-white opacity-85"></iconify-icon>
+              </div>
+            </div>
+          </div>
+
+          <!-- Orbit dots -->
+          <div class="absolute inset-0 pointer-events-none" id="solutions-orbit" style=" transform-origin: 50% 50%;">
+            <div class="orbit-dot absolute top-1/2 left-1/2 w-2 h-2 rounded-full bg-white/70" style=" margin-top: -4px; margin-left: -4px;"></div>
+            <div class="orbit-dot absolute top-1/2 left-1/2 w-2 h-2 rounded-full bg-white/70" style=" margin-top: -4px; margin-left: -4px;"></div>
+            <div class="orbit-dot absolute top-1/2 left-1/2 w-2 h-2 rounded-full bg-white/70" style=" margin-top: -4px; margin-left: -4px;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKFLOW -->
+    <section id="workflow" class="py-32 bg-black relative overflow-hidden">
+      <div class="section-grid" style="opacity:.16"></div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 z-10 max-w-7xl mr-auto ml-auto pr-6 pl-6 relative gap-x-12 gap-y-12 items-center">
+  <div class="lg:col-span-5 space-y-6">
+    <h2 class="text-4xl md:text-5xl font-display font-semibold text-white mb-8 tracking-tight" data-reveal="">
+      Enterprise
+      <br>
+      <span class="text-neutral-500">Security</span>
+    </h2>
+
+    <div class="workflow-card glass-panel p-6 rounded-2xl border border-white/10 hover:bg-white/5 transition duration-300 cursor-default" data-reveal="">
+      <h3 class="text-lg font-semibold text-white mb-2 flex items-center gap-3">
+        <iconify-icon icon="solar:shield-keyhole-linear" class="text-white/80" width="20"></iconify-icon>
+        Zero Trust
+      </h3>
+      <p class="text-sm text-neutral-400">
+        Identity-aware proxies and granular access controls by default.
+      </p>
+    </div>
+
+    <div class="workflow-card glass-panel p-6 rounded-2xl border border-white/10 hover:bg-white/5 transition duration-300 cursor-default" data-reveal="">
+      <h3 class="text-lg font-semibold text-white mb-2 flex items-center gap-3">
+        <iconify-icon icon="solar:document-text-linear" class="text-white/80" width="20"></iconify-icon>
+        Compliance
+      </h3>
+      <p class="text-sm text-neutral-400">
+        SOC2 Type II, HIPAA, and GDPR ready infrastructure.
+      </p>
+    </div>
+
+    <div class="workflow-card glass-panel p-6 rounded-2xl border border-white/10 hover:bg-white/5 transition duration-300 cursor-default" data-reveal="">
+      <h3 class="text-lg font-semibold text-white mb-2 flex items-center gap-3">
+        <iconify-icon icon="solar:lock-password-linear" class="text-white/80" width="20"></iconify-icon>
+        Encryption
+      </h3>
+      <p class="text-sm text-neutral-400">
+        AES-256 at rest and TLS 1.3 in transit for all data.
+      </p>
+    </div>
+  </div>
+
+  <div class="lg:col-span-7 relative flex items-center justify-center">
+    <div class="blur-[120px] absolute top-0 right-0 bottom-0 left-0" style="background:radial-gradient(circle, rgba(255,255,255,.08), transparent 60%)"></div>
+
+    <div class="aspect-square flex w-full max-w-md relative items-center justify-center" data-reveal="" id="workflow-rings">
+
+      <!-- CLEAN RINGS (no blue, neutral glass) -->
+      <div class="ring" style="inset: 0;">
+      </div>
+
+      <div class="ring" style="inset: 0;">
+      </div>
+
+      <div class="ring" style="inset: 0;">
+      </div>
+
+      <div class="ring" style="inset: 0;">
+      </div>
+
+      <!-- CENTER CORE -->
+      <div class="w-32 h-32 rounded-full border border-white/15 flex items-center justify-center bg-black/50 backdrop-blur-md relative z-10">
+        <iconify-icon icon="solar:check-circle-bold" width="48" class="text-white"></iconify-icon>
+      </div>
+
+      <!-- PIPS -->
+      <div class="workflow-pip absolute top-1/2 left-1/2 w-2.5 h-2.5 rounded-full bg-white/70" style="margin-top: -5px; margin-left: -5px; transform-origin: 50% 50%;">
+      </div>
+
+      <div class="workflow-pip absolute top-1/2 left-1/2 w-2.5 h-2.5 rounded-full bg-white/70" style="margin-top: -5px; margin-left: -5px; transform-origin: 50% 50%;">
+      </div>
+
+      <div class="workflow-pip absolute top-1/2 left-1/2 w-2.5 h-2.5 rounded-full bg-white/70" style="margin-top: -5px; margin-left: -5px; transform-origin: 50% 50%;">
+      </div>
+    </div>
+  </div>
+</div>
+    </section>
+
+    <!-- COMPANY -->
+    <section id="company" class="overflow-hidden bg-neutral-950 border-t border-white/5 pt-32 pb-32 relative">
+      <!-- soft aura -->
+      <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.05),transparent_70%)] opacity-60"></div>
+
+      <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl md:text-4xl font-display font-semibold text-white tracking-tight" data-reveal="">
+            Global Edge Platform
+          </h2>
+          <p class="text-neutral-400 mt-4 max-w-2xl mx-auto" data-reveal="">
+            A simple pipeline that scales from ingest to global delivery.
+          </p>
+        </div>
+
+        <div class="relative">
+          <!-- center line (desktop) -->
+          <div class="absolute top-1/2 left-0 w-full h-px bg-white/10 -translate-y-1/2 hidden md:block overflow-hidden">
+            <div class="absolute top-0 left-0 h-full w-1/3 bg-gradient-to-r from-transparent via-white/40 to-transparent company-shimmer"></div>
+          </div>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-8 relative z-10">
+            <!-- 1 -->
+            <div class="company-step flex flex-col items-center gap-6 group" data-reveal="">
+              <div class="w-16 h-16 rounded-2xl glass-panel border border-white/10 bg-black flex items-center justify-center transition duration-500 group-hover:border-white/30 group-hover:scale-110">
+                <iconify-icon icon="solar:cloud-upload-linear" width="24" class="text-white"></iconify-icon>
+              </div>
+              <span class="text-sm font-mono uppercase tracking-widest text-neutral-400">
+                Ingest
+              </span>
+            </div>
+
+            <!-- 2 -->
+            <div class="company-step flex flex-col items-center gap-6 group" data-reveal="">
+              <div class="w-16 h-16 rounded-2xl glass-panel border border-white/10 bg-black flex items-center justify-center transition duration-500 group-hover:border-white/30 group-hover:scale-110">
+                <iconify-icon icon="solar:cpu-linear" width="24" class="text-white"></iconify-icon>
+              </div>
+              <span class="text-sm font-mono uppercase tracking-widest text-neutral-400">
+                Process
+              </span>
+            </div>
+
+            <!-- 3 -->
+            <div class="company-step flex flex-col items-center gap-6 group" data-reveal="">
+              <div class="glass-panel flex transition duration-500 group-hover:border-white/30 group-hover:scale-110 bg-black w-16 h-16 border-white/10 border rounded-2xl items-center justify-center">
+  <iconify-icon icon="solar:database-linear" width="24" class="text-white"></iconify-icon>
+</div>
+              <span class="text-sm font-mono uppercase tracking-widest text-neutral-400">
+                Store
+              </span>
+            </div>
+
+            <!-- 4 -->
+            <div class="company-step flex flex-col items-center gap-6 group" data-reveal="">
+              <div class="glass-panel flex transition duration-500 group-hover:border-white/30 group-hover:scale-110 bg-black w-16 h-16 border-white/10 border rounded-2xl items-center justify-center">
+  <iconify-icon icon="solar:diagram-down-outline" width="24" class="text-white" height="24" style="color: rgb(255, 255, 255);"></iconify-icon>
+</div>
+              <span class="text-sm font-mono uppercase tracking-widest text-neutral-400">
+                Serve
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <style>
+        @keyframes companyShimmer { 0% { transform: translateX(-120%); } 100% { transform: translateX(320%); } }
+        .company-shimmer { animation: companyShimmer 3.2s linear infinite; }
+
+        /* reveal animation (clean + subtle) */
+        [data-reveal] { opacity: 0; transform: translateY(18px) scale(0.99); }
+        .is-in { opacity: 1; transform: translateY(0) scale(1); transition: opacity 700ms cubic-bezier(.16,1,.3,1), transform 700ms cubic-bezier(.16,1,.3,1); }
+      </style>
+
+      <script>
+        // reveal on scroll + stagger for the 4 steps
+        (() => {
+          const els = Array.from(document.querySelectorAll('#company [data-reveal]'));
+          if (!els.length) return;
+
+          const io = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (!entry.isIntersecting) return;
+              const el = entry.target;
+
+              const steps = Array.from(document.querySelectorAll('#company .company-step[data-reveal]'));
+              const i = steps.indexOf(el);
+
+              // stagger steps, keep headings instant
+              const delay = i >= 0 ? i * 90 : 0;
+              setTimeout(() => el.classList.add('is-in'), delay);
+
+              io.unobserve(el);
+            });
+          }, { threshold: 0.2 });
+
+          els.forEach(el => io.observe(el));
+        })();
+      </script>
+    </section>
+
+    <!-- PRICING STATS -->
+    <section id="pricing" class="py-32 bg-black border-t border-white/5 relative overflow-hidden">
+      <div class="section-grid" style="opacity:.14"></div>
+
+      <div class="max-w-5xl mx-auto px-6 text-center relative z-10">
+        <h2 class="text-xs font-mono text-neutral-500 uppercase tracking-widest mb-12" data-reveal="">
+          Trusted by Engineering Teams
+        </h2>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-12" id="pricing-stats">
+          <div class="pricing-stat" data-reveal="">
+            <div class="text-4xl md:text-5xl font-display font-semibold text-white mb-2 tracking-tight" data-animate-count="5" data-format="ltms">&lt;5ms</div>
+            <div class="text-sm text-neutral-500">Latency</div>
+          </div>
+
+          <div class="pricing-stat" data-reveal="">
+            <div class="text-4xl md:text-5xl font-display font-semibold text-white mb-2 tracking-tight" data-animate-count="999" data-format="percent">99.9%</div>
+            <div class="text-sm text-neutral-500">Uptime</div>
+          </div>
+
+          <div class="pricing-stat" data-reveal="">
+            <div class="text-4xl md:text-5xl font-display font-semibold text-white mb-2 tracking-tight" data-animate-count="100" data-format="tb">100TB</div>
+            <div class="text-sm text-neutral-500">Daily Ingest</div>
+          </div>
+
+          <div class="pricing-stat" data-reveal="">
+            <div class="text-4xl md:text-5xl font-display font-semibold text-white mb-2 tracking-tight">
+              AES-256
+            </div>
+            <div class="text-sm text-neutral-500">Security</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="overflow-hidden bg-neutral-950 pt-32 pb-32 relative">
+      <div class="section-aura"></div>
+
+      <div class="max-w-4xl mx-auto px-6 relative z-10 text-center">
+        <h2 class="text-4xl md:text-5xl font-display font-semibold text-white tracking-tight mb-8" data-reveal="">
+          Choose the solution that fits your scale.
+        </h2>
+
+        <div class="flex flex-col sm:flex-row gap-4 gap-x-4 gap-y-4 items-center justify-center" data-reveal="">
+          <a href="pricing.html" class="hover:bg-neutral-200 transition font-medium text-black bg-white rounded-full pt-4 pr-8 pb-4 pl-8" style="box-shadow: rgba(255, 255, 255, 0.098) 0px 20px 60px;" id="cta-primary">
+            Explore Pricing
+          </a>
+          <a href="#" class="px-8 py-4 rounded-full border border-white/10 text-white hover:bg-white/5 transition backdrop-blur-sm" id="cta-secondary">
+            Talk to Sales
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <footer class="py-10 border-t border-white/5 text-center text-neutral-600 text-xs font-mono">
+      <p>© 2024 Nexus Inc. All rights reserved.</p>
+    </footer>
+
+    <script>
+      // Mouse tracking for spotlight cards
+      document.addEventListener("mousemove", (e) => {
+        document.documentElement.style.setProperty("--mouse-x", e.clientX + "px");
+        document.documentElement.style.setProperty("--mouse-y", e.clientY + "px");
+      });
+
+      // Canvas Particle Network
+      const canvas = document.getElementById("hero-canvas");
+      if (canvas) {
+        const ctx = canvas.getContext("2d");
+        let particlesArray = [];
+
+        function resizeCanvas() {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener("resize", () => {
+          resizeCanvas();
+          initParticles();
+        });
+
+        resizeCanvas();
+
+        class Particle {
+          constructor(x, y, directionX, directionY, size) {
+            this.x = x;
+            this.y = y;
+            this.directionX = directionX;
+            this.directionY = directionY;
+            this.size = size;
+          }
+          draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+            ctx.fillStyle = "rgba(255,255,255,0.5)";
+            ctx.fill();
+          }
+          update() {
+            if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+            if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+            this.x += this.directionX;
+            this.y += this.directionY;
+            this.draw();
+          }
+        }
+
+        function initParticles() {
+          particlesArray = [];
+          const numberOfParticles = (canvas.height * canvas.width) / 15000;
+          for (let i = 0; i < numberOfParticles; i++) {
+            const size = Math.random() * 2 + 0.5;
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * canvas.height;
+            const directionX = Math.random() * 0.4 - 0.2;
+            const directionY = Math.random() * 0.4 - 0.2;
+            particlesArray.push(new Particle(x, y, directionX, directionY, size));
+          }
+        }
+
+        function connectParticles() {
+          for (let a = 0; a < particlesArray.length; a++) {
+            for (let b = a; b < particlesArray.length; b++) {
+              const distance =
+                (particlesArray[a].x - particlesArray[b].x) ** 2 +
+                (particlesArray[a].y - particlesArray[b].y) ** 2;
+
+              if (distance < (canvas.width / 9) * (canvas.height / 9)) {
+                const opacityValue = 1 - distance / 20000;
+                ctx.strokeStyle = "rgba(255, 255, 255," + opacityValue * 0.1 + ")";
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                ctx.stroke();
+              }
+            }
+          }
+        }
+
+        function animateParticles() {
+          requestAnimationFrame(animateParticles);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          for (let i = 0; i < particlesArray.length; i++) particlesArray[i].update();
+          connectParticles();
+        }
+
+        initParticles();
+        animateParticles();
+      }
+
+      // Hide header on scroll down (Mobile)
+      let lastScroll = 0;
+      const mobileHeader = document.getElementById("mobile-header");
+      window.addEventListener("scroll", () => {
+        const currentScroll = window.pageYOffset;
+        if (!mobileHeader) return;
+        if (currentScroll > lastScroll && currentScroll > 50) {
+          mobileHeader.style.transform = "translateY(-100%)";
+        } else {
+          mobileHeader.style.transform = "translateY(0)";
+        }
+        lastScroll = currentScroll;
+      });
+
+      // ---------------------------------------
+      // NEW: COOL ANIMATION PER SECTION (GSAP)
+      // ---------------------------------------
+      document.addEventListener("DOMContentLoaded", () => {
+        gsap.registerPlugin(ScrollTrigger);
+
+        // 1) Global reveal (clean, consistent)
+        const revealEls = gsap.utils.toArray("[data-reveal]");
+        revealEls.forEach((el) => {
+          gsap.fromTo(
+            el,
+            { opacity: 0, y: 22 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.9,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: el,
+                start: "top 85%",
+              },
+            }
+          );
+        });
+
+        // 2) Hero: soft “breathing” on the board shell + stat pop
+        const board = document.getElementById("solution-board");
+        if (board) {
+          gsap.fromTo(
+            board,
+            { filter: "blur(1px)", opacity: 0, y: 26 },
+            {
+              filter: "blur(0px)",
+              opacity: 1,
+              y: 0,
+              duration: 1.1,
+              ease: "power3.out",
+              scrollTrigger: { trigger: "#home", start: "top 70%" },
+            }
+          );
+
+          gsap.to(board, {
+            y: "+=6",
+            duration: 3.6,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+          });
+        }
+
+        // 3) Features: stagger cards with slight rotation and “stack settle”
+        const featureCards = gsap.utils.toArray("#features-stack .feature-card");
+        if (featureCards.length) {
+          gsap.from(featureCards, {
+            opacity: 0,
+            y: 24,
+            rotateX: 8,
+            rotateY: -6,
+            transformOrigin: "50% 50%",
+            duration: 0.9,
+            stagger: 0.08,
+            ease: "power3.out",
+            scrollTrigger: { trigger: "#features-stack", start: "top 75%" },
+          });
+
+          // micro hover: tilt the whole stack slightly
+          const stack = document.getElementById("features-stack");
+          if (stack) {
+            stack.addEventListener("mousemove", (e) => {
+              const r = stack.getBoundingClientRect();
+              const px = (e.clientX - r.left) / r.width - 0.5;
+              const py = (e.clientY - r.top) / r.height - 0.5;
+              gsap.to(stack, { rotateX: -py * 4, rotateY: px * 6, duration: 0.35, ease: "power2.out" });
+            });
+            stack.addEventListener("mouseleave", () => {
+              gsap.to(stack, { rotateX: 0, rotateY: 0, duration: 0.45, ease: "power2.out" });
+            });
+          }
+        }
+
+        // 4) Solutions: orbit + tags drift + core pulse
+        const stage = document.getElementById("solutions-stage");
+        if (stage) {
+          const orbit = document.getElementById("solutions-orbit");
+          const dots = gsap.utils.toArray("#solutions-orbit .orbit-dot");
+          const tags = gsap.utils.toArray("#solutions-stage .solution-tag");
+          const core = document.getElementById("solutions-core");
+
+          // place orbit dots on a circle and rotate the container
+          const radius = 170;
+          dots.forEach((dot, i) => {
+            const angle = (i / dots.length) * Math.PI * 2;
+            const x = Math.cos(angle) * radius;
+            const y = Math.sin(angle) * radius;
+            gsap.set(dot, { x, y, marginLeft: "-4px", marginTop: "-4px" });
+          });
+
+          if (orbit) {
+            gsap.to(orbit, {
+              rotation: 360,
+              duration: 16,
+              repeat: -1,
+              ease: "none",
+              transformOrigin: "50% 50%",
+            });
+          }
+
+          tags.forEach((t, i) => {
+            gsap.to(t, {
+              y: i % 2 === 0 ? "-=10" : "+=10",
+              duration: 3.2 + i * 0.4,
+              repeat: -1,
+              yoyo: true,
+              ease: "sine.inOut",
+            });
+          });
+
+          if (core) {
+            gsap.to(core, { scale: 1.02, duration: 2.4, repeat: -1, yoyo: true, ease: "sine.inOut" });
+          }
+
+          gsap.from(stage, {
+            opacity: 0,
+            y: 24,
+            duration: 1.0,
+            ease: "power3.out",
+            scrollTrigger: { trigger: "#solutions", start: "top 70%" },
+          });
+        }
+
+        // 5) Workflow: rings rotate opposite directions + orbit pips
+        const ringsWrap = document.getElementById("workflow-rings");
+        if (ringsWrap) {
+          const rings = gsap.utils.toArray("#workflow-rings .ring");
+          rings.forEach((r, idx) => {
+            gsap.to(r, {
+              rotation: idx % 2 === 0 ? 360 : -360,
+              duration: 22 + idx * 5,
+              repeat: -1,
+              ease: "none",
+              transformOrigin: "50% 50%",
+            });
+          });
+
+          const pips = gsap.utils.toArray("#workflow-rings .workflow-pip");
+          const pipRadius = 150;
+          pips.forEach((pip, i) => {
+            const a = (i / pips.length) * Math.PI * 2;
+            gsap.set(pip, { x: Math.cos(a) * pipRadius, y: Math.sin(a) * pipRadius, marginLeft: "-5px", marginTop: "-5px" });
+            gsap.to(pip, {
+              rotation: 360,
+              duration: 10 + i * 2,
+              repeat: -1,
+              ease: "none",
+              transformOrigin: "center",
+            });
+          });
+
+          gsap.fromTo(
+            ringsWrap,
+            { scale: 0.92, opacity: 0 },
+            {
+              scale: 1,
+              opacity: 1,
+              duration: 1.0,
+              ease: "power3.out",
+              scrollTrigger: { trigger: "#workflow", start: "top 70%" },
+            }
+          );
+        }
+
+        // 6) Company: animate the hairline shimmer sweep + step bounce-in
+        const companyLine = document.querySelector("#company-line.hairline");
+        if (companyLine) {
+          gsap.to(companyLine, {
+            scrollTrigger: { trigger: "#company", start: "top 70%" },
+            onStart: () => {
+              gsap.to(companyLine, {
+                "--x": "1",
+                duration: 0.01,
+              });
+              gsap.to(companyLine, {
+                duration: 1.6,
+                ease: "power2.out",
+                onUpdate: () => {},
+              });
+            },
+          });
+
+          // animate the pseudo shimmer by animating its translate via GSAP using CSSRulePlugin alternative (simple trick)
+          // We'll animate by toggling a class that runs a transform on ::after using keyframes replacement via gsap timeline
+          // Clean fallback: just animate opacity and add a manual sweep using a child overlay
+          const overlay = document.createElement("div");
+          overlay.style.position = "absolute";
+          overlay.style.inset = "0";
+          overlay.style.background = "linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent)";
+          overlay.style.transform = "translateX(-120%)";
+          overlay.style.pointerEvents = "none";
+          companyLine.style.position = "relative";
+          companyLine.appendChild(overlay);
+
+          gsap.to(overlay, {
+            x: "240%",
+            duration: 2.2,
+            ease: "power2.out",
+            scrollTrigger: { trigger: "#company", start: "top 75%" },
+          });
+        }
+
+        const companySteps = gsap.utils.toArray("#company-steps .company-step");
+        if (companySteps.length) {
+          gsap.from(companySteps, {
+            opacity: 0,
+            y: 18,
+            scale: 0.98,
+            duration: 0.8,
+            stagger: 0.1,
+            ease: "power3.out",
+            scrollTrigger: { trigger: "#company-steps", start: "top 80%" },
+          });
+        }
+
+        // 7) Pricing: count-up animation when section enters
+        function formatCount(val, fmt) {
+          if (fmt === "ltms") return "<" + val + "ms";
+          if (fmt === "percent") return (val / 10).toFixed(1) + "%";
+          if (fmt === "tb") return val + "TB";
+          return String(val);
+        }
+
+        const counters = gsap.utils.toArray("[data-animate-count]");
+        counters.forEach((el) => {
+          const target = parseInt(el.getAttribute("data-animate-count"), 10);
+          const fmt = el.getAttribute("data-format") || "";
+          const obj = { v: 0 };
+
+          ScrollTrigger.create({
+            trigger: "#pricing",
+            start: "top 75%",
+            once: true,
+            onEnter: () => {
+              gsap.to(obj, {
+                v: target,
+                duration: 1.2,
+                ease: "power2.out",
+                onUpdate: () => {
+                  const cur = Math.round(obj.v);
+                  el.textContent = formatCount(cur, fmt);
+                },
+              });
+            },
+          });
+        });
+
+        // 8) Contact: CTA “magnetic” + gentle glow pulse (mono)
+        const primary = document.getElementById("cta-primary");
+        const secondary = document.getElementById("cta-secondary");
+
+        function magnetic(el) {
+          if (!el) return;
+          const strength = 10;
+          el.addEventListener("mousemove", (e) => {
+            const r = el.getBoundingClientRect();
+            const x = e.clientX - (r.left + r.width / 2);
+            const y = e.clientY - (r.top + r.height / 2);
+            gsap.to(el, { x: x / strength, y: y / strength, duration: 0.25, ease: "power2.out" });
+          });
+          el.addEventListener("mouseleave", () => {
+            gsap.to(el, { x: 0, y: 0, duration: 0.35, ease: "power2.out" });
+          });
+        }
+        magnetic(primary);
+        magnetic(secondary);
+
+        if (primary) {
+          gsap.to(primary, {
+            boxShadow: "0 20px 60px rgba(255,255,255,0.10)",
+            duration: 2.6,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+          });
+        }
+      });
+    </script>
+  
+</body></html>

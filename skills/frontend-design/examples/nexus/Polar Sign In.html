@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus — Start Free Trial</title>
+<meta name="description" content="Start your free trial of Nexus enterprise cloud infrastructure. No credit card required. Instant setup.">
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&amp;family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<!-- Iconify -->
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+fontFamily: {
+sans: ["Inter", "sans-serif"],
+serif: ["Instrument Serif", "serif"],
+display: ["Space Grotesk", "sans-serif"],
+},
+colors: {
+neutral: {
+850: "#1f1f1f",
+950: "#0a0a0a",
+},
+},
+},
+},
+};
+</script>
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+:root {
+--mouse-x: 0px;
+--mouse-y: 0px;
+}
+body {
+background-color: #050505;
+color: #e5e5e5;
+overflow-x: hidden;
+}
+/* Film Grain */
+@keyframes grain {
+0%,
+100% {
+transform: translate(0, 0);
+}
+10% {
+transform: translate(-5%, -10%);
+}
+20% {
+transform: translate(-15%, 5%);
+}
+30% {
+transform: translate(7%, -25%);
+}
+40% {
+transform: translate(-5%, 25%);
+}
+50% {
+transform: translate(-15%, 10%);
+}
+60% {
+transform: translate(15%, 0%);
+}
+70% {
+transform: translate(0%, 15%);
+}
+80% {
+transform: translate(3%, 35%);
+}
+90% {
+transform: translate(-10%, 10%);
+}
+}
+.bg-grain::after {
+content: "";
+background-image: url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png");
+height: 300%;
+width: 300%;
+position: fixed;
+top: -100%;
+left: -100%;
+opacity: 0.04;
+animation: grain 8s steps(10) infinite;
+pointer-events: none;
+z-index: 9998;
+}
+/* Glass utilities */
+.glass-panel {
+background: rgba(255, 255, 255, 0.03);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+border: 1px solid rgba(255, 255, 255, 0.08);
+}
+/* Spotlight Card */
+.spotlight-card {
+position: relative;
+overflow: hidden;
+background: rgba(20, 20, 20, 0.4);
+border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.spotlight-card::before {
+content: "";
+position: absolute;
+inset: 0;
+background: radial-gradient(
+600px circle at var(--mouse-x) var(--mouse-y),
+rgba(255, 255, 255, 0.08),
+transparent 40%
+);
+opacity: 0;
+transition: opacity 0.5s;
+pointer-events: none;
+z-index: 2;
+}
+.spotlight-card:hover::before {
+opacity: 1;
+}
+/* Clean mono ambient */
+.section-aura {
+position: absolute;
+inset: 0;
+pointer-events: none;
+z-index: 0;
+opacity: 0.9;
+background: radial-gradient(
+80% 70% at 20% 30%,
+rgba(255, 255, 255, 0.06),
+transparent 55%
+),
+radial-gradient(
+70% 70% at 75% 70%,
+rgba(255, 255, 255, 0.04),
+transparent 60%
+);
+filter: contrast(1.05);
+}
+.section-grid {
+position: absolute;
+inset: 0;
+pointer-events: none;
+z-index: 0;
+opacity: 0.22;
+background: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+background-size: 72px 72px;
+-webkit-mask-image: radial-gradient(
+ellipse at 50% 30%,
+#000 35%,
+transparent 72%
+);
+mask-image: radial-gradient(ellipse at 50% 30%, #000 35%, transparent 72%);
+}
+/* Reveal targets */
+[data-reveal] {
+opacity: 0;
+transform: translateY(22px);
+will-change: transform, opacity;
+}
+/* Hairline shimmer (animated via GSAP) */
+.hairline {
+height: 1px;
+background: rgba(255, 255, 255, 0.10);
+position: relative;
+overflow: hidden;
+}
+.hairline::after {
+content: "";
+position: absolute;
+inset: 0;
+background: linear-gradient(
+90deg,
+transparent,
+rgba(255, 255, 255, 0.55),
+transparent
+);
+transform: translateX(-120%);
+}
+/* Buttons focus */
+a:focus-visible,
+button:focus-visible {
+outline: none;
+box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.22),
+0 0 0 10px rgba(255, 255, 255, 0.06);
+border-radius: 9999px;
+}
+/* Marquee mask */
+.marquee-mask {
+mask-image: linear-gradient(
+90deg,
+transparent,
+white 18%,
+white 82%,
+transparent
+);
+-webkit-mask-image: linear-gradient(
+90deg,
+transparent,
+white 18%,
+white 82%,
+transparent
+);
+}
+@keyframes marqueeLeft {
+from {
+transform: translateX(0);
+}
+to {
+transform: translateX(-50%);
+}
+}
+@keyframes marqueeRight {
+from {
+transform: translateX(-50%);
+}
+to {
+transform: translateX(0);
+}
+}
+.animate-marquee-left {
+animation: marqueeLeft 34s linear infinite;
+}
+.animate-marquee-right {
+animation: marqueeRight 38s linear infinite;
+}
+.marquee-group:hover .animate-marquee-left,
+.marquee-group:hover .animate-marquee-right {
+animation-play-state: paused;
+}
+/* Small utility */
+.text-glow {
+text-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
+}
+/* Orbit ring */
+.ring {
+position: absolute;
+inset: 0;
+border-radius: 9999px;
+border: 1px solid rgba(255, 255, 255, 0.08);
+transform: translateZ(0);
+}
+/* Make horizontal scroller feel premium */
+.hscroll {
+scrollbar-width: none;
+}
+.hscroll::-webkit-scrollbar {
+display: none;
+}
+</style></head>
+
+  <body class="bg-grain antialiased selection:bg-white selection:text-black">
+
+<!-- Background (component) added by Aura -->
+<div class="aura-background-component fixed top-0 w-full h-screen -z-10" data-alpha-mask="80" style="; mask-image: linear-gradient(to bottom, transparent, black 0%, black 80%, transparent); -webkit-mask-image: linear-gradient(to bottom, transparent, black 0%, black 80%, transparent)"><div class="aura-background-component top-0 w-full -z-10 absolute h-full">
+  <div data-us-project="bKN5upvoulAmWvInmHza" class="absolute w-full h-full left-0 top-0 -z-10"></div>
+  <script type="text/javascript">
+    !function(){if(!window.UnicornStudio){window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.29/dist/unicornStudio.umd.js",i.onload=function(){window.UnicornStudio.isInitialized||(UnicornStudio.init(),window.UnicornStudio.isInitialized=!0)},(document.head || document.body).appendChild(i)}}();
+  </script>
+</div></div>
+    <!-- Mobile / Tablet Header -->
+<header class="fixed top-0 left-0 right-0 z-50 lg:hidden px-4 pt-4" id="mobile-header">
+  <!-- Toggle -->
+  <input id="nav-toggle" type="checkbox" class="peer hidden">
+
+  <div class="glass-panel rounded-full px-5 py-3 flex items-center justify-between shadow-2xl">
+    <a href="index.html" class="font-display font-bold text-lg tracking-tight">
+      NEXUS.
+    </a>
+
+    <!-- Burger / Close trigger -->
+    <label for="nav-toggle" class="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-xl border border-white/10 hover:bg-white/15 transition cursor-pointer select-none" aria-label="Toggle menu">
+      <!-- Burger -->
+      <iconify-icon icon="solar:hamburger-menu-linear" width="22" class="burger-icon transition-all duration-300"></iconify-icon>
+
+      <!-- Close -->
+      <iconify-icon icon="solar:close-circle-linear" width="22" class="close-icon absolute opacity-0 scale-75 transition-all duration-300"></iconify-icon>
+    </label>
+  </div>
+
+  <!-- Backdrop -->
+  <label for="nav-toggle" class="backdrop fixed inset-0 bg-black/40 opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"></label>
+
+  <!-- Menu panel -->
+  <nav id="mobile-menu" class="absolute top-20 left-4 right-4 glass-panel rounded-[2rem] p-5 border border-white/10 origin-top opacity-0 scale-[0.98] -translate-y-2 pointer-events-none transition-all duration-300" aria-label="Mobile navigation">
+    <!-- Top row inside panel -->
+    <div class="mb-2">
+  <div class="text-[11px] uppercase tracking-[0.22em] font-semibold text-white/40">
+    Menu
+  </div>
+</div>
+
+    <div class="flex flex-col gap-2 text-center">
+      <a href="/Features" class="py-3 text-lg font-medium hover:text-white transition">
+        Features
+      </a>
+      <a href="/Solutions" class="py-3 text-lg font-medium hover:text-white transition">
+        Solutions
+      </a>
+      <a href="/Workflow" class="py-3 text-lg font-medium hover:text-white transition">
+        Workflow
+      </a>
+      <a href="/Company" class="py-3 text-lg font-medium hover:text-white transition">
+        Company
+      </a>
+      <a href="/Pricing" class="py-3 text-lg font-medium hover:text-white transition">
+        Pricing
+      </a>
+    </div>
+
+    <!-- CTA button -->
+    <div class="mt-5 pt-4 border-t border-white/10 flex justify-center">
+      <a href="sign-in.html" class="inline-flex w-full max-w-[360px] items-center justify-center gap-3 rounded-full bg-white text-black font-semibold text-base px-6 py-4 shadow-[0_18px_40px_rgba(0,0,0,0.22)] hover:scale-[1.02] transition-all duration-300">
+        <span>Start Free Trial</span>
+        <iconify-icon icon="solar:arrow-right-linear" width="22"></iconify-icon>
+      </a>
+    </div>
+  </nav>
+
+  <style class="">
+    /* When checked: show backdrop + menu */
+    #mobile-header .peer:checked ~ .backdrop {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #mobile-header .peer:checked ~ #mobile-menu {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    /* Swap burger to close */
+    #mobile-header .peer:checked ~ div label .burger-icon {
+      opacity: 0;
+      transform: scale(0.75);
+    }
+
+    #mobile-header .peer:checked ~ div label .close-icon {
+      opacity: 1;
+      transform: scale(1);
+    }
+  </style>
+</header>
+    <!-- =========================================================
+     DESKTOP LEFT NAV (2 SEPARATE BOXES, NO LAYOUT BREAK)
+     - Buttons stay fixed size (no rail resizing)
+     - Labels expand as a floating pill to the right (smooth)
+     - CTA is a separate box below (hovering it does NOT affect top)
+     - Scroll spy highlights current section (top rail only)
+========================================================= -->
+
+    <!-- DESKTOP LEFT NAV -->
+    <nav class="hidden lg:block fixed top-1/2 -translate-y-1/2 left-6 z-50" aria-label="Section navigation" id="rail-nav">
+      <style class="">
+        #rail-nav {
+          isolation: isolate;
+        }
+        #rail-nav .rail-box {
+          position: relative;
+          width: 72px;
+          padding: 12px 10px;
+          border-radius: 18px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.03);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 10px;
+          user-select: none;
+          overflow: visible;
+        }
+        #rail-nav .rail-box::before {
+          content: "";
+          position: absolute;
+          inset: 8px;
+          border-radius: 14px;
+          background: linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.07),
+            transparent 55%,
+            rgba(255, 255, 255, 0.05)
+          );
+          opacity: 0;
+          pointer-events: none;
+          z-index: 0;
+        }
+        #rail-nav .rail-btn {
+          position: relative;
+          z-index: 1;
+          width: 50px;
+          height: 50px;
+          border-radius: 18px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.02);
+          display: grid;
+          place-items: center;
+          cursor: pointer;
+          outline: none;
+          transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+            background-color 260ms cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 260ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #rail-nav .rail-btn:hover,
+        #rail-nav .rail-btn:focus-visible {
+          transform: translateX(2px);
+          background: rgba(255, 255, 255, 0.05);
+          border-color: rgba(255, 255, 255, 0.16);
+        }
+        #rail-nav .rail-icon {
+          width: 34px;
+          height: 34px;
+          border-radius: 12px;
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.03);
+          display: grid;
+          place-items: center;
+        }
+        #rail-nav .rail-icon iconify-icon {
+          color: rgba(255, 255, 255, 0.9);
+        }
+        #rail-nav .rail-btn.is-active {
+          background: rgba(255, 255, 255, 0.06);
+          border-color: rgba(255, 255, 255, 0.18);
+        }
+        #rail-nav .rail-btn.is-active .rail-icon {
+          background: rgba(255, 255, 255, 0.92);
+          border-color: rgba(255, 255, 255, 0.22);
+          box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.06), 0 18px 40px rgba(0, 0, 0, 0.35);
+        }
+        #rail-nav .rail-btn.is-active .rail-icon iconify-icon {
+          color: #0a0a0a;
+        }
+
+        #rail-nav .rail-label {
+          position: absolute;
+          left: calc(100% + 12px);
+          top: 50%;
+          transform: translateY(-50%) scaleX(0.92);
+          transform-origin: left center;
+          height: 42px;
+          display: inline-flex;
+          align-items: center;
+          padding: 0 14px;
+          border-radius: 14px;
+          background: linear-gradient(
+              180deg,
+              rgba(255, 255, 255, 0.14),
+              rgba(255, 255, 255, 0.06) 45%,
+              rgba(255, 255, 255, 0.03)
+            ),
+            radial-gradient(120% 140% at 20% 10%, rgba(255, 255, 255, 0.1), transparent 55%);
+          border: 1px solid rgba(255, 255, 255, 0.16);
+          backdrop-filter: blur(18px) saturate(1.2);
+          -webkit-backdrop-filter: blur(18px) saturate(1.2);
+          box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.18),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+          color: rgba(255, 255, 255, 0.92);
+          font-size: 12px;
+          font-weight: 800;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          white-space: nowrap;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 220ms cubic-bezier(0.16, 1, 0.3, 1),
+            transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #rail-nav .rail-btn:hover .rail-label,
+        #rail-nav .rail-btn:focus-visible .rail-label {
+          opacity: 1;
+          transform: translateY(-50%) scaleX(1);
+        }
+
+        #rail-nav .cta-wrap {
+          margin-top: 16px;
+        }
+        #rail-nav .rail-btn.cta .rail-icon {
+          background: rgba(255, 255, 255, 0.92);
+          border-color: rgba(255, 255, 255, 0.22);
+          box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.06), 0 18px 40px rgba(0, 0, 0, 0.35);
+        }
+        #rail-nav .rail-btn.cta .rail-icon iconify-icon {
+          color: #0a0a0a;
+        }
+      </style>
+
+      <div class="rail-box" id="rail-sections">
+        <a class="rail-btn" href="index.html" data-target="#home">
+          <span class="rail-icon"><iconify-icon icon="solar:home-angle-2-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Home</span>
+        </a>
+        <a class="rail-btn" href="features.html" data-target="#features">
+          <span class="rail-icon"><iconify-icon icon="solar:widget-3-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Features</span>
+        </a>
+        <a class="rail-btn" href="solutions.html" data-target="#solutions">
+          <span class="rail-icon"><iconify-icon icon="solar:layers-linear" width="18"></iconify-icon></span>
+          <span class="rail-label">Solutions</span>
+        </a>
+        <a class="rail-btn" href="workflow.html" data-target="#workflow">
+          <span class="rail-icon"><iconify-icon icon="solar:graph-new-up-linear" width="18"></iconify-icon></span>
+          <span class="rail-label">Workflow</span>
+        </a>
+        <a class="rail-btn" href="company.html" data-target="#company">
+          <span class="rail-icon"><iconify-icon icon="solar:buildings-3-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Company</span>
+        </a>
+        <a class="rail-btn is-active" href="pricing.html" data-target="#pricing">
+          <span class="rail-icon"><iconify-icon icon="solar:tag-price-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Pricing</span>
+        </a>
+      </div>
+
+      <div class="cta-wrap">
+        <div class="rail-box">
+          <a class="rail-btn cta" href="sign-in.html" data-target="#contact">
+  <span class="rail-icon cursor-pointer" onclick="window.location.href='sign-in.html'" role="button"><iconify-icon icon="solar:arrow-right-linear" width="18" class=""></iconify-icon></span>
+  <span class="rail-label">Start Free Trial</span>
+</a>
+        </div>
+      </div>
+
+      <script class="">
+        (() => {
+          const sectionRail = document.getElementById("rail-sections");
+          if (!sectionRail) return;
+
+          const allBtns = Array.from(document.querySelectorAll("#rail-nav .rail-btn")).filter(
+            (a) => a.dataset.target
+          );
+
+          allBtns.forEach((a) => {
+            a.addEventListener("click", (e) => {
+              const el = document.querySelector(a.dataset.target);
+              if (!el) return;
+              e.preventDefault();
+              el.scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+          });
+
+          const spyBtns = Array.from(sectionRail.querySelectorAll(".rail-btn"));
+          const spyTargets = spyBtns.map((a) => document.querySelector(a.dataset.target)).filter(Boolean);
+
+          let activeIndex = 0;
+          const setActive = (idx) => {
+            activeIndex = Math.max(0, Math.min(spyBtns.length - 1, idx));
+            spyBtns.forEach((a, i) => a.classList.toggle("is-active", i === activeIndex));
+          };
+
+          const io = new IntersectionObserver(
+            (entries) => {
+              const visible = entries.filter((e) => e.isIntersecting);
+              if (!visible.length) return;
+
+              const mid = window.innerHeight * 0.52;
+              visible.sort((a, b) => {
+                const da = Math.abs(a.boundingClientRect.top + a.boundingClientRect.height / 2 - mid);
+                const db = Math.abs(b.boundingClientRect.top + b.boundingClientRect.height / 2 - mid);
+                return da - db;
+              });
+
+              const best = visible[0].target;
+              const idx = spyTargets.indexOf(best);
+              if (idx !== -1 && idx !== activeIndex) setActive(idx);
+            },
+            { threshold: [0.22, 0.35, 0.5, 0.65] }
+          );
+
+          spyTargets.forEach((s) => io.observe(s));
+        })();
+      </script>
+    </nav>
+
+    <!-- HERO / HOME -->
+    <section class="relative w-full min-h-[80vh] flex items-center justify-center pt-32 pb-20 overflow-hidden lg:pb-16 lg:pt-0" id="home">
+  <div class="section-aura" style="opacity:.35"></div>
+  <div class="section-grid" style="opacity:.12"></div>
+  <div class="text-center w-full max-w-2xl z-10 mr-auto mb-4424 ml-auto pr-6 pl-6 relative">
+    <h1 class="text-4xl md:text-5xl lg:text-[3.5rem] font-display font-semibold tracking-tighter text-white leading-[1.05] mb-6" data-reveal="">
+      Start building in minutes.
+    </h1>
+    <p class="text-lg text-neutral-400 leading-relaxed max-w-xl mx-auto mb-8" data-reveal="">
+      Get instant access to enterprise-grade cloud infrastructure. Deploy globally, scale effortlessly, and only pay for what you use.
+    </p>
+    <div class="flex flex-wrap items-center justify-center gap-3" data-reveal="">
+      <span class="px-4 py-2 rounded-full glass-panel border border-white/10 text-[11px] font-mono uppercase tracking-widest text-white/45">
+        No credit card
+      </span>
+      <span class="px-4 py-2 rounded-full glass-panel border border-white/10 text-[11px] font-mono uppercase tracking-widest text-white/45">
+        Instant setup
+      </span>
+      <span class="px-4 py-2 rounded-full glass-panel border border-white/10 text-[11px] font-mono uppercase tracking-widest text-white/45">
+        Enterprise ready
+      </span>
+    </div>
+  </div>
+</section>
+
+    <!-- FEATURES (magnetic cards + stagger + subtle clip reveal) -->
+    <section id="features" class="relative py-20 bg-neutral-950 border-t border-white/5 overflow-hidden">
+  <div class="section-aura" style="opacity:.3"></div>
+  <div class="max-w-xl mx-auto px-6 relative z-10">
+    <div class="glass-panel border border-white/10 rounded-3xl p-8 md:p-10 shadow-2xl" data-reveal="" id="trial-form-panel">
+      <div class="text-center mb-8">
+        <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35 mb-3 block">Free Trial</span>
+        <h2 class="text-2xl md:text-3xl font-display font-semibold text-white tracking-tight">Create your account</h2>
+      </div>
+      <form id="trial-form" class="space-y-5" onsubmit="event.preventDefault()">
+        <div>
+          <label for="trial-email" class="block text-[11px] font-mono uppercase tracking-[0.18em] text-white/40 mb-2">Work Email</label>
+          <input id="trial-email" type="email" required="" placeholder="you@company.com" class="trial-input w-full px-5 py-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-white text-sm placeholder-white/25 outline-none transition-all duration-300 focus:border-white/25 focus:bg-white/[0.05] focus:shadow-[0_0_0_4px_rgba(255,255,255,0.04)]">
+        </div>
+        <div>
+          <label for="trial-company" class="block text-[11px] font-mono uppercase tracking-[0.18em] text-white/40 mb-2">Company Name</label>
+          <input id="trial-company" type="text" required="" placeholder="Acme Inc." class="trial-input w-full px-5 py-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-white text-sm placeholder-white/25 outline-none transition-all duration-300 focus:border-white/25 focus:bg-white/[0.05] focus:shadow-[0_0_0_4px_rgba(255,255,255,0.04)]">
+        </div>
+        <div>
+          <label for="trial-team" class="block text-[11px] font-mono uppercase tracking-[0.18em] text-white/40 mb-2">Team Size</label>
+          <select id="trial-team" required="" class="trial-input w-full px-5 py-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-white text-sm outline-none transition-all duration-300 focus:border-white/25 focus:bg-white/[0.05] focus:shadow-[0_0_0_4px_rgba(255,255,255,0.04)] appearance-none cursor-pointer" style="background-image:url(\" data:image="" svg+xml,%3csvg="" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" %3e%3cpolyline="" points="6 9 12 15 18 9" %3e%3c="" polyline%3e%3c="" svg%3e\");background-repeat:no-repeat;background-position:right="" 16px="" center;"="">
+            <option value="" disabled="" selected="" style="color:rgba(255,255,255,0.25)">Select team size</option>
+            <option value="1-5" style="background:#1a1a1a;color:#e5e5e5">1–5 people</option>
+            <option value="6-25" style="background:#1a1a1a;color:#e5e5e5">6–25 people</option>
+            <option value="26-100" style="background:#1a1a1a;color:#e5e5e5">26–100 people</option>
+            <option value="100+" style="background:#1a1a1a;color:#e5e5e5">100+ people</option>
+          </select>
+        </div>
+        <div>
+          <label for="trial-usecase" class="block text-[11px] font-mono uppercase tracking-[0.18em] text-white/40 mb-2">Primary Use Case</label>
+          <select id="trial-usecase" required="" class="trial-input w-full px-5 py-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-white text-sm outline-none transition-all duration-300 focus:border-white/25 focus:bg-white/[0.05] focus:shadow-[0_0_0_4px_rgba(255,255,255,0.04)] appearance-none cursor-pointer" style="background-image:url(\" data:image="" svg+xml,%3csvg="" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" %3e%3cpolyline="" points="6 9 12 15 18 9" %3e%3c="" polyline%3e%3c="" svg%3e\");background-repeat:no-repeat;background-position:right="" 16px="" center;"="">
+            <option value="" disabled="" selected="" style="color:rgba(255,255,255,0.25)">Select use case</option>
+            <option value="web-apps" style="background:#1a1a1a;color:#e5e5e5">Web Applications</option>
+            <option value="data-infra" style="background:#1a1a1a;color:#e5e5e5">Data Infrastructure</option>
+            <option value="ml-ai" style="background:#1a1a1a;color:#e5e5e5">ML / AI Workloads</option>
+            <option value="microservices" style="background:#1a1a1a;color:#e5e5e5">Microservices</option>
+            <option value="other" style="background:#1a1a1a;color:#e5e5e5">Other</option>
+          </select>
+        </div>
+        <div class="pt-2 space-y-3">
+          <button type="submit" id="trial-submit-btn" class="relative w-full px-6 py-4 rounded-full bg-white text-black text-sm font-medium hover:bg-neutral-200 transition overflow-hidden">
+            <span class="relative z-10">Start Free Trial</span>
+            <span class="trial-btn-sweep absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent translate-x-[-200%] transition-none pointer-events-none"></span>
+          </button>
+          <a href="#" class="block w-full text-center px-6 py-3.5 rounded-full border border-white/10 text-white text-sm font-medium hover:bg-white/5 transition">
+            Talk to Sales
+          </a>
+        </div>
+      </form>
+      <p class="text-center text-[10px] font-mono uppercase tracking-[0.18em] text-white/25 mt-6">
+        14-day trial · No credit card · Cancel anytime
+      </p>
+    </div>
+  </div>
+</section>
+
+    <!-- SOLUTIONS (pinned “spec sheet” + horizontal cards) -->
+    <section id="solutions" class="relative py-20 bg-black border-t border-white/5 overflow-hidden">
+  <div class="max-w-3xl mx-auto px-6 relative z-10">
+    <div class="text-center mb-10">
+      <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35 mb-3 block" data-reveal="">Trusted Infrastructure</span>
+    </div>
+    <div class="flex flex-wrap items-center justify-center gap-4 md:gap-6" id="trust-badges">
+      <div class="trust-badge glass-panel border border-white/8 rounded-2xl px-6 py-4 flex items-center gap-3" data-reveal="">
+        <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
+          <iconify-icon icon="solar:shield-check-linear" width="16" class="text-white/60"></iconify-icon>
+        </div>
+        <span class="text-xs font-mono uppercase tracking-widest text-white/50">SOC 2</span>
+      </div>
+      <div class="trust-badge glass-panel border border-white/8 rounded-2xl px-6 py-4 flex items-center gap-3" data-reveal="">
+        <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
+          <iconify-icon icon="solar:lock-keyhole-linear" width="16" class="text-white/60"></iconify-icon>
+        </div>
+        <span class="text-xs font-mono uppercase tracking-widest text-white/50">ISO 27001</span>
+      </div>
+      <div class="trust-badge glass-panel border border-white/8 rounded-2xl px-6 py-4 flex items-center gap-3" data-reveal="">
+        <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
+          <iconify-icon icon="solar:verified-check-linear" width="16" class="text-white/60"></iconify-icon>
+        </div>
+        <span class="text-xs font-mono uppercase tracking-widest text-white/50">GDPR</span>
+      </div>
+      <div class="trust-badge glass-panel border border-white/8 rounded-2xl px-6 py-4 flex items-center gap-3" data-reveal="">
+        <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
+          <iconify-icon icon="solar:graph-up-linear" width="16" class="text-white/60"></iconify-icon>
+        </div>
+        <span class="text-xs font-mono uppercase tracking-widest text-white/50">99.9% Uptime</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- WORKFLOW (timeline + pinned bar + orbit) -->
+    <section id="workflow" class="relative py-24 bg-neutral-950 border-t border-white/5 overflow-hidden">
+  <div class="section-aura" style="opacity:.25"></div>
+  <div class="max-w-3xl mx-auto px-6 relative z-10">
+    <div class="text-center mb-12">
+      <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35 mb-3 block" data-reveal="">How It Works</span>
+      <h2 class="text-2xl md:text-3xl font-display font-semibold text-white tracking-tight" data-reveal="">What happens next</h2>
+    </div>
+    <div class="relative" data-reveal="">
+      <!-- Hairline connector -->
+      <div class="hidden md:block absolute top-8 left-[16.67%] right-[16.67%] z-0">
+        <div class="hairline rounded-full" id="steps-hairline" style="transform-origin:0% 50%"></div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 relative z-10">
+        <div class="step-item text-center" data-reveal="">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-center mb-5">
+            <iconify-icon icon="solar:user-plus-linear" width="24" class="text-white/70"></iconify-icon>
+          </div>
+          <div class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/30 mb-2">Step 01</div>
+          <h3 class="text-sm font-medium text-white mb-1.5">Create account</h3>
+          <p class="text-xs text-neutral-500 leading-relaxed">Sign up with your work email. No credit card needed.</p>
+        </div>
+        <div class="step-item text-center" data-reveal="">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-center mb-5">
+            <iconify-icon icon="solar:settings-linear" width="24" class="text-white/70"></iconify-icon>
+          </div>
+          <div class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/30 mb-2">Step 02</div>
+          <h3 class="text-sm font-medium text-white mb-1.5">Configure workspace</h3>
+          <p class="text-xs text-neutral-500 leading-relaxed">Set up your team, regions, and resource preferences.</p>
+        </div>
+        <div class="step-item text-center" data-reveal="">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-center mb-5">
+            <iconify-icon icon="solar:rocket-2-linear" width="24" class="text-white/70"></iconify-icon>
+          </div>
+          <div class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/30 mb-2">Step 03</div>
+          <h3 class="text-sm font-medium text-white mb-1.5">Deploy</h3>
+          <p class="text-xs text-neutral-500 leading-relaxed">Push your first workload in under five minutes.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- COMPANY (icons grid reveal + subtle line sweep) -->
+    
+
+    <!-- PRICING (counter + reveal + subtle split) -->
+    
+
+    <!-- CONTACT (soft entrance + button micro) -->
+    <section id="contact" class="relative py-24 bg-black border-t border-white/5 overflow-hidden">
+  <div class="section-aura" id="careers-aura" style="opacity:.35"></div>
+  <div class="max-w-2xl mx-auto px-6 relative z-10 text-center">
+    <p class="text-lg text-neutral-400 leading-relaxed mb-6" data-reveal="">
+      You're one step away from your first deployment.
+    </p>
+    <div class="hairline rounded-full max-w-xs mx-auto" data-reveal=""></div>
+    <div class="mt-5 text-[10px] font-mono uppercase tracking-[0.22em] text-white/25" data-reveal="">
+      No credit card · 14-day trial · Cancel anytime
+    </div>
+  </div>
+</section>
+
+    <footer class="py-10 border-t border-white/5 text-center text-neutral-600 text-xs font-mono">
+      <p>© 2024 Nexus Inc. All rights reserved.</p>
+    </footer>
+
+    <script>
+  // Mouse tracking for spotlight cards
+  document.addEventListener('mousemove', (e) => {
+    document.documentElement.style.setProperty('--mouse-x', e.clientX + 'px');
+    document.documentElement.style.setProperty('--mouse-y', e.clientY + 'px');
+  });
+
+  // Trial form button sweep on hover
+  const trialBtn = document.getElementById('trial-submit-btn');
+  if (trialBtn) {
+    const sweep = trialBtn.querySelector('.trial-btn-sweep');
+    trialBtn.addEventListener('mouseenter', () => {
+      if (sweep) {
+        sweep.style.transition = 'none';
+        sweep.style.transform = 'translateX(-200%)';
+        requestAnimationFrame(() => {
+          sweep.style.transition = 'transform 0.6s ease';
+          sweep.style.transform = 'translateX(200%)';
+        });
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    gsap.registerPlugin(ScrollTrigger);
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // 1) Standard reveal (stagger per section)
+    const sections = gsap.utils.toArray('section');
+    sections.forEach((sec) => {
+      const targets = sec.querySelectorAll('[data-reveal]');
+      if (!targets.length) return;
+      gsap.fromTo(
+        targets,
+        { opacity: 0, y: prefersReduced ? 0 : 18 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: prefersReduced ? 0.4 : 0.9,
+          ease: 'power3.out',
+          stagger: 0.06,
+          scrollTrigger: { trigger: sec, start: 'top 80%' },
+        }
+      );
+    });
+
+    // 2) Trust badges stagger
+    const badges = gsap.utils.toArray('.trust-badge');
+    if (badges.length) {
+      gsap.fromTo(badges,
+        { opacity: 0, y: prefersReduced ? 0 : 14 },
+        {
+          opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', stagger: 0.1,
+          scrollTrigger: { trigger: '#trust-badges', start: 'top 85%', once: true },
+        }
+      );
+    }
+
+    // 3) Steps hairline draw
+    const stepsHairline = document.getElementById('steps-hairline');
+    if (stepsHairline) {
+      gsap.fromTo(stepsHairline,
+        { scaleX: 0, transformOrigin: 'left center' },
+        {
+          scaleX: 1, duration: 1.4, ease: 'power2.out',
+          scrollTrigger: { trigger: stepsHairline, start: 'top 85%', once: true },
+        }
+      );
+    }
+
+    // 4) Step items stagger
+    const stepItems = gsap.utils.toArray('.step-item');
+    if (stepItems.length) {
+      gsap.fromTo(stepItems,
+        { opacity: 0, y: prefersReduced ? 0 : 20 },
+        {
+          opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', stagger: 0.15,
+          scrollTrigger: { trigger: stepItems[0], start: 'top 85%', once: true },
+        }
+      );
+    }
+
+    // 5) Form panel gentle entrance
+    const formPanel = document.getElementById('trial-form-panel');
+    if (formPanel) {
+      gsap.fromTo(formPanel,
+        { opacity: 0, y: prefersReduced ? 0 : 24 },
+        {
+          opacity: 1, y: 0, duration: 1.0, ease: 'power3.out',
+          scrollTrigger: { trigger: formPanel, start: 'top 85%', once: true },
+        }
+      );
+    }
+
+    // 6) Hairline shimmer
+    gsap.utils.toArray('.hairline').forEach((line) => {
+      ScrollTrigger.create({
+        trigger: line,
+        start: 'top 90%',
+        once: true,
+        onEnter: () => {
+          gsap.fromTo(line, { opacity: 0.3 }, { opacity: 1, duration: 0.8, ease: 'power2.out' });
+        },
+      });
+    });
+
+    // 7) Careers aura slow drift
+    const careersAura = document.getElementById('careers-aura');
+    if (careersAura && !prefersReduced) {
+      gsap.to(careersAura, {
+        backgroundPosition: '60% 40%',
+        duration: 12,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+      });
+    }
+  });
+</script>
+  
+</body></html>

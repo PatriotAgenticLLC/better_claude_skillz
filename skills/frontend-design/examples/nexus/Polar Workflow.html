@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus — Workflow</title>
+<meta name="description" content="Nexus helps teams build, scale, and monitor applications with enterprise-grade infrastructure.">
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&amp;family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<!-- Iconify -->
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+fontFamily: {
+sans: ["Inter", "sans-serif"],
+serif: ["Instrument Serif", "serif"],
+display: ["Space Grotesk", "sans-serif"],
+},
+colors: {
+neutral: {
+850: "#1f1f1f",
+950: "#0a0a0a",
+},
+},
+},
+},
+};
+</script>
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+:root {
+--mouse-x: 0px;
+--mouse-y: 0px;
+}
+body {
+background-color: #050505;
+color: #e5e5e5;
+overflow-x: hidden;
+}
+/* Film Grain */
+@keyframes grain {
+0%,
+100% {
+transform: translate(0, 0);
+}
+10% {
+transform: translate(-5%, -10%);
+}
+20% {
+transform: translate(-15%, 5%);
+}
+30% {
+transform: translate(7%, -25%);
+}
+40% {
+transform: translate(-5%, 25%);
+}
+50% {
+transform: translate(-15%, 10%);
+}
+60% {
+transform: translate(15%, 0%);
+}
+70% {
+transform: translate(0%, 15%);
+}
+80% {
+transform: translate(3%, 35%);
+}
+90% {
+transform: translate(-10%, 10%);
+}
+}
+.bg-grain::after {
+content: "";
+background-image: url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png");
+height: 300%;
+width: 300%;
+position: fixed;
+top: -100%;
+left: -100%;
+opacity: 0.04;
+animation: grain 8s steps(10) infinite;
+pointer-events: none;
+z-index: 9998;
+}
+/* Glass utilities */
+.glass-panel {
+background: rgba(255, 255, 255, 0.03);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+border: 1px solid rgba(255, 255, 255, 0.08);
+}
+/* Spotlight Card */
+.spotlight-card {
+position: relative;
+overflow: hidden;
+background: rgba(20, 20, 20, 0.4);
+border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.spotlight-card::before {
+content: "";
+position: absolute;
+inset: 0;
+background: radial-gradient(
+600px circle at var(--mouse-x) var(--mouse-y),
+rgba(255, 255, 255, 0.08),
+transparent 40%
+);
+opacity: 0;
+transition: opacity 0.5s;
+pointer-events: none;
+z-index: 2;
+}
+.spotlight-card:hover::before {
+opacity: 1;
+}
+/* Clean mono ambient */
+.section-aura {
+position: absolute;
+inset: 0;
+pointer-events: none;
+z-index: 0;
+opacity: 0.9;
+background: radial-gradient(
+80% 70% at 20% 30%,
+rgba(255, 255, 255, 0.06),
+transparent 55%
+),
+radial-gradient(
+70% 70% at 75% 70%,
+rgba(255, 255, 255, 0.04),
+transparent 60%
+);
+filter: contrast(1.05);
+}
+.section-grid {
+position: absolute;
+inset: 0;
+pointer-events: none;
+z-index: 0;
+opacity: 0.22;
+background: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+background-size: 72px 72px;
+-webkit-mask-image: radial-gradient(
+ellipse at 50% 30%,
+#000 35%,
+transparent 72%
+);
+mask-image: radial-gradient(ellipse at 50% 30%, #000 35%, transparent 72%);
+}
+/* Reveal targets */
+[data-reveal] {
+opacity: 0;
+transform: translateY(22px);
+will-change: transform, opacity;
+}
+/* Hairline shimmer (animated via GSAP) */
+.hairline {
+height: 1px;
+background: rgba(255, 255, 255, 0.10);
+position: relative;
+overflow: hidden;
+}
+.hairline::after {
+content: "";
+position: absolute;
+inset: 0;
+background: linear-gradient(
+90deg,
+transparent,
+rgba(255, 255, 255, 0.55),
+transparent
+);
+transform: translateX(-120%);
+}
+/* Buttons focus */
+a:focus-visible,
+button:focus-visible {
+outline: none;
+box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.22),
+0 0 0 10px rgba(255, 255, 255, 0.06);
+border-radius: 9999px;
+}
+/* Marquee mask */
+.marquee-mask {
+mask-image: linear-gradient(
+90deg,
+transparent,
+white 18%,
+white 82%,
+transparent
+);
+-webkit-mask-image: linear-gradient(
+90deg,
+transparent,
+white 18%,
+white 82%,
+transparent
+);
+}
+@keyframes marqueeLeft {
+from {
+transform: translateX(0);
+}
+to {
+transform: translateX(-50%);
+}
+}
+@keyframes marqueeRight {
+from {
+transform: translateX(-50%);
+}
+to {
+transform: translateX(0);
+}
+}
+.animate-marquee-left {
+animation: marqueeLeft 34s linear infinite;
+}
+.animate-marquee-right {
+animation: marqueeRight 38s linear infinite;
+}
+.marquee-group:hover .animate-marquee-left,
+.marquee-group:hover .animate-marquee-right {
+animation-play-state: paused;
+}
+/* Small utility */
+.text-glow {
+text-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
+}
+/* Orbit ring */
+.ring {
+position: absolute;
+inset: 0;
+border-radius: 9999px;
+border: 1px solid rgba(255, 255, 255, 0.08);
+transform: translateZ(0);
+}
+/* Make horizontal scroller feel premium */
+.hscroll {
+scrollbar-width: none;
+}
+.hscroll::-webkit-scrollbar {
+display: none;
+}
+</style></head>
+
+  <body class="bg-grain antialiased selection:bg-white selection:text-black">
+    <!-- Mobile / Tablet Header -->
+<header class="fixed top-0 left-0 right-0 z-50 lg:hidden px-4 pt-4" id="mobile-header">
+  <!-- Toggle -->
+  <input id="nav-toggle" type="checkbox" class="peer hidden">
+
+  <div class="glass-panel rounded-full px-5 py-3 flex items-center justify-between shadow-2xl">
+    <a href="index.html" class="font-display font-bold text-lg tracking-tight">
+      NEXUS.
+    </a>
+
+    <!-- Burger / Close trigger -->
+    <label for="nav-toggle" class="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-xl border border-white/10 hover:bg-white/15 transition cursor-pointer select-none" aria-label="Toggle menu">
+      <!-- Burger -->
+      <iconify-icon icon="solar:hamburger-menu-linear" width="22" class="burger-icon transition-all duration-300"></iconify-icon>
+
+      <!-- Close -->
+      <iconify-icon icon="solar:close-circle-linear" width="22" class="close-icon absolute opacity-0 scale-75 transition-all duration-300"></iconify-icon>
+    </label>
+  </div>
+
+  <!-- Backdrop -->
+  <label for="nav-toggle" class="backdrop fixed inset-0 bg-black/40 opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"></label>
+
+  <!-- Menu panel -->
+  <nav id="mobile-menu" class="absolute top-20 left-4 right-4 glass-panel rounded-[2rem] p-5 border border-white/10 origin-top opacity-0 scale-[0.98] -translate-y-2 pointer-events-none transition-all duration-300" aria-label="Mobile navigation">
+    <!-- Top row inside panel -->
+    <div class="mb-2">
+  <div class="text-[11px] uppercase tracking-[0.22em] font-semibold text-white/40">
+    Menu
+  </div>
+</div>
+
+    <div class="flex flex-col gap-2 text-center">
+      <a href="/Features" class="py-3 text-lg font-medium hover:text-white transition">
+        Features
+      </a>
+      <a href="/Solutions" class="py-3 text-lg font-medium hover:text-white transition">
+        Solutions
+      </a>
+      <a href="/Workflow" class="py-3 text-lg font-medium hover:text-white transition">
+        Workflow
+      </a>
+      <a href="/Company" class="py-3 text-lg font-medium hover:text-white transition">
+        Company
+      </a>
+      <a href="/Pricing" class="py-3 text-lg font-medium hover:text-white transition">
+        Pricing
+      </a>
+    </div>
+
+    <!-- CTA button -->
+    <div class="mt-5 pt-4 border-t border-white/10 flex justify-center">
+      <a href="sign-in.html" class="inline-flex w-full max-w-[360px] items-center justify-center gap-3 rounded-full bg-white text-black font-semibold text-base px-6 py-4 shadow-[0_18px_40px_rgba(0,0,0,0.22)] hover:scale-[1.02] transition-all duration-300">
+        <span>Start Free Trial</span>
+        <iconify-icon icon="solar:arrow-right-linear" width="22"></iconify-icon>
+      </a>
+    </div>
+  </nav>
+
+  <style class="">
+    /* When checked: show backdrop + menu */
+    #mobile-header .peer:checked ~ .backdrop {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #mobile-header .peer:checked ~ #mobile-menu {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    /* Swap burger to close */
+    #mobile-header .peer:checked ~ div label .burger-icon {
+      opacity: 0;
+      transform: scale(0.75);
+    }
+
+    #mobile-header .peer:checked ~ div label .close-icon {
+      opacity: 1;
+      transform: scale(1);
+    }
+  </style>
+</header>
+    <!-- =========================================================
+     DESKTOP LEFT NAV (2 SEPARATE BOXES, NO LAYOUT BREAK)
+     - Buttons stay fixed size (no rail resizing)
+     - Labels expand as a floating pill to the right (smooth)
+     - CTA is a separate box below (hovering it does NOT affect top)
+     - Scroll spy highlights current section (top rail only)
+========================================================= -->
+
+    <!-- DESKTOP LEFT NAV -->
+    <nav class="hidden lg:block fixed top-1/2 -translate-y-1/2 left-6 z-50" aria-label="Section navigation" id="rail-nav">
+      <style class="">
+        #rail-nav {
+          isolation: isolate;
+        }
+        #rail-nav .rail-box {
+          position: relative;
+          width: 72px;
+          padding: 12px 10px;
+          border-radius: 18px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.03);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 10px;
+          user-select: none;
+          overflow: visible;
+        }
+        #rail-nav .rail-box::before {
+          content: "";
+          position: absolute;
+          inset: 8px;
+          border-radius: 14px;
+          background: linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.07),
+            transparent 55%,
+            rgba(255, 255, 255, 0.05)
+          );
+          opacity: 0;
+          pointer-events: none;
+          z-index: 0;
+        }
+        #rail-nav .rail-btn {
+          position: relative;
+          z-index: 1;
+          width: 50px;
+          height: 50px;
+          border-radius: 18px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.02);
+          display: grid;
+          place-items: center;
+          cursor: pointer;
+          outline: none;
+          transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+            background-color 260ms cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 260ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #rail-nav .rail-btn:hover,
+        #rail-nav .rail-btn:focus-visible {
+          transform: translateX(2px);
+          background: rgba(255, 255, 255, 0.05);
+          border-color: rgba(255, 255, 255, 0.16);
+        }
+        #rail-nav .rail-icon {
+          width: 34px;
+          height: 34px;
+          border-radius: 12px;
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.03);
+          display: grid;
+          place-items: center;
+        }
+        #rail-nav .rail-icon iconify-icon {
+          color: rgba(255, 255, 255, 0.9);
+        }
+        #rail-nav .rail-btn.is-active {
+          background: rgba(255, 255, 255, 0.06);
+          border-color: rgba(255, 255, 255, 0.18);
+        }
+        #rail-nav .rail-btn.is-active .rail-icon {
+          background: rgba(255, 255, 255, 0.92);
+          border-color: rgba(255, 255, 255, 0.22);
+          box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.06), 0 18px 40px rgba(0, 0, 0, 0.35);
+        }
+        #rail-nav .rail-btn.is-active .rail-icon iconify-icon {
+          color: #0a0a0a;
+        }
+
+        #rail-nav .rail-label {
+          position: absolute;
+          left: calc(100% + 12px);
+          top: 50%;
+          transform: translateY(-50%) scaleX(0.92);
+          transform-origin: left center;
+          height: 42px;
+          display: inline-flex;
+          align-items: center;
+          padding: 0 14px;
+          border-radius: 14px;
+          background: linear-gradient(
+              180deg,
+              rgba(255, 255, 255, 0.14),
+              rgba(255, 255, 255, 0.06) 45%,
+              rgba(255, 255, 255, 0.03)
+            ),
+            radial-gradient(120% 140% at 20% 10%, rgba(255, 255, 255, 0.1), transparent 55%);
+          border: 1px solid rgba(255, 255, 255, 0.16);
+          backdrop-filter: blur(18px) saturate(1.2);
+          -webkit-backdrop-filter: blur(18px) saturate(1.2);
+          box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.18),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+          color: rgba(255, 255, 255, 0.92);
+          font-size: 12px;
+          font-weight: 800;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          white-space: nowrap;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 220ms cubic-bezier(0.16, 1, 0.3, 1),
+            transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #rail-nav .rail-btn:hover .rail-label,
+        #rail-nav .rail-btn:focus-visible .rail-label {
+          opacity: 1;
+          transform: translateY(-50%) scaleX(1);
+        }
+
+        #rail-nav .cta-wrap {
+          margin-top: 16px;
+        }
+        #rail-nav .rail-btn.cta .rail-icon {
+          background: rgba(255, 255, 255, 0.92);
+          border-color: rgba(255, 255, 255, 0.22);
+          box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.06), 0 18px 40px rgba(0, 0, 0, 0.35);
+        }
+        #rail-nav .rail-btn.cta .rail-icon iconify-icon {
+          color: #0a0a0a;
+        }
+      </style>
+
+      <div class="rail-box" id="rail-sections">
+        <a class="rail-btn" href="index.html" data-target="#home">
+          <span class="rail-icon"><iconify-icon icon="solar:home-angle-2-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Home</span>
+        </a>
+        <a class="rail-btn" href="features.html" data-target="#features">
+          <span class="rail-icon"><iconify-icon icon="solar:widget-3-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Features</span>
+        </a>
+        <a class="rail-btn" href="solutions.html" data-target="#solutions">
+          <span class="rail-icon"><iconify-icon icon="solar:layers-linear" width="18"></iconify-icon></span>
+          <span class="rail-label">Solutions</span>
+        </a>
+        <a class="rail-btn is-active" href="workflow.html" data-target="#workflow">
+          <span class="rail-icon"><iconify-icon icon="solar:graph-new-up-linear" width="18"></iconify-icon></span>
+          <span class="rail-label">Workflow</span>
+        </a>
+        <a class="rail-btn" href="company.html" data-target="#company">
+          <span class="rail-icon"><iconify-icon icon="solar:buildings-3-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Company</span>
+        </a>
+        <a class="rail-btn" href="pricing.html" data-target="#pricing">
+          <span class="rail-icon"><iconify-icon icon="solar:tag-price-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Pricing</span>
+        </a>
+      </div>
+
+      <div class="cta-wrap">
+        <div class="rail-box">
+          <a class="rail-btn cta" href="sign-in.html" data-target="#contact">
+  <span class="rail-icon cursor-pointer" onclick="window.location.href='sign-in.html'" role="button"><iconify-icon icon="solar:arrow-right-linear" width="18" class=""></iconify-icon></span>
+  <span class="rail-label">Start Free Trial</span>
+</a>
+        </div>
+      </div>
+
+      <script class="">
+        (() => {
+          const sectionRail = document.getElementById("rail-sections");
+          if (!sectionRail) return;
+
+          const allBtns = Array.from(document.querySelectorAll("#rail-nav .rail-btn")).filter(
+            (a) => a.dataset.target
+          );
+
+          allBtns.forEach((a) => {
+            a.addEventListener("click", (e) => {
+              const el = document.querySelector(a.dataset.target);
+              if (!el) return;
+              e.preventDefault();
+              el.scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+          });
+
+          const spyBtns = Array.from(sectionRail.querySelectorAll(".rail-btn"));
+          const spyTargets = spyBtns.map((a) => document.querySelector(a.dataset.target)).filter(Boolean);
+
+          let activeIndex = 0;
+          const setActive = (idx) => {
+            activeIndex = Math.max(0, Math.min(spyBtns.length - 1, idx));
+            spyBtns.forEach((a, i) => a.classList.toggle("is-active", i === activeIndex));
+          };
+
+          const io = new IntersectionObserver(
+            (entries) => {
+              const visible = entries.filter((e) => e.isIntersecting);
+              if (!visible.length) return;
+
+              const mid = window.innerHeight * 0.52;
+              visible.sort((a, b) => {
+                const da = Math.abs(a.boundingClientRect.top + a.boundingClientRect.height / 2 - mid);
+                const db = Math.abs(b.boundingClientRect.top + b.boundingClientRect.height / 2 - mid);
+                return da - db;
+              });
+
+              const best = visible[0].target;
+              const idx = spyTargets.indexOf(best);
+              if (idx !== -1 && idx !== activeIndex) setActive(idx);
+            },
+            { threshold: [0.22, 0.35, 0.5, 0.65] }
+          );
+
+          spyTargets.forEach((s) => io.observe(s));
+        })();
+      </script>
+    </nav>
+
+    <!-- HERO / HOME -->
+    <section id="home" class="relative w-full min-h-screen bg-black flex items-center pt-24 lg:pt-0 overflow-hidden">
+  <div class="section-aura"></div>
+  <div class="section-grid"></div>
+
+  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 w-full relative z-10 items-center">
+    <div class="flex flex-col justify-center">
+      <div class="inline-flex items-center gap-3 mb-8" data-reveal="">
+        <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase text-white/65 glass-panel border border-white/10">
+              Workflow
+            </span>
+        <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">
+              Calm, enterprise-grade execution
+            </span>
+      </div>
+
+      <h1 class="text-6xl md:text-7xl lg:text-8xl font-display font-semibold tracking-tighter text-white leading-[0.9] mb-8" data-reveal="">
+        The workflow
+        <br>
+        <span class="text-neutral-500 font-serif italic tracking-normal text-6xl lg:text-7xl">
+              behind modern
+            </span>
+        <br>
+            infrastructure.
+      </h1>
+
+      <p class="text-lg text-neutral-400 max-w-md leading-relaxed" data-reveal="">
+        Orchestrate your entire cloud lifecycle from a single, quiet control plane. Designed to feel predictable under
+        pressure.
+      </p>
+
+      <div class="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4" data-reveal="">
+        <a href="#workflow" class="px-7 py-3.5 rounded-full bg-white text-black font-medium hover:bg-neutral-200 transition">
+          See the workflow
+        </a>
+        <a href="#contact" class="px-7 py-3.5 rounded-full border border-white/10 text-white hover:bg-white/5 transition backdrop-blur-sm">
+          Talk to an architect
+        </a>
+      </div>
+
+      <div class="mt-12 max-w-md space-y-3" data-reveal="">
+        <div class="hairline rounded-full"></div>
+        <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-widest text-white/45">
+          <span>Plan</span><span>Build</span><span>Ship</span><span class="">Observe</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero stack (animated) -->
+  <div class="flex w-full h-[600px] relative items-center justify-center" id="hero-stack">
+    <div class="hero-panel absolute w-64 h-80 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md shadow-2xl z-10" style="transform: translate(0px, -18px) rotate(-6.0001deg); top: 15%; left: 14%; translate: none; rotate: none; scale: none;">
+    </div>
+    <div class="hero-panel absolute w-64 h-80 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md shadow-2xl z-20" style="transform: translate3d(0px, -18px, 40px) rotate(-3.00023deg); top: 23%; left: 32%; translate: none; rotate: none; scale: none;">
+    </div>
+    <div class="hero-panel absolute w-64 h-80 bg-white/10 border border-white/20 rounded-2xl backdrop-blur-md shadow-2xl z-30 flex items-center justify-center" style="transform: translate3d(0px, -17.9999px, 80px); top: 31%; left: 50%; margin-left: -8rem; translate: none; rotate: none; scale: none;">
+      <div class="text-center">
+        <iconify-icon icon="solar:layers-minimalistic-bold" width="64" class="text-white/80"></iconify-icon>
+        <div class="mt-5 text-[10px] font-mono uppercase tracking-[0.22em] text-white/45">Orchestration</div>
+        <div class="mt-2 text-sm text-white/75 font-medium">Single control plane</div>
+      </div>
+    </div>
+  </div>
+
+  
+</div></section>
+
+    <!-- FEATURES (magnetic cards + stagger + subtle clip reveal) -->
+    <section id="features" class="relative py-32 bg-black overflow-hidden">
+      <div class="section-aura" style="opacity:.55"></div>
+
+      <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end mb-12">
+          <div class="lg:col-span-7">
+            <h2 class="text-4xl md:text-5xl font-display font-semibold text-white tracking-tight" data-reveal="">
+              Designed for teams that ship calmly.
+            </h2>
+            <p class="mt-5 text-neutral-400 max-w-xl leading-relaxed" data-reveal="">
+              A clean set of primitives: repeatable environments, policy-first automation, and observability you can trust at 3am.
+            </p>
+          </div>
+          <div class="lg:col-span-5 lg:text-right" data-reveal="">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-panel border border-white/10">
+              <span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
+              <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/55">Mono-first system</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <article class="spotlight-card rounded-2xl p-6 glass-panel" data-reveal="" data-magnetic="">
+            <div class="flex items-center justify-between">
+              <div class="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+                <iconify-icon icon="solar:cpu-linear" width="22" class="text-white/85"></iconify-icon>
+              </div>
+              <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">01</span>
+            </div>
+            <h3 class="mt-6 text-lg font-semibold text-white">Deterministic builds</h3>
+            <p class="mt-2 text-sm text-neutral-400 leading-relaxed">
+              Identical outputs across regions. Less drift, fewer surprises, faster rollbacks.
+            </p>
+            <div class="mt-6 hairline rounded-full"></div>
+          </article>
+
+          <article class="spotlight-card rounded-2xl p-6 glass-panel" data-reveal="" data-magnetic="">
+            <div class="flex items-center justify-between">
+              <div class="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+                <iconify-icon icon="solar:shield-keyhole-linear" width="22" class="text-white/85"></iconify-icon>
+              </div>
+              <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">02</span>
+            </div>
+            <h3 class="mt-6 text-lg font-semibold text-white">Policy-first security</h3>
+            <p class="mt-2 text-sm text-neutral-400 leading-relaxed">
+              Guardrails built into the workflow. Approvals, scopes, and access stay explicit.
+            </p>
+            <div class="mt-6 hairline rounded-full"></div>
+          </article>
+
+          <article class="spotlight-card rounded-2xl p-6 glass-panel" data-reveal="" data-magnetic="">
+            <div class="flex items-center justify-between">
+              <div class="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+                <iconify-icon icon="solar:eye-linear" width="22" class="text-white/85"></iconify-icon>
+              </div>
+              <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">03</span>
+            </div>
+            <h3 class="mt-6 text-lg font-semibold text-white">Quiet observability</h3>
+            <p class="mt-2 text-sm text-neutral-400 leading-relaxed">
+              Signal over noise. Trace and audit what matters without drowning the team.
+            </p>
+            <div class="mt-6 hairline rounded-full"></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOLUTIONS (pinned “spec sheet” + horizontal cards) -->
+    <section id="solutions" class="relative py-32 bg-neutral-950 border-t border-white/5 overflow-hidden">
+      <div class="section-aura" style="opacity:.45"></div>
+
+      <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          <!-- Pinned spec -->
+          <div class="lg:col-span-4">
+            <div class="pin-spacer" style="order: 0; place-self: auto; grid-area: auto; z-index: auto; float: none; flex-shrink: 1; display: block; margin: 0px; inset: auto; position: relative; flex-basis: auto; overflow: visible; box-sizing: border-box; width: 384px; height: 430px; padding: 0px;"><div class="pin-spacer" style="order: 0; place-self: auto; grid-area: auto; z-index: auto; float: none; flex-shrink: 1; display: block; margin: 0px; inset: 0px auto auto 0px; position: relative; flex-basis: auto; overflow: visible; box-sizing: border-box; width: 384px; height: 430px; padding: 0px;"><div class="pin-spacer" style="order: 0; place-self: auto; grid-area: auto; z-index: auto; float: none; flex-shrink: 1; display: block; margin: 0px; inset: 0px auto auto 0px; position: relative; flex-basis: auto; overflow: visible; box-sizing: border-box; width: 384px; height: 430px; padding: 0px;"><div class="pin-spacer" style="order: 0; place-self: auto; grid-area: auto; z-index: auto; float: none; flex-shrink: 1; display: block; margin: 0px; inset: 0px auto auto 0px; position: relative; flex-basis: auto; overflow: visible; box-sizing: border-box; width: 384px; height: 430px; padding: 0px;"><div class="pin-spacer" style="order: 0; place-self: auto; grid-area: auto; z-index: auto; float: none; flex-shrink: 1; display: block; margin: 0px; inset: 0px auto auto 0px; position: relative; flex-basis: auto; overflow: visible; box-sizing: border-box; width: 384px; height: 430px; padding: 0px;"><div class="pin-spacer" style="order: 0; place-self: auto; grid-area: auto; z-index: auto; float: none; flex-shrink: 1; display: block; margin: 0px; inset: 0px auto auto 0px; position: relative; flex-basis: auto; overflow: visible; box-sizing: border-box; width: 384px; height: 430px; padding: 0px;"><div class="pin-spacer" style="order: 0; place-self: auto; grid-area: auto; z-index: auto; float: none; flex-shrink: 1; display: block; margin: 0px; inset: 0px auto auto 0px; position: relative; flex-basis: auto; overflow: visible; box-sizing: border-box; width: 384px; height: 430px; padding: 0px;"><div class="pin-spacer" style="order: 0; place-self: auto; grid-area: auto; z-index: auto; float: none; flex-shrink: 1; display: block; margin: 0px; inset: 0px auto auto 0px; position: relative; flex-basis: auto; overflow: visible; box-sizing: border-box; width: 384px; height: 430px; padding: 0px;"><div class="pin-spacer" style="order: 0; place-self: auto; grid-area: auto; z-index: auto; float: none; flex-shrink: 1; display: block; margin: 0px; inset: 0px auto auto 0px; position: relative; flex-basis: auto; overflow: visible; box-sizing: border-box; width: 384px; height: 430px; padding: 0px;"><div class="pin-spacer" style="order: 0; place-self: auto; grid-area: auto; z-index: auto; float: none; flex-shrink: 1; display: block; margin: 0px; inset: 0px auto auto 0px; position: relative; flex-basis: auto; overflow: visible; box-sizing: border-box; width: 384px; height: 430px; padding: 0px;"><div class="pin-spacer" style="order: 0; place-self: auto; grid-area: auto; z-index: auto; float: none; flex-shrink: 1; display: block; margin: 0px; inset: 0px auto auto 0px; position: relative; flex-basis: auto; overflow: visible; box-sizing: border-box; width: 384px; height: 430px; padding: 0px;"><div class="pin-spacer" style="order: 0; place-self: auto; grid-area: auto; z-index: auto; float: none; flex-shrink: 1; display: block; margin: 0px; inset: 0px auto auto 0px; position: relative; flex-basis: auto; overflow: visible; box-sizing: border-box; width: 384px; height: 430px; padding: 0px;"><div id="spec-sheet" class="glass-panel rounded-3xl p-7 border border-white/10 shadow-2xl" style="inset: 0px auto auto 0px; margin: 0px; max-width: 384px; width: 384px; max-height: 429.75px; height: 429.75px; padding: 28px;">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/55">Solutions</span>
+                <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">Spec sheet</span>
+              </div>
+
+              <h3 class="mt-6 text-2xl font-display font-semibold text-white tracking-tight">
+                Modular, not noisy.
+              </h3>
+              <p class="mt-3 text-sm text-neutral-400 leading-relaxed">
+                Pick what you need. Each module snaps into the same workflow surface with consistent controls and audit trails.
+              </p>
+
+              <div class="mt-7 space-y-3">
+                <div class="flex items-center justify-between text-[11px] text-white/55">
+                  <span class="font-mono uppercase tracking-widest">Provision</span>
+                  <span class="font-mono text-white/35">Managed</span>
+                </div>
+                <div class="hairline rounded-full"></div>
+
+                <div class="flex items-center justify-between text-[11px] text-white/55">
+                  <span class="font-mono uppercase tracking-widest">Deploy</span>
+                  <span class="font-mono text-white/35">Atomic</span>
+                </div>
+                <div class="hairline rounded-full"></div>
+
+                <div class="flex items-center justify-between text-[11px] text-white/55">
+                  <span class="font-mono uppercase tracking-widest">Observe</span>
+                  <span class="font-mono text-white/35">Unified</span>
+                </div>
+                <div class="hairline rounded-full"></div>
+              </div>
+
+              <div class="mt-8">
+                <a href="#pricing" class="inline-flex items-center justify-center w-full px-6 py-3 rounded-full bg-white text-black font-medium hover:bg-neutral-200 transition">
+                  Explore pricing
+                </a>
+              </div>
+            </div></div></div></div></div></div></div></div></div></div></div></div></div>
+          </div>
+
+          <!-- Horizontal cards -->
+          <div class="lg:col-span-8">
+            <div class="flex items-end justify-between gap-6 mb-6">
+              <div class="">
+                <h2 class="text-3xl md:text-4xl font-display font-semibold text-white tracking-tight" data-reveal="">
+                  Modules that feel like one product.
+                </h2>
+                <p class="mt-3 text-neutral-400 max-w-2xl" data-reveal="">
+                  A calm UI layer over complex systems: provisioning, deployment, policies, and observability.
+                </p>
+              </div>
+              <div class="hidden md:flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.22em] text-white/40" data-reveal="">
+                <span>Scroll</span>
+                <iconify-icon icon="solar:arrow-right-linear" width="16" class="text-white/50"></iconify-icon>
+              </div>
+            </div>
+
+            <div class="hscroll flex overflow-x-auto snap-x snap-mandatory pb-2 gap-x-5 gap-y-5" id="hscroll" style="mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);">
+              <div class="snap-start min-w-[320px] md:min-w-[360px] glass-panel border border-white/10 rounded-3xl p-6 spotlight-card" data-reveal="">
+                <div class="flex items-center justify-between">
+                  <div class="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+                    <iconify-icon icon="solar:server-minimalistic-linear" width="20" class="text-white/85"></iconify-icon>
+                  </div>
+                  <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">Provision</span>
+                </div>
+                <h3 class="mt-5 text-lg font-semibold text-white">Environments</h3>
+                <p class="mt-2 text-sm text-neutral-400 leading-relaxed">
+                  Spin up identical stacks across regions with explicit drift reporting and safe defaults.
+                </p>
+                <div class="mt-6 hairline rounded-full"></div>
+              </div>
+
+              <div class="snap-start min-w-[320px] md:min-w-[360px] glass-panel border border-white/10 rounded-3xl p-6 spotlight-card" data-reveal="">
+                <div class="flex items-center justify-between">
+                  <div class="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+                    <iconify-icon icon="solar:rocket-linear" width="20" class="text-white/85"></iconify-icon>
+                  </div>
+                  <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">Deploy</span>
+                </div>
+                <h3 class="mt-5 text-lg font-semibold text-white">Releases</h3>
+                <p class="mt-2 text-sm text-neutral-400 leading-relaxed">
+                  Atomic deploys with progressive rollout, instant rollback, and zero ambiguity in states.
+                </p>
+                <div class="mt-6 hairline rounded-full"></div>
+              </div>
+
+              <div class="snap-start min-w-[320px] md:min-w-[360px] glass-panel border border-white/10 rounded-3xl p-6 spotlight-card" data-reveal="">
+                <div class="flex items-center justify-between">
+                  <div class="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+                    <iconify-icon icon="solar:checklist-minimalistic-linear" width="20" class="text-white/85"></iconify-icon>
+                  </div>
+                  <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">Policy</span>
+                </div>
+                <h3 class="mt-5 text-lg font-semibold text-white">Approvals</h3>
+                <p class="mt-2 text-sm text-neutral-400 leading-relaxed">
+                  Route changes through policy gates. Make approvals obvious and consistent across teams.
+                </p>
+                <div class="mt-6 hairline rounded-full"></div>
+              </div>
+
+              <div class="snap-start min-w-[320px] md:min-w-[360px] glass-panel border border-white/10 rounded-3xl p-6 spotlight-card" data-reveal="">
+                <div class="flex items-center justify-between">
+                  <div class="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+                    <iconify-icon icon="solar:graph-new-up-linear" width="20" class="text-white/85"></iconify-icon>
+                  </div>
+                  <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">Observe</span>
+                </div>
+                <h3 class="mt-5 text-lg font-semibold text-white">Telemetry</h3>
+                <p class="mt-2 text-sm text-neutral-400 leading-relaxed">
+                  Correlate logs, traces, and events into one readable narrative for incident response.
+                </p>
+                <div class="mt-6 hairline rounded-full"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKFLOW (timeline + pinned bar + orbit) -->
+    <section id="workflow" class="relative py-32 bg-black border-t border-white/5 overflow-hidden">
+      <div class="section-grid" style="opacity:.18"></div>
+      <div class="section-aura" style="opacity:.5"></div>
+
+      <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-14 items-start">
+          <div class="lg:col-span-5">
+            <h2 class="text-4xl md:text-5xl font-display font-semibold text-white tracking-tight" data-reveal="">
+              A workflow you can audit.
+            </h2>
+            <p class="mt-5 text-neutral-400 leading-relaxed max-w-xl" data-reveal="">
+              Every step is readable: who changed what, why it changed, and how to undo it. No hidden magic, no confusion.
+            </p>
+
+            <div class="glass-panel border-white/10 border rounded-3xl mt-10 p-8 shadow-2xl relative overflow-hidden" data-reveal="">
+  <!-- Subtle background glow -->
+  <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white/5 to-transparent opacity-30 pointer-events-none"></div>
+
+  <!-- Header class="flex items-center gap-3">
+      <span class="relative flex h-2 w-2">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+      </span>
+      <span class="text-[11px] font-mono uppercase tracking-[0.2em] text-white/90 font-medium">Pipeline</span>
+    </div>
+    <span class="text-[10px] font-mono uppercase tracking-[0.2em] text-white/30">Live State</span>
+  </div>
+
+  <!-- Animated Schema -->
+  <div class="mt-10 relative aspect-square max-w-[280px] mx-auto" id="pipeline-orbit">
+    <!-- Clean Rings -->
+    <div class="absolute inset-0 rounded-full border border-white/5"></div>
+    <div class="absolute inset-[1px] rounded-full border border-white/5 opacity-50 blur-[1px]"></div>
+    <div class="absolute inset-[33%] rounded-full border border-dashed border-white/10 opacity-50"></div>
+    <div class="absolute inset-[66%] rounded-full border border-white/5 opacity-30"></div>
+
+    <!-- Nodes -->
+    <div class="pipeline-node absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2">
+      <div class="w-10 h-10 rounded-full bg-neutral-950 border border-white/15 flex items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.4)] z-10 hover:border-white/40 transition-colors duration-300">
+        <iconify-icon icon="solar:file-text-linear" width="16" class="text-white/70"></iconify-icon>
+      </div>
+    </div>
+    
+    <div class="pipeline-node absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2">
+      <div class="w-10 h-10 rounded-full bg-neutral-950 border border-white/15 flex items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.4)] z-10 hover:border-white/40 transition-colors duration-300">
+        <iconify-icon icon="solar:code-square-linear" width="16" class="text-white/70"></iconify-icon>
+      </div>
+    </div>
+    
+    <div class="pipeline-node absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2">
+      <div class="w-10 h-10 rounded-full bg-neutral-950 border border-white/15 flex items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.4)] z-10 hover:border-white/40 transition-colors duration-300">
+        <iconify-icon icon="solar:rocket-2-linear" width="16" class="text-white/70"></iconify-icon>
+      </div>
+    </div>
+    
+    <div class="pipeline-node absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2">
+      <div class="w-10 h-10 rounded-full bg-neutral-950 border border-white/15 flex items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.4)] z-10 hover:border-white/40 transition-colors duration-300">
+        <iconify-icon icon="solar:chart-2-linear" width="16" class="text-white/70"></iconify-icon>
+      </div>
+    </div>
+
+    <!-- Center Hub -->
+    <div class="absolute inset-0 flex items-center justify-center">
+      <div class="relative w-20 h-20 flex items-center justify-center">
+        <div class="absolute inset-0 bg-white/5 blur-xl rounded-full"></div>
+        <div class="w-14 h-14 rounded-full bg-neutral-900/90 border border-white/10 backdrop-blur-md flex items-center justify-center relative z-10 shadow-2xl">
+          <iconify-icon icon="solar:layers-minimalistic-linear" width="20" class="text-white"></iconify-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Flow -->
+  <div class="mt-12 flex items-center justify-between px-2">
+    <div class="flex flex-col items-center gap-2 group cursor-default">
+      <div class="w-1 h-1 rounded-full bg-white/40 group-hover:bg-white group-hover:scale-125 transition-all"></div>
+      <span class="text-[9px] font-mono uppercase tracking-[0.2em] text-white/30 group-hover:text-white/60 transition-colors">Plan</span>
+    </div>
+    <div class="flex-1 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mx-2"></div>
+    <div class="flex flex-col items-center gap-2 group cursor-default">
+      <div class="w-1 h-1 rounded-full bg-white/40 group-hover:bg-white group-hover:scale-125 transition-all"></div>
+      <span class="text-[9px] font-mono uppercase tracking-[0.2em] text-white/30 group-hover:text-white/60 transition-colors">Build</span>
+    </div>
+    <div class="flex-1 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mx-2"></div>
+    <div class="flex flex-col items-center gap-2 group cursor-default">
+      <div class="w-1 h-1 rounded-full bg-white/40 group-hover:bg-white group-hover:scale-125 transition-all"></div>
+      <span class="text-[9px] font-mono uppercase tracking-[0.2em] text-white/30 group-hover:text-white/60 transition-colors">Ship</span>
+    </div>
+    <div class="flex-1 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mx-2"></div>
+    <div class="flex flex-col items-center gap-2 group cursor-default">
+      <div class="w-1 h-1 rounded-full bg-white/40 group-hover:bg-white group-hover:scale-125 transition-all"></div>
+      <span class="text-[9px] font-mono uppercase tracking-[0.2em] text-white/30 group-hover:text-white/60 transition-colors">Observe</span>
+    </div>
+  </div>
+</div>
+          </div>
+
+          <div class="lg:col-span-7">
+            <!-- timeline -->
+            <div class="glass-panel rounded-3xl border border-white/10 overflow-hidden shadow-2xl">
+              <div class="p-7 md:p-8">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-semibold text-white" data-reveal="">Execution timeline</h3>
+                  <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35" data-reveal="">
+                    Build log
+                  </span>
+                </div>
+
+                <div class="mt-6 hairline rounded-full" data-reveal=""></div>
+
+                <div id="build" class="mt-8 space-y-6">
+                  <div class="timeline-node grid grid-cols-12 gap-4 items-start" style="opacity:0; transform: translateY(18px);">
+                    <div class="col-span-3 md:col-span-2 text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">Step 01</div>
+                    <div class="col-span-9 md:col-span-10">
+                      <div class="flex items-center justify-between">
+                        <div class="text-white font-medium">Validate changes</div>
+                        <div class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">Policy</div>
+                      </div>
+                      <p class="mt-2 text-sm text-neutral-400 leading-relaxed">
+                        Run checks, ensure access scopes are correct, confirm approvals are attached.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="timeline-node grid grid-cols-12 gap-4 items-start" style="opacity:0; transform: translateY(18px);">
+                    <div class="col-span-3 md:col-span-2 text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">Step 02</div>
+                    <div class="col-span-9 md:col-span-10">
+                      <div class="flex items-center justify-between">
+                        <div class="text-white font-medium">Build artifacts</div>
+                        <div class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">CI</div>
+                      </div>
+                      <p class="mt-2 text-sm text-neutral-400 leading-relaxed">
+                        Deterministic builds with reproducible outputs across regions.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="timeline-node grid grid-cols-12 gap-4 items-start" style="opacity:0; transform: translateY(18px);">
+                    <div class="col-span-3 md:col-span-2 text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">Step 03</div>
+                    <div class="col-span-9 md:col-span-10">
+                      <div class="flex items-center justify-between">
+                        <div class="text-white font-medium">Progressive rollout</div>
+                        <div class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">CD</div>
+                      </div>
+                      <p class="mt-2 text-sm text-neutral-400 leading-relaxed">
+                        Controlled release with automatic rollback triggers and safe thresholds.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="timeline-node grid grid-cols-12 gap-4 items-start" style="opacity:0; transform: translateY(18px);">
+                    <div class="col-span-3 md:col-span-2 text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">Step 04</div>
+                    <div class="col-span-9 md:col-span-10">
+                      <div class="flex items-center justify-between">
+                        <div class="text-white font-medium">Observe &amp; annotate</div>
+                        <div class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">Ops</div>
+                      </div>
+                      <p class="mt-2 text-sm text-neutral-400 leading-relaxed">
+                        Correlate events, logs, and traces into a readable incident timeline.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-8">
+                  <div class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">Progress</div>
+                  <div class="mt-3 h-2 rounded-full bg-white/8 border border-white/10 overflow-hidden">
+                    <div id="timeline-bar" class="h-full w-0 bg-white/22 rounded-full" style="width: 100%;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- quiet footer strip -->
+              <div class="px-7 py-5 border-t border-white/5 bg-white/2">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/40">Audit trail</span>
+                  <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/40">Readable states</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- auto panel (tilt on scroll) -->
+            <div id="auto-panel" class="mt-8 glass-panel rounded-3xl p-7 border border-white/10 shadow-2xl">
+              <div class="flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-white" data-reveal="">Automation that stays explicit</h3>
+                <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35" data-reveal="">Controls</span>
+              </div>
+              <p class="mt-3 text-sm text-neutral-400 leading-relaxed max-w-2xl" data-reveal="">
+                Automate the repetitive parts, but keep intent visible. No surprise changes, no silent drift.
+              </p>
+
+              <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="spotlight-card rounded-2xl p-5 glass-panel" data-reveal="">
+                  <div class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">Rules</div>
+                  <div class="mt-3 text-white font-medium">Guardrails</div>
+                  <div class="mt-2 text-sm text-neutral-400">Policies define what’s allowed and what gets blocked.</div>
+                </div>
+                <div class="spotlight-card rounded-2xl p-5 glass-panel" data-reveal="">
+                  <div class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">Changes</div>
+                  <div class="mt-3 text-white font-medium">Diffs</div>
+                  <div class="mt-2 text-sm text-neutral-400">Every action shows the exact delta before it runs.</div>
+                </div>
+                <div class="spotlight-card rounded-2xl p-5 glass-panel" data-reveal="">
+                  <div class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">Undo</div>
+                  <div class="mt-3 text-white font-medium">Rollback</div>
+                  <div class="mt-2 text-sm text-neutral-400">Revert safely with consistent state recovery.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPANY (icons grid reveal + subtle line sweep) -->
+    <section id="company" class="relative py-32 bg-neutral-950 border-t border-white/5 overflow-hidden">
+  <div class="section-aura" style="opacity:.55"></div>
+
+  <div class="max-w-7xl mx-auto px-6 relative z-10">
+    <div class="text-center mb-14">
+      <h2 class="text-3xl md:text-4xl font-display font-semibold text-white tracking-tight" data-reveal="">
+        Global edge, quietly managed.
+      </h2>
+      <p class="mt-4 text-neutral-400 max-w-2xl mx-auto" data-reveal="">
+        A platform designed for scale without visual noise. Consistent controls, consistent outcomes.
+      </p>
+    </div>
+
+    <div class="relative">
+      <div class="absolute top-1/2 left-0 w-full h-px bg-white/10 -translate-y-1/2 hidden md:block overflow-hidden">
+        <div id="company-sweep" class="absolute top-0 left-0 h-full w-1/3 bg-gradient-to-r from-transparent via-white/50 to-transparent"></div>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 relative z-10">
+        <div class="company-step flex flex-col items-center gap-6 group" data-reveal="">
+          <div class="w-16 h-16 rounded-2xl glass-panel border border-white/10 flex items-center justify-center transition group-hover:border-white/30 group-hover:scale-110 bg-black">
+            <iconify-icon icon="solar:cloud-upload-linear" width="24" class="text-white"></iconify-icon>
+          </div>
+          <span class="text-sm font-mono uppercase tracking-widest text-neutral-400">Ingest</span>
+        </div>
+
+        <div class="company-step flex flex-col items-center gap-6 group" data-reveal="">
+          <div class="w-16 h-16 rounded-2xl glass-panel border border-white/10 flex items-center justify-center transition group-hover:border-white/30 group-hover:scale-110 bg-black">
+            <iconify-icon icon="solar:cpu-linear" width="24" class="text-white"></iconify-icon>
+          </div>
+          <span class="text-sm font-mono uppercase tracking-widest text-neutral-400">Process</span>
+        </div>
+
+        <div class="company-step flex flex-col items-center gap-6 group" data-reveal="">
+          <div class="glass-panel flex transition group-hover:border-white/30 group-hover:scale-110 bg-black w-16 h-16 border-white/10 border rounded-2xl items-center justify-center">
+            <iconify-icon icon="solar:database-linear" width="24" class="text-white"></iconify-icon>
+          </div>
+          <span class="text-sm font-mono uppercase tracking-widest text-neutral-400">Store</span>
+        </div>
+
+        <div class="company-step flex flex-col items-center gap-6 group" data-reveal="">
+          <div class="glass-panel flex transition group-hover:border-white/30 group-hover:scale-110 bg-black w-16 h-16 border-white/10 border rounded-2xl items-center justify-center">
+  <iconify-icon icon="solar:atom-outline" width="24" class="text-white" height="24" style="color: rgb(255, 255, 255);"></iconify-icon>
+</div>
+          <span class="text-sm font-mono uppercase tracking-widest text-neutral-400">Serve</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- PRICING (counter + reveal + subtle split) -->
+    <section id="pricing" class="relative py-32 bg-black border-t border-white/5 overflow-hidden">
+      <div class="section-aura" style="opacity:.45"></div>
+
+      <div class="max-w-6xl mx-auto px-6 relative z-10">
+        <div class="text-center mb-12">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-panel border border-white/10" data-reveal="">
+            <span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
+            <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/55">Performance stats</span>
+          </div>
+
+          <h2 class="mt-6 text-4xl md:text-5xl font-display font-semibold text-white tracking-tight" data-reveal="">
+            Numbers that stay stable.
+          </h2>
+          <p class="mt-4 text-neutral-400 max-w-2xl mx-auto" data-reveal="">
+            Measured at the edge, designed for real production conditions.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div class="glass-panel border border-white/10 rounded-3xl p-6 text-center spotlight-card" data-reveal="">
+            <div class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">Latency</div>
+            <div class="mt-3 text-4xl md:text-5xl font-display font-semibold text-white tracking-tight">
+              <span class="counter" data-to="5">5</span><span class="text-white/70">ms</span>
+            </div>
+            <div class="mt-4 hairline rounded-full"></div>
+          </div>
+
+          <div class="glass-panel border border-white/10 rounded-3xl p-6 text-center spotlight-card" data-reveal="">
+            <div class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">Uptime</div>
+            <div class="mt-3 text-4xl md:text-5xl font-display font-semibold text-white tracking-tight">
+              <span class="counter" data-to="99.99">99.99</span><span class="text-white/70">%</span>
+            </div>
+            <div class="mt-4 hairline rounded-full"></div>
+          </div>
+
+          <div class="glass-panel border border-white/10 rounded-3xl p-6 text-center spotlight-card" data-reveal="">
+            <div class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">Ingest</div>
+            <div class="mt-3 text-4xl md:text-5xl font-display font-semibold text-white tracking-tight">
+              <span class="counter" data-to="100">100</span><span class="text-white/70">TB</span>
+            </div>
+            <div class="mt-4 hairline rounded-full"></div>
+          </div>
+
+          <div class="glass-panel border border-white/10 rounded-3xl p-6 text-center spotlight-card" data-reveal="">
+            <div class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">Security</div>
+            <div class="mt-3 text-4xl md:text-5xl font-display font-semibold text-white tracking-tight">
+              AES<span class="text-white/70">-256</span>
+            </div>
+            <div class="mt-4 hairline rounded-full"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT (soft entrance + button micro) -->
+    <section class="overflow-hidden bg-neutral-950 border-white/5 border-t pt-32 pb-32 relative" id="contact">
+      <div class="section-aura" style="opacity:.55"></div>
+
+      <div class="max-w-4xl mx-auto px-6 relative z-10 text-center">
+        <h2 class="text-4xl md:text-5xl font-display font-semibold text-white tracking-tight mb-7" data-reveal="">
+          Choose the workflow that fits your scale.
+        </h2>
+        <p class="text-neutral-400 leading-relaxed max-w-2xl mx-auto" data-reveal="">
+          Get a guided walkthrough of the control plane, policies, and rollout model. No hype, just clarity.
+        </p>
+
+        <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4" data-reveal="">
+          <a href="pricing.html" class="hover:bg-neutral-200 transition font-medium text-black bg-white rounded-full pt-4 pr-8 pb-4 pl-8">
+  Explore Pricing
+</a>
+          <a href="#" class="px-8 py-4 rounded-full border border-white/10 text-white hover:bg-white/5 transition backdrop-blur-sm">
+            Talk to Sales
+          </a>
+        </div>
+
+        <div class="mt-14 max-w-xl mx-auto" data-reveal="">
+          <div class="hairline rounded-full"></div>
+          <div class="mt-5 text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">
+            Response time: under 24 hours
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="py-10 border-t border-white/5 text-center text-neutral-600 text-xs font-mono">
+      <p>© 2024 Nexus Inc. All rights reserved.</p>
+    </footer>
+
+    <script>
+      // Mouse tracking for spotlight cards
+      document.addEventListener("mousemove", (e) => {
+        document.documentElement.style.setProperty("--mouse-x", e.clientX + "px");
+        document.documentElement.style.setProperty("--mouse-y", e.clientY + "px");
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        gsap.registerPlugin(ScrollTrigger);
+
+        // 1) Standard reveal (stagger per section)
+        const sections = gsap.utils.toArray("section");
+        sections.forEach((sec) => {
+          const targets = sec.querySelectorAll("[data-reveal]");
+          if (!targets.length) return;
+
+          gsap.fromTo(
+            targets,
+            { opacity: 0, y: 26 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 1.0,
+              ease: "power3.out",
+              stagger: 0.08,
+              scrollTrigger: { trigger: sec, start: "top 78%" },
+            }
+          );
+        });
+
+        // 2) Hairline shimmer (subtle) for every hairline that is visible
+        gsap.utils.toArray(".hairline").forEach((line) => {
+          const after = line;
+          gsap.to(after, {
+            scrollTrigger: { trigger: line, start: "top 90%" },
+            onEnter: () => {
+              gsap.to(line, {
+                duration: 0.01,
+                onComplete: () => {
+                  // animate pseudo-element via CSS variable trick? we can't directly.
+                  // Instead: animate background-position by duplicating a child overlay.
+                },
+              });
+            },
+          });
+        });
+
+        // 3) Hero stack float
+        gsap.to(".hero-panel", {
+          y: "-18px",
+          duration: 3.2,
+          stagger: 0.18,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+        });
+
+        // 4) Pinned spec-sheet (solutions)
+        const spec = document.getElementById("spec-sheet");
+        if (spec) {
+          ScrollTrigger.create({
+            trigger: "#solutions",
+            start: "top top+=120",
+            end: "bottom bottom-=220",
+            pin: spec,
+            pinSpacing: false,
+          });
+        }
+
+        // 5) Timeline bar + nodes
+        const build = document.getElementById("build");
+        const bar = document.getElementById("timeline-bar");
+        const nodes = gsap.utils.toArray(".timeline-node");
+        if (build && bar && nodes.length) {
+          ScrollTrigger.create({
+            trigger: build,
+            start: "top 70%",
+            onEnter: () => {
+              gsap.to(bar, { width: "100%", duration: 1.8, ease: "power2.out" });
+              gsap.to(nodes, {
+                opacity: 1,
+                y: 0,
+                duration: 0.9,
+                stagger: 0.18,
+                ease: "back.out(1.4)",
+                delay: 0.2,
+              });
+            },
+          });
+        }
+
+        // 6) Auto panel tilt on scroll (micro)
+        const autoPanel = document.getElementById("auto-panel");
+        if (autoPanel) {
+          gsap.set(autoPanel, { transformPerspective: 900, rotateX: 2, rotateY: -2 });
+          gsap.to(autoPanel, {
+            rotateX: 0,
+            rotateY: 0,
+            scrollTrigger: {
+              trigger: autoPanel,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 1,
+            },
+          });
+        }
+
+        // 7) Pipeline orbit rotation
+        const orbit = document.getElementById("pipeline-orbit");
+        if (orbit) {
+          gsap.to(orbit, { rotation: 360, duration: 40, repeat: -1, ease: "none" });
+          gsap.to(".pipeline-node", { rotation: -360, duration: 40, repeat: -1, ease: "none" });
+        }
+
+        // 8) Company sweep line (move across once when entering)
+        const sweep = document.getElementById("company-sweep");
+        if (sweep) {
+          gsap.fromTo(
+            sweep,
+            { xPercent: -140 },
+            {
+              xPercent: 340,
+              duration: 2.8,
+              ease: "none",
+              scrollTrigger: { trigger: "#company", start: "top 75%" },
+            }
+          );
+        }
+
+        // 9) Counters (pricing)
+        const counters = gsap.utils.toArray(".counter");
+        counters.forEach((el) => {
+          const to = parseFloat(el.dataset.to || "0");
+          const decimals = (el.dataset.to || "").includes(".") ? (el.dataset.to.split(".")[1] || "").length : 0;
+
+          ScrollTrigger.create({
+            trigger: el,
+            start: "top 85%",
+            once: true,
+            onEnter: () => {
+              const obj = { val: 0 };
+              gsap.to(obj, {
+                val: to,
+                duration: 1.4,
+                ease: "power2.out",
+                onUpdate: () => {
+                  el.textContent = obj.val.toFixed(decimals);
+                },
+              });
+            },
+          });
+        });
+
+        // 10) Magnetic cards (features) - subtle
+        const magnets = gsap.utils.toArray("[data-magnetic]");
+        magnets.forEach((card) => {
+          const strength = 10;
+          const onMove = (e) => {
+            const r = card.getBoundingClientRect();
+            const x = (e.clientX - (r.left + r.width / 2)) / (r.width / 2);
+            const y = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
+            gsap.to(card, {
+              x: x * strength,
+              y: y * strength,
+              duration: 0.35,
+              ease: "power3.out",
+            });
+          };
+          const onLeave = () => {
+            gsap.to(card, { x: 0, y: 0, duration: 0.5, ease: "power3.out" });
+          };
+          card.addEventListener("mousemove", onMove);
+          card.addEventListener("mouseleave", onLeave);
+        });
+      });
+    </script>
+  
+
+</body></html>

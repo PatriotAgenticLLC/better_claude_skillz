@@ -2,7 +2,7 @@
 
 A curated collection of commands, agents, and skills for [Claude Code](https://docs.anthropic.com/en/docs/claude-code), Anthropic's official CLI for Claude.
 
-**Total items:** 85 (9 commands + 13 agents + 63 skills)
+**Total items:** 88 (9 commands + 13 agents + 66 skills)
 
 ---
 
@@ -10,7 +10,7 @@ A curated collection of commands, agents, and skills for [Claude Code](https://d
 
 - [Commands](#commands) (9)
 - [Agents](#agents) (13)
-- [Skills](#skills) (63)
+- [Skills](#skills) (66)
 - [Installation](#installation)
 - [Contributing](#contributing)
 - [License](#license)
@@ -156,6 +156,7 @@ Reusable workflow patterns activated as slash commands.
 | [`/iterative-retrieval`](skills/iterative-retrieval/) | Progressive context retrieval for multi-agent workflows |
 | [`/create-prd`](skills/create-prd/) | Create Product Requirements Document from conversation |
 | [`/writing-style`](skills/writing-style/) | Anti-AI-slop enforcement for prose, copy, and documentation |
+| [`/project-guidelines-example`](skills/project-guidelines-example/) | Template for a project-specific skill (Anthropic example) |
 
 ### Continuous Learning
 
@@ -204,6 +205,13 @@ Reusable workflow patterns activated as slash commands.
 |-------|-------------|
 | [`/firecrawl`](skills/firecrawl/) | Web scraping, search, and crawling via the Firecrawl CLI |
 | [`/supadata`](skills/supadata/) | Fetch video transcripts and social/web metadata via the Supadata API |
+
+### Design and SEO
+
+| Skill | Description |
+|-------|-------------|
+| [`/frontend-design`](skills/frontend-design/) | Distinctive, production-grade UI design from a curated example library |
+| [`/seo-kit`](skills/seo-kit/) | Generate an SEO/GEO kit (Cloudflare Worker, sitemap, schema) for JS-rendered sites |
 
 ### Project and Workflow
 
@@ -318,4 +326,4 @@ Copyright (c) 2026 Nick Martin, PatriotAgentic LLC
 **Maintained by:** [PatriotAgentic LLC](https://github.com/PatriotAgenticLLC)
 **Issues:** [GitHub Issues](https://github.com/PatriotAgenticLLC/better_claude_skillz/issues)
 **Last Updated:** June 2026
-**Items Count:** 85 (9 commands + 13 agents + 63 skills)
+**Items Count:** 88 (9 commands + 13 agents + 66 skills)

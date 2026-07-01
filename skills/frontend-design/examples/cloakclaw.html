@@ -1,0 +1,923 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LOBSTER // AGENT LAYER</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@300;400;500&amp;display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --lobster: #ff2a2a;
+        --dark: #050505;
+        --panel: #0a0a0a;
+        --grid: #1a1a1a;
+      }
+      body {
+        font-family: 'Space Grotesk', sans-serif;
+        background-color: var(--dark);
+        color: #e5e5e5;
+        overflow-x: hidden;
+      }
+      .font-mono {
+        font-family: 'JetBrains Mono', monospace;
+      }
+      /* Tech Grid Background */
+      .bg-tech-grid {
+        background-size: 40px 40px;
+        background-image:
+          linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0.03) 1px,
+            transparent 1px
+          ),
+          linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.03) 1px,
+            transparent 1px
+          );
+        mask-image: radial-gradient(
+          circle at 50% 0%,
+          black 60%,
+          transparent 100%
+        );
+      }
+      /* Atmospheric Glows */
+      .glow-spot {
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 42, 42, 0.08) 0%,
+          transparent 70%
+        );
+        filter: blur(80px);
+        z-index: 0;
+        pointer-events: none;
+      }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--dark);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #333;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--lobster);
+      }
+      /* Animations */
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+      .cursor-blink {
+        animation: blink 1s step-end infinite;
+      }
+      @keyframes scan {
+        0% {
+          top: -100%;
+        }
+        100% {
+          top: 100%;
+        }
+      }
+      .scan-line {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        height: 20%;
+        background: linear-gradient(
+          to bottom,
+          transparent,
+          rgba(255, 42, 42, 0.1),
+          transparent
+        );
+        animation: scan 3s linear infinite;
+        pointer-events: none;
+      }
+      /* UI Elements */
+      .glass-panel {
+        background: rgba(10, 10, 10, 0.6);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .technical-border {
+        position: relative;
+      }
+      .technical-border::before,
+      .technical-border::after {
+        content: '';
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        transition: all 0.3s ease;
+      }
+      .technical-border::before {
+        top: -1px;
+        left: -1px;
+        border-top: 1px solid var(--lobster);
+        border-left: 1px solid var(--lobster);
+      }
+      .technical-border::after {
+        bottom: -1px;
+        right: -1px;
+        border-bottom: 1px solid var(--lobster);
+        border-right: 1px solid var(--lobster);
+      }
+      .glow-text {
+        text-shadow: 0 0 30px rgba(255, 42, 42, 0.6);
+      }
+      /* Marquee */
+      .marquee-container {
+        overflow: hidden;
+        white-space: nowrap;
+        mask-image: linear-gradient(
+          to right,
+          transparent,
+          black 10%,
+          black 90%,
+          transparent
+        );
+      }
+      .marquee-content {
+        display: inline-block;
+        animation: marquee 30s linear infinite;
+      }
+      @keyframes marquee {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+      /* Bar Graph Animation */
+      @keyframes grow {
+        from {
+          height: 0;
+        }
+        to {
+          height: var(--h);
+        }
+      }
+      .bar-animate {
+        animation: grow 1s ease-out forwards;
+      }
+    </style>
+  </head>
+  <body class="antialiased selection:bg-[#ff2a2a] selection:text-white">
+    <!-- Atmospheric Backgrounds -->
+    <div
+      class="fixed top-0 left-1/2 -translate-x-1/2 bg-tech-grid w-full h-full pointer-events-none z-0"
+    ></div>
+    <div class="glow-spot top-[-200px] left-1/2 -translate-x-1/2"></div>
+
+    <!-- Status Bar (Top Nav) -->
+    <nav
+      class="fixed top-0 w-full z-50 border-b border-white/5 bg-[#050505]/80 backdrop-blur-md"
+    >
+      <div
+        class="flex md:px-8 h-16 max-w-[1400px] mr-auto ml-auto pr-4 pl-4 items-center justify-between"
+      >
+        <div class="flex items-center gap-4">
+          <a href="#" class="group flex items-center gap-2">
+            <div
+              class="flex bg-center text-xs font-bold text-black bg-gradient-to-br from-[#ff2a2a] to-[#990000] w-8 h-8 bg-[url(https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/ce67b5f5-211d-4aee-bb88-16cb0af7f8b0_800w.png?w=800&amp;q=80)] bg-contain rounded-sm items-center justify-center"
+            >
+              L
+            </div>
+            <span class="text-white font-bold tracking-tight text-lg pl-2"
+              >CLOAKCLAW</span
+            >
+          </a>
+          <div
+            class="hidden md:flex items-center gap-2 pl-4 border-l border-white/10 text-[10px] font-mono text-gray-500"
+          >
+            <span
+              class="w-1.5 h-1.5 bg-[#ff2a2a] rounded-full shadow-[0_0_10px_#ff2a2a]"
+            ></span>
+            MAINNET: LIVE
+          </div>
+        </div>
+
+        <div class="flex items-center gap-8">
+          <div
+            class="hidden md:flex gap-6 font-mono text-xs tracking-wide text-gray-400"
+          >
+            <a href="#" class="hover:text-white transition-colors">SOLUTIONS</a>
+            <a href="#" class="hover:text-white transition-colors">NETWORK</a>
+            <a href="#" class="hover:text-white transition-colors"
+              >DEVELOPERS</a
+            >
+          </div>
+          <button
+            class="hover:bg-[#ff2a2a] transition-colors uppercase text-xs font-bold text-black tracking-wider font-mono bg-white pt-2 pr-5 pb-2 pl-5"
+            style=""
+          >
+            IINTEGRATE
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content Layout -->
+    <main class="relative z-10 pt-32 pb-20 px-4 md:px-8 max-w-[1400px] mx-auto">
+      <!-- Hero Section -->
+      <div class="grid lg:grid-cols-12 gap-12 lg:gap-20 mb-32 items-center">
+        <!-- Left: Typography -->
+        <div class="lg:col-span-7 flex flex-col relative justify-center">
+          <!-- Decorative Elements -->
+          <div
+            class="absolute -left-12 top-0 h-full w-[1px] bg-gradient-to-b from-transparent via-[#ff2a2a]/50 to-transparent hidden xl:block"
+          ></div>
+
+          <div class="inline-flex items-center gap-3 mb-8">
+            <div
+              class="px-3 py-1 rounded-full border border-[#ff2a2a]/30 bg-[#ff2a2a]/10 text-[#ff2a2a] text-[10px] font-mono tracking-widest uppercase"
+            >
+              v2.0 Beta Release
+            </div>
+            <div class="h-[1px] w-12 bg-[#ff2a2a]/30"></div>
+          </div>
+
+          <h1
+            class="md:text-8xl leading-[0.9] text-6xl font-medium text-white tracking-tighter mb-8"
+          >
+            LIQUIDITY <br />
+            HAS A NEW <br />
+            <span
+              class="text-transparent bg-clip-text bg-gradient-to-r from-[#ff2a2a] to-white glow-text"
+              >PREDATOR.</span
+            >
+          </h1>
+
+          <p
+            class="text-gray-400 text-xl font-light max-w-xl leading-relaxed mb-10"
+          >
+            The first execution layer designed for autonomous AI agents.
+            <span class="text-white">Snipe, arbitrate, and settle</span> across
+            40+ chains with sub-millisecond latency.
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-4">
+            <button
+              class="h-14 px-8 bg-[#ff2a2a] hover:bg-[#ff4444] text-black text-sm font-mono font-bold uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(255,42,42,0.3)] flex items-center justify-center gap-3 group"
+            >
+              <iconify-icon
+                icon="solar:programming-linear"
+                class="text-lg group-hover:rotate-12 transition-transform"
+              ></iconify-icon>
+              Start Building
+            </button>
+            <button
+              class="h-14 px-8 bg-transparent border border-white/20 hover:border-white hover:bg-white/5 text-white text-sm font-mono uppercase tracking-wider transition-all flex items-center justify-center gap-3"
+            >
+              View Documentation
+            </button>
+          </div>
+
+          <div class="mt-12 flex gap-8 border-t border-white/10 pt-8">
+            <div>
+              <div class="text-2xl font-bold text-white">$4.2B+</div>
+              <div class="text-xs text-gray-500 uppercase font-mono mt-1">
+                Volume Processed
+              </div>
+            </div>
+            <div>
+              <div class="text-2xl font-bold text-white">12ms</div>
+              <div class="text-xs text-gray-500 uppercase font-mono mt-1">
+                Avg Latency
+              </div>
+            </div>
+            <div>
+              <div class="text-2xl font-bold text-white">99.9%</div>
+              <div class="text-xs text-gray-500 uppercase font-mono mt-1">
+                Uptime
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Interactive Module -->
+        <div class="lg:col-span-5 relative">
+          <!-- Background Decoration -->
+          <div
+            class="absolute inset-0 bg-gradient-to-br from-[#ff2a2a]/10 to-transparent blur-3xl -z-10"
+          ></div>
+
+          <div class="glass-panel rounded-lg overflow-hidden technical-border">
+            <!-- Terminal Header -->
+            <div
+              class="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-black/40"
+            >
+              <div class="flex gap-2">
+                <div
+                  class="w-3 h-3 rounded-full bg-[#ff2a2a]/20 border border-[#ff2a2a]"
+                ></div>
+                <div
+                  class="w-3 h-3 rounded-full bg-white/10 border border-white/20"
+                ></div>
+              </div>
+              <span class="font-mono text-[10px] text-gray-500"
+                >AGENT_CONFIG.TS</span
+              >
+            </div>
+
+            <!-- Terminal Body -->
+            <div
+              class="p-6 font-mono text-xs leading-relaxed relative min-h-[340px]"
+            >
+              <div class="scan-line"></div>
+
+              <!-- Line Numbers & Code -->
+              <table class="w-full">
+                <tbody class="">
+                  <tr class="text-gray-500">
+                    <td class="pr-4 select-none text-gray-700 text-right w-8">
+                      1
+                    </td>
+                    <td class="">
+                      <span class="text-[#ff7b7b]">import</span> { Swarm }
+                      <span class="text-[#ff7b7b]">from</span> '@cloakclaw/sdk';
+                    </td>
+                  </tr>
+                  <tr class="">
+                    <td class="pr-4 select-none text-gray-700 text-right">2</td>
+                    <td class=""></td>
+                  </tr>
+                  <tr class="">
+                    <td class="pr-4 select-none text-gray-700 text-right">3</td>
+                    <td class="">
+                      <span class="text-gray-500"
+                        >// Initialize MEV-protected agent</span
+                      >
+                    </td>
+                  </tr>
+                  <tr class="">
+                    <td class="pr-4 select-none text-gray-700 text-right">4</td>
+                    <td class="">
+                      <span class="text-[#ff7b7b]">const</span> predator =
+                      <span class="text-[#ff7b7b]">new</span> Swarm({
+                    </td>
+                  </tr>
+                  <tr class="">
+                    <td class="pr-4 select-none text-gray-700 text-right">5</td>
+                    <td class="pl-4 text-[#e5e5e5]">
+                      strategy:
+                      <span class="text-[#88ff88]">'ARBITRAGE_V3'</span>,
+                    </td>
+                  </tr>
+                  <tr class="">
+                    <td class="pr-4 select-none text-gray-700 text-right">6</td>
+                    <td class="pl-4 text-[#e5e5e5]">
+                      chains: [<span class="text-[#88ff88]">'SOL'</span>,
+                      <span class="text-[#88ff88]">'BASE'</span>,
+                      <span class="text-[#88ff88]">'ARB'</span>],
+                    </td>
+                  </tr>
+                  <tr class="">
+                    <td class="pr-4 select-none text-gray-700 text-right">7</td>
+                    <td class="pl-4 text-[#e5e5e5]">
+                      risk_tolerance: <span class="text-[#ff2a2a]">0.95</span>,
+                    </td>
+                  </tr>
+                  <tr class="">
+                    <td class="pr-4 select-none text-gray-700 text-right">8</td>
+                    <td class="pl-4 text-[#e5e5e5]">
+                      execution:
+                      <span class="text-[#88ff88]">'TEE_ENCLAVE'</span>
+                    </td>
+                  </tr>
+                  <tr class="">
+                    <td class="pr-4 select-none text-gray-700 text-right">9</td>
+                    <td class="">});</td>
+                  </tr>
+                  <tr class="">
+                    <td class="pr-4 select-none text-gray-700 text-right">
+                      10
+                    </td>
+                    <td class=""></td>
+                  </tr>
+                  <tr class="">
+                    <td class="pr-4 select-none text-gray-700 text-right">
+                      11
+                    </td>
+                    <td class="">
+                      <span class="text-[#ff7b7b]">await</span>
+                      predator.deploy();
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <!-- Live Feed Simulation -->
+              <div class="mt-6 pt-4 border-t border-dashed border-white/10">
+                <div
+                  class="text-[10px] text-gray-500 mb-2 uppercase tracking-widest"
+                >
+                  Live Execution Logs
+                </div>
+                <div class="space-y-1.5">
+                  <div class="flex items-center gap-2 text-[10px]">
+                    <span class="text-green-500">●</span>
+                    <span class="text-gray-300"
+                      >Scanning mempool (Base)...</span
+                    >
+                    <span class="ml-auto text-gray-600">14ms</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-[10px]">
+                    <span class="text-[#ff2a2a]">●</span>
+                    <span class="text-white"
+                      >Opportunity detected: WETH/USDC</span
+                    >
+                    <span class="ml-auto text-gray-600 font-bold">+2.4%</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-[10px]">
+                    <span class="text-blue-500">●</span>
+                    <span class="text-gray-300"
+                      >Tx Submitted (Flashbots Bundle)</span
+                    >
+                    <span class="ml-auto text-gray-600">Hash: 0x8a...f2</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clients / Marquee -->
+      <div class="border-y border-white/10 py-6 mb-32 relative bg-black/50">
+        <div
+          class="absolute left-0 top-0 w-20 h-full bg-gradient-to-r from-[#050505] to-transparent z-10"
+        ></div>
+        <div
+          class="absolute right-0 top-0 w-20 h-full bg-gradient-to-l from-[#050505] to-transparent z-10"
+        ></div>
+        <div
+          class="marquee-container font-mono text-sm text-gray-500 tracking-wider"
+        >
+          <div class="marquee-content flex items-center gap-16">
+            <span class="flex items-center gap-2"
+              ><iconify-icon
+                icon="solar:shield-check-linear"
+                class="text-[#ff2a2a]"
+              ></iconify-icon>
+              AUDITED BY TRAIL OF BITS</span
+            >
+            <span class="flex items-center gap-2"
+              ><iconify-icon
+                icon="solar:server-square-linear"
+                class="text-[#ff2a2a]"
+              ></iconify-icon>
+              TEE INFRASTRUCTURE</span
+            >
+            <span class="flex items-center gap-2"
+              ><iconify-icon
+                icon="solar:chart-square-linear"
+                class="text-[#ff2a2a]"
+              ></iconify-icon>
+              $250M+ TVL SECURED</span
+            >
+            <span class="flex items-center gap-2"
+              ><iconify-icon
+                icon="solar:global-linear"
+                class="text-[#ff2a2a]"
+              ></iconify-icon>
+              CROSS-CHAIN NATIVE</span
+            >
+            <span class="flex items-center gap-2"
+              ><iconify-icon
+                icon="solar:shield-check-linear"
+                class="text-[#ff2a2a]"
+              ></iconify-icon>
+              AUDITED BY TRAIL OF BITS</span
+            >
+            <span class="flex items-center gap-2"
+              ><iconify-icon
+                icon="solar:server-square-linear"
+                class="text-[#ff2a2a]"
+              ></iconify-icon>
+              TEE INFRASTRUCTURE</span
+            >
+            <span class="flex items-center gap-2"
+              ><iconify-icon
+                icon="solar:chart-square-linear"
+                class="text-[#ff2a2a]"
+              ></iconify-icon>
+              $250M+ TVL SECURED</span
+            >
+            <span class="flex items-center gap-2"
+              ><iconify-icon
+                icon="solar:global-linear"
+                class="text-[#ff2a2a]"
+              ></iconify-icon>
+              CROSS-CHAIN NATIVE</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Bento Grid Features Section -->
+      <div class="mb-32">
+        <div class="mb-12 flex items-end justify-between">
+          <h2
+            class="text-3xl md:text-5xl font-medium tracking-tighter text-white"
+          >
+            INFRASTRUCTURE <br />FOR THE
+            <span class="text-[#ff2a2a] glow-text">MACHINE ECONOMY</span>
+          </h2>
+          <div class="hidden md:block text-right">
+            <div class="text-xs font-mono text-gray-500 mb-1">
+              SYSTEM STATUS
+            </div>
+            <div
+              class="flex items-center gap-2 text-[#ff2a2a] text-sm font-bold animate-pulse"
+            >
+              <span class="w-2 h-2 bg-[#ff2a2a] rounded-full"></span>
+              OPERATIONAL
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 h-auto md:h-[600px]">
+          <!-- Large Feature: Speed -->
+          <div
+            class="md:col-span-2 md:row-span-2 glass-panel p-8 rounded-xl relative group overflow-hidden border border-white/10 hover:border-[#ff2a2a]/50 transition-colors"
+          >
+            <div class="absolute top-0 right-0 p-6 opacity-50">
+              <iconify-icon
+                icon="solar:bolt-circle-linear"
+                class="text-5xl text-gray-700 group-hover:text-[#ff2a2a] transition-colors"
+              ></iconify-icon>
+            </div>
+            <div class="h-full flex flex-col justify-between relative z-10">
+              <div>
+                <h3 class="text-2xl text-white font-medium mb-2">
+                  Settlement Agnostic
+                </h3>
+                <p class="text-gray-400 text-sm max-w-sm">
+                  Execute orders across Solana, Ethereum, and Cosmos
+                  simultaneously. Our solver network finds the optimal route
+                  instantly.
+                </p>
+              </div>
+
+              <!-- Visualizer -->
+              <div
+                class="mt-8 bg-black/50 rounded-lg p-4 border border-white/5"
+              >
+                <div
+                  class="flex justify-between text-[10px] font-mono text-gray-500 mb-2 uppercase"
+                >
+                  <span>Execution Speed</span>
+                  <span>vs Competitors</span>
+                </div>
+                <div class="space-y-3">
+                  <div>
+                    <div class="flex justify-between text-xs text-white mb-1">
+                      <span>CloakClaw</span>
+                      <span class="text-[#ff2a2a]">12ms</span>
+                    </div>
+                    <div
+                      class="h-1.5 w-full bg-[#1a1a1a] rounded-full overflow-hidden"
+                    >
+                      <div
+                        class="h-full bg-[#ff2a2a] w-[95%] shadow-[0_0_10px_#ff2a2a]"
+                      ></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div
+                      class="flex justify-between text-xs text-gray-500 mb-1"
+                    >
+                      <span>Standard RPC</span>
+                      <span>140ms</span>
+                    </div>
+                    <div
+                      class="h-1.5 w-full bg-[#1a1a1a] rounded-full overflow-hidden"
+                    >
+                      <div class="h-full bg-gray-600 w-[40%]"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feature: Privacy -->
+          <div
+            class="md:col-span-1 glass-panel p-6 rounded-xl border border-white/10 hover:border-white/30 transition-colors flex flex-col justify-between group"
+          >
+            <div
+              class="w-10 h-10 rounded-full bg-[#1a1a1a] flex items-center justify-center border border-white/10 group-hover:border-[#ff2a2a] transition-colors mb-4"
+            >
+              <iconify-icon
+                icon="solar:lock-keyhole-linear"
+                class="text-xl text-white"
+              ></iconify-icon>
+            </div>
+            <div>
+              <h3 class="text-lg text-white font-medium mb-2">SGX Privacy</h3>
+              <p class="text-xs text-gray-400 leading-relaxed">
+                Your strategy logic runs inside Intel SGX enclaves. Observers
+                see the transaction, never the trigger.
+              </p>
+            </div>
+          </div>
+
+          <!-- Feature: Swarms -->
+          <div
+            class="md:col-span-1 glass-panel p-6 rounded-xl border border-white/10 hover:border-white/30 transition-colors flex flex-col justify-between group"
+          >
+            <div
+              class="w-10 h-10 rounded-full bg-[#1a1a1a] flex items-center justify-center border border-white/10 group-hover:border-[#ff2a2a] transition-colors mb-4"
+            >
+              <iconify-icon
+                icon="solar:layers-minimalistic-linear"
+                class="text-xl text-white"
+              ></iconify-icon>
+            </div>
+            <div>
+              <h3 class="text-lg text-white font-medium mb-2">Agent Swarms</h3>
+              <p class="text-xs text-gray-400 leading-relaxed">
+                Deploy multiple agents that coordinate off-chain to execute
+                complex hedging strategies.
+              </p>
+            </div>
+          </div>
+
+          <!-- Wide Feature: SDK -->
+          <div
+            class="md:col-span-2 glass-panel p-6 rounded-xl border border-white/10 hover:border-white/30 transition-colors flex items-center gap-6 group"
+          >
+            <div
+              class="w-16 h-16 shrink-0 rounded-full bg-[#1a1a1a] flex items-center justify-center border border-white/10 text-3xl text-white group-hover:text-[#ff2a2a] transition-colors"
+            >
+              <iconify-icon icon="solar:code-circle-linear"></iconify-icon>
+            </div>
+            <div>
+              <h3 class="text-xl text-white font-medium mb-1">
+                Developer First SDK
+              </h3>
+              <p class="text-sm text-gray-400 mb-3">
+                Fully typed TypeScript &amp; Python SDKs. No new languages to
+                learn.
+              </p>
+              <div class="flex gap-2 text-[10px] font-mono">
+                <span
+                  class="bg-white/5 px-2 py-1 rounded text-gray-300 border border-white/5"
+                  >npm install @cloakclaw/sdk</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Network Visualization Section -->
+      <div
+        class="grid lg:grid-cols-2 gap-16 items-center mb-32 border border-white/5 bg-[#080808] p-8 md:p-12 rounded-3xl relative overflow-hidden"
+      >
+        <div
+          class="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-b from-[#ff2a2a]/10 to-transparent blur-[100px] pointer-events-none"
+        ></div>
+
+        <div>
+          <h2 class="text-3xl font-medium text-white mb-6">
+            GLOBAL SOLVER NETWORK
+          </h2>
+          <div class="space-y-6">
+            <div class="flex gap-4">
+              <div class="flex flex-col items-center">
+                <div
+                  class="w-8 h-8 rounded-full bg-[#ff2a2a]/20 border border-[#ff2a2a] text-[#ff2a2a] flex items-center justify-center text-xs font-mono"
+                >
+                  1
+                </div>
+                <div class="h-full w-[1px] bg-white/10 my-2"></div>
+              </div>
+              <div class="pb-8">
+                <h4 class="text-white font-medium">Intent Propagation</h4>
+                <p class="text-sm text-gray-400 mt-1">
+                  Your agent broadcasts an intent to our private gossip network,
+                  bypassing public mempools.
+                </p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <div class="flex flex-col items-center">
+                <div
+                  class="w-8 h-8 rounded-full bg-[#1a1a1a] border border-white/20 text-gray-300 flex items-center justify-center text-xs font-mono"
+                >
+                  2
+                </div>
+                <div class="h-full w-[1px] bg-white/10 my-2"></div>
+              </div>
+              <div class="pb-8">
+                <h4 class="text-white font-medium">Solver Competition</h4>
+                <p class="text-sm text-gray-400 mt-1">
+                  Solvers compete to fulfill your order at the best price.
+                  Winner takes execution rights.
+                </p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <div class="flex flex-col items-center">
+                <div
+                  class="w-8 h-8 rounded-full bg-[#1a1a1a] border border-white/20 text-gray-300 flex items-center justify-center text-xs font-mono"
+                >
+                  3
+                </div>
+              </div>
+              <div>
+                <h4 class="text-white font-medium">Atomic Settlement</h4>
+                <p class="text-sm text-gray-400 mt-1">
+                  Funds are swapped atomically. Zero slippage, zero failed
+                  transactions.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Abstract Map Visualization -->
+        <div
+          class="relative h-[400px] w-full bg-[#0a0a0a] rounded-xl border border-white/10 overflow-hidden group"
+        >
+          <!-- Grid Map -->
+          <div
+            class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px] opacity-50"
+          ></div>
+
+          <!-- Nodes -->
+          <div
+            class="absolute top-1/4 left-1/4 w-3 h-3 bg-[#ff2a2a] rounded-full shadow-[0_0_20px_#ff2a2a] animate-pulse"
+          ></div>
+          <div
+            class="absolute top-1/2 left-1/2 w-2 h-2 bg-white rounded-full opacity-50"
+          ></div>
+          <div
+            class="absolute bottom-1/3 right-1/4 w-2 h-2 bg-white rounded-full opacity-50"
+          ></div>
+
+          <!-- Connecting Lines (CSS) -->
+          <svg class="absolute inset-0 w-full h-full pointer-events-none">
+            <line
+              x1="25%"
+              y1="25%"
+              x2="50%"
+              y2="50%"
+              stroke="rgba(255, 42, 42, 0.3)"
+              stroke-width="1"
+            ></line>
+            <line
+              x1="50%"
+              y1="50%"
+              x2="75%"
+              y2="66%"
+              stroke="rgba(255, 255, 255, 0.1)"
+              stroke-width="1"
+            ></line>
+            <circle
+              cx="50%"
+              cy="50%"
+              r="100"
+              stroke="rgba(255,42,42,0.1)"
+              stroke-width="1"
+              fill="none"
+              class="animate-[spin_10s_linear_infinite] origin-center"
+            ></circle>
+          </svg>
+
+          <!-- Floating Card -->
+          <div
+            class="absolute bottom-6 left-6 right-6 bg-black/80 backdrop-blur border border-[#ff2a2a]/30 p-4 rounded-lg"
+          >
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-[10px] text-[#ff2a2a] font-mono uppercase"
+                >Active Solvers</span
+              >
+              <span class="text-xs text-white font-mono">2,048</span>
+            </div>
+            <div class="w-full bg-[#333] h-1 rounded-full overflow-hidden">
+              <div class="bg-[#ff2a2a] w-3/4 h-full"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA Section -->
+      <div class="text-center py-24 border-t border-white/10">
+        <h2
+          class="text-4xl md:text-6xl font-medium tracking-tighter text-white mb-6"
+        >
+          READY TO <span class="text-[#ff2a2a]">DEPLOY?</span>
+        </h2>
+        <p class="text-gray-400 mb-8 text-lg max-w-lg mx-auto">
+          Join the new era of programmable liquidity. Get your API key today.
+        </p>
+        <div class="flex justify-center gap-4">
+          <button
+            class="h-12 px-8 bg-white text-black hover:bg-gray-200 transition-colors font-mono text-sm font-bold uppercase tracking-wide"
+          >
+            Get API Keys
+          </button>
+          <button
+            class="h-12 px-8 bg-transparent border border-white/20 text-white hover:border-[#ff2a2a] hover:text-[#ff2a2a] transition-colors font-mono text-sm font-bold uppercase tracking-wide"
+          >
+            Contact Sales
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 bg-[#020202]">
+      <div class="max-w-[1400px] mx-auto px-4 md:px-8 py-12">
+        <div class="grid md:grid-cols-4 gap-12 mb-12">
+          <div class="col-span-1">
+            <a href="#" class="flex items-center gap-2 mb-6">
+              <div
+                class="w-6 h-6 bg-[#ff2a2a] flex items-center justify-center text-black font-bold text-[10px] rounded-sm"
+              >
+                L
+              </div>
+              <span class="text-white font-bold tracking-tight">CLOAKCLAW</span>
+            </a>
+            <p class="text-xs text-gray-500 leading-relaxed">
+              The autonomous liquidity layer for the machine economy. Built for
+              speed, privacy, and scale.
+            </p>
+          </div>
+
+          <div>
+            <h4 class="text-white text-sm font-bold mb-4">Platform</h4>
+            <ul class="space-y-2 text-xs text-gray-500 font-mono">
+              <li>
+                <a href="#" class="hover:text-[#ff2a2a]">Documentation</a>
+              </li>
+              <li>
+                <a href="#" class="hover:text-[#ff2a2a]">API Reference</a>
+              </li>
+              <li><a href="#" class="hover:text-[#ff2a2a]">Status</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="text-white text-sm font-bold mb-4">Company</h4>
+            <ul class="space-y-2 text-xs text-gray-500 font-mono">
+              <li><a href="#" class="hover:text-[#ff2a2a]">About</a></li>
+              <li><a href="#" class="hover:text-[#ff2a2a]">Blog</a></li>
+              <li><a href="#" class="hover:text-[#ff2a2a]">Careers</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="text-white text-sm font-bold mb-4">Connect</h4>
+            <div class="flex gap-4 text-gray-400">
+              <iconify-icon
+                icon="solar:brand-twitter-linear"
+                class="text-xl hover:text-white cursor-pointer"
+              ></iconify-icon>
+              <iconify-icon
+                icon="solar:brand-github-linear"
+                class="text-xl hover:text-white cursor-pointer"
+              ></iconify-icon>
+              <iconify-icon
+                icon="solar:brand-discord-linear"
+                class="text-xl hover:text-white cursor-pointer"
+              ></iconify-icon>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/5 gap-4"
+        >
+          <span class="text-[10px] text-gray-600 font-mono"
+            >© 2024 LOBSTER LABS INC. ALL RIGHTS RESERVED.</span
+          >
+          <div class="flex gap-6 text-[10px] text-gray-600 font-mono uppercase">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

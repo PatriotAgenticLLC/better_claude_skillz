@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus — Enterprise Cloud Platform</title>
+<meta name="description" content="Nexus helps teams build, scale, and monitor applications with enterprise-grade infrastructure.">
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&amp;family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<!-- Iconify Script -->
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+fontFamily: {
+sans: ['Inter', 'sans-serif'],
+serif: ['Instrument Serif', 'serif'],
+display: ['Space Grotesk', 'sans-serif'],
+},
+colors: {
+neutral: {
+850: '#1f1f1f',
+950: '#0a0a0a',
+}
+},
+backgroundImage: {
+'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+}
+}
+}
+}
+</script>
+<style>
+/* --- GSAP reveal helpers --- */
+.reveal-clip {
+clip-path: inset(12% 0 12% 0 round 18px);
+will-change: clip-path, transform, opacity;
+}
+.will-transform {
+will-change: transform, opacity, filter;
+}
+:root {
+--mouse-x: 0px;
+--mouse-y: 0px;
+}
+body {
+background-color: #050505;
+color: #e5e5e5;
+overflow-x: hidden;
+}
+/* Hero Canvas */
+#hero-canvas {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: 0;
+opacity: 0.4;
+}
+/* Glassmorphism Utilities */
+.glass-panel {
+background: rgba(255, 255, 255, 0.03);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+border: 1px solid rgba(255, 255, 255, 0.08);
+}
+/* Spotlight Effect on Cards */
+.spotlight-card {
+position: relative;
+overflow: hidden;
+background: rgba(20, 20, 20, 0.4);
+border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.spotlight-card::before {
+content: '';
+position: absolute;
+inset: 0;
+background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.08), transparent 40%);
+opacity: 0;
+transition: opacity 0.5s;
+pointer-events: none;
+z-index: 2;
+}
+.spotlight-card:hover::before {
+opacity: 1;
+}
+/* Film Grain Animation */
+@keyframes grain {
+0%, 100% { transform: translate(0, 0); }
+10% { transform: translate(-5%, -10%); }
+20% { transform: translate(-15%, 5%); }
+30% { transform: translate(7%, -25%); }
+40% { transform: translate(-5%, 25%); }
+50% { transform: translate(-15%, 10%); }
+60% { transform: translate(15%, 0%); }
+70% { transform: translate(0%, 15%); }
+80% { transform: translate(3%, 35%); }
+90% { transform: translate(-10%, 10%); }
+}
+.bg-grain::after {
+content: "";
+background-image: url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png");
+height: 300%;
+width: 300%;
+position: fixed;
+top: -100%;
+left: -100%;
+opacity: 0.04;
+animation: grain 8s steps(10) infinite;
+pointer-events: none;
+z-index: 9998;
+}
+/* Sticky Hero Logic */
+.sticky-wrapper { position: relative; height: 250vh; }
+.sticky-content {
+position: sticky;
+top: 0;
+height: 100vh;
+overflow: hidden;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+/* 3D Book styling */
+.book-3d { transform-style: preserve-3d; perspective: 1000px; }
+.book-cover {
+transform-origin: left;
+transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+transform: rotateY(0deg);
+}
+.book-3d:hover .book-cover { transform: rotateY(-130deg); }
+/* Utility */
+.text-glow { text-shadow: 0 0 20px rgba(255, 255, 255, 0.3); }
+/* ------------------------- */
+/* ✅ FIXED Testimonials Anim */
+/* ------------------------- */
+/* IMPORTANT: mask must use WHITE for visibility */
+.marquee-mask {
+mask-image: linear-gradient(90deg, transparent, white 18%, white 82%, transparent);
+-webkit-mask-image: linear-gradient(90deg, transparent, white 18%, white 82%, transparent);
+}
+@keyframes marqueeLeft {
+from { transform: translateX(0); }
+to { transform: translateX(-50%); }
+}
+@keyframes marqueeRight {
+from { transform: translateX(-50%); }
+to { transform: translateX(0); }
+}
+.animate-marquee-left { animation: marqueeLeft 36s linear infinite; }
+.animate-marquee-right { animation: marqueeRight 40s linear infinite; }
+.marquee-group:hover .animate-marquee-left,
+.marquee-group:hover .animate-marquee-right {
+animation-play-state: paused;
+}
+@keyframes tFadeUp {
+from { opacity: 0; transform: translateY(22px) scale(0.985); }
+to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.t-reveal { opacity: 0; transform: translateY(22px) scale(0.985); }
+.t-reveal.is-visible { animation: tFadeUp 700ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+/* Features Page Specific Styles */
+.feat-hero-bg {
+background-image: linear-gradient(to right, rgba(128,128,128,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(128,128,128,0.05) 1px, transparent 1px);
+background-size: 40px 40px;
+mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, black 40%, transparent 100%);
+}
+.spotlight-tab.active {
+background: rgba(255,255,255,0.08);
+border-color: rgba(255,255,255,0.1);
+color: white !important;
+}
+.spotlight-tab.active span:first-child {
+color: #60a5fa;
+}
+.spotlight-panel {
+transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+opacity: 0;
+transform: translateY(10px);
+pointer-events: none;
+position: absolute;
+inset: 0;
+}
+.spotlight-panel.active {
+opacity: 1;
+transform: translateY(0);
+pointer-events: auto;
+position: relative;
+}
+/* Soft Glow Hover */
+.soft-card {
+background: rgba(255,255,255,0.02);
+border: 1px solid rgba(255,255,255,0.08);
+transition: all 0.4s ease;
+}
+.soft-card:hover {
+background: rgba(255,255,255,0.04);
+border-color: rgba(255,255,255,0.15);
+transform: translateY(-2px);
+}
+</style>
+<style id="border-gradient-shared-style">
+[style*="--border-gradient"]::before {
+content: "";
+position: absolute;
+inset: 0;
+padding: 1px;
+border-radius: var(--border-radius-before, inherit);
+-webkit-mask: linear-gradient(#fff 0 0) content-box,
+linear-gradient(#fff 0 0);
+-webkit-mask-composite: xor;
+mask-composite: exclude;
+background: var(--border-gradient);
+pointer-events: none;
+}</style></head>
+
+  <body class="bg-grain antialiased selection:bg-white selection:text-black">
+    <!-- Custom Cursor -->
+
+    <!-- Mobile / Tablet Header -->
+<header class="fixed top-0 left-0 right-0 z-50 lg:hidden px-4 pt-4" id="mobile-header">
+  <!-- Toggle -->
+  <input id="nav-toggle" type="checkbox" class="peer hidden">
+
+  <div class="glass-panel rounded-full px-5 py-3 flex items-center justify-between shadow-2xl">
+    <a href="index.html" class="font-display font-bold text-lg tracking-tight">
+      NEXUS.
+    </a>
+
+    <!-- Burger / Close trigger -->
+    <label for="nav-toggle" class="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-xl border border-white/10 hover:bg-white/15 transition cursor-pointer select-none" aria-label="Toggle menu">
+      <!-- Burger -->
+      <iconify-icon icon="solar:hamburger-menu-linear" width="22" class="burger-icon transition-all duration-300"></iconify-icon>
+
+      <!-- Close -->
+      <iconify-icon icon="solar:close-circle-linear" width="22" class="close-icon absolute opacity-0 scale-75 transition-all duration-300"></iconify-icon>
+    </label>
+  </div>
+
+  <!-- Backdrop -->
+  <label for="nav-toggle" class="backdrop fixed inset-0 bg-black/40 opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"></label>
+
+  <!-- Menu panel -->
+  <nav id="mobile-menu" class="absolute top-20 left-4 right-4 glass-panel rounded-[2rem] p-5 border border-white/10 origin-top opacity-0 scale-[0.98] -translate-y-2 pointer-events-none transition-all duration-300" aria-label="Mobile navigation">
+    <!-- Top row inside panel -->
+    <div class="mb-2">
+  <div class="text-[11px] uppercase tracking-[0.22em] font-semibold text-white/40">
+    Menu
+  </div>
+</div>
+
+    <div class="flex flex-col gap-2 text-center">
+      <a href="/Features" class="py-3 text-lg font-medium hover:text-white transition">
+        Features
+      </a>
+      <a href="/Solutions" class="py-3 text-lg font-medium hover:text-white transition">
+        Solutions
+      </a>
+      <a href="/Workflow" class="py-3 text-lg font-medium hover:text-white transition">
+        Workflow
+      </a>
+      <a href="/Company" class="py-3 text-lg font-medium hover:text-white transition">
+        Company
+      </a>
+      <a href="/Pricing" class="py-3 text-lg font-medium hover:text-white transition">
+        Pricing
+      </a>
+    </div>
+
+    <!-- CTA button -->
+    <div class="mt-5 pt-4 border-t border-white/10 flex justify-center">
+      <a href="sign-in.html" class="inline-flex w-full max-w-[360px] items-center justify-center gap-3 rounded-full bg-white text-black font-semibold text-base px-6 py-4 shadow-[0_18px_40px_rgba(0,0,0,0.22)] hover:scale-[1.02] transition-all duration-300">
+        <span>Start Free Trial</span>
+        <iconify-icon icon="solar:arrow-right-linear" width="22"></iconify-icon>
+      </a>
+    </div>
+  </nav>
+
+  <style class="">
+    /* When checked: show backdrop + menu */
+    #mobile-header .peer:checked ~ .backdrop {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #mobile-header .peer:checked ~ #mobile-menu {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    /* Swap burger to close */
+    #mobile-header .peer:checked ~ div label .burger-icon {
+      opacity: 0;
+      transform: scale(0.75);
+    }
+
+    #mobile-header .peer:checked ~ div label .close-icon {
+      opacity: 1;
+      transform: scale(1);
+    }
+  </style>
+</header>
+    <!-- =========================================================
+     DESKTOP LEFT NAV (2 SEPARATE BOXES, NO LAYOUT BREAK)
+     - Buttons stay fixed size (no rail resizing)
+     - Labels expand as a floating pill to the right (smooth)
+     - CTA is a separate box below (hovering it does NOT affect top)
+     - Scroll spy highlights current section (top rail only)
+========================================================= -->
+
+    <!-- DESKTOP LEFT NAV -->
+    <nav class="hidden lg:block fixed top-1/2 -translate-y-1/2 left-6 z-50" aria-label="Section navigation" id="rail-nav">
+      <style class="">
+        #rail-nav {
+          isolation: isolate;
+        }
+        #rail-nav .rail-box {
+          position: relative;
+          width: 72px;
+          padding: 12px 10px;
+          border-radius: 18px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.03);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 10px;
+          user-select: none;
+          overflow: visible;
+        }
+        #rail-nav .rail-box::before {
+          content: "";
+          position: absolute;
+          inset: 8px;
+          border-radius: 14px;
+          background: linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.07),
+            transparent 55%,
+            rgba(255, 255, 255, 0.05)
+          );
+          opacity: 0;
+          pointer-events: none;
+          z-index: 0;
+        }
+        #rail-nav .rail-btn {
+          position: relative;
+          z-index: 1;
+          width: 50px;
+          height: 50px;
+          border-radius: 18px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.02);
+          display: grid;
+          place-items: center;
+          cursor: pointer;
+          outline: none;
+          transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+            background-color 260ms cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 260ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #rail-nav .rail-btn:hover,
+        #rail-nav .rail-btn:focus-visible {
+          transform: translateX(2px);
+          background: rgba(255, 255, 255, 0.05);
+          border-color: rgba(255, 255, 255, 0.16);
+        }
+        #rail-nav .rail-icon {
+          width: 34px;
+          height: 34px;
+          border-radius: 12px;
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.03);
+          display: grid;
+          place-items: center;
+        }
+        #rail-nav .rail-icon iconify-icon {
+          color: rgba(255, 255, 255, 0.9);
+        }
+        #rail-nav .rail-btn.is-active {
+          background: rgba(255, 255, 255, 0.06);
+          border-color: rgba(255, 255, 255, 0.18);
+        }
+        #rail-nav .rail-btn.is-active .rail-icon {
+          background: rgba(255, 255, 255, 0.92);
+          border-color: rgba(255, 255, 255, 0.22);
+          box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.06), 0 18px 40px rgba(0, 0, 0, 0.35);
+        }
+        #rail-nav .rail-btn.is-active .rail-icon iconify-icon {
+          color: #0a0a0a;
+        }
+
+        #rail-nav .rail-label {
+          position: absolute;
+          left: calc(100% + 12px);
+          top: 50%;
+          transform: translateY(-50%) scaleX(0.92);
+          transform-origin: left center;
+          height: 42px;
+          display: inline-flex;
+          align-items: center;
+          padding: 0 14px;
+          border-radius: 14px;
+          background: linear-gradient(
+              180deg,
+              rgba(255, 255, 255, 0.14),
+              rgba(255, 255, 255, 0.06) 45%,
+              rgba(255, 255, 255, 0.03)
+            ),
+            radial-gradient(120% 140% at 20% 10%, rgba(255, 255, 255, 0.1), transparent 55%);
+          border: 1px solid rgba(255, 255, 255, 0.16);
+          backdrop-filter: blur(18px) saturate(1.2);
+          -webkit-backdrop-filter: blur(18px) saturate(1.2);
+          box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.18),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+          color: rgba(255, 255, 255, 0.92);
+          font-size: 12px;
+          font-weight: 800;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          white-space: nowrap;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 220ms cubic-bezier(0.16, 1, 0.3, 1),
+            transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #rail-nav .rail-btn:hover .rail-label,
+        #rail-nav .rail-btn:focus-visible .rail-label {
+          opacity: 1;
+          transform: translateY(-50%) scaleX(1);
+        }
+
+        #rail-nav .cta-wrap {
+          margin-top: 16px;
+        }
+        #rail-nav .rail-btn.cta .rail-icon {
+          background: rgba(255, 255, 255, 0.92);
+          border-color: rgba(255, 255, 255, 0.22);
+          box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.06), 0 18px 40px rgba(0, 0, 0, 0.35);
+        }
+        #rail-nav .rail-btn.cta .rail-icon iconify-icon {
+          color: #0a0a0a;
+        }
+      </style>
+
+      <div class="rail-box" id="rail-sections">
+        <a class="rail-btn" href="index.html" data-target="#home">
+          <span class="rail-icon"><iconify-icon icon="solar:home-angle-2-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Home</span>
+        </a>
+        <a class="rail-btn is-active" href="features.html" data-target="#features">
+          <span class="rail-icon"><iconify-icon icon="solar:widget-3-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Features</span>
+        </a>
+        <a class="rail-btn" href="solutions.html" data-target="#solutions">
+          <span class="rail-icon"><iconify-icon icon="solar:layers-linear" width="18"></iconify-icon></span>
+          <span class="rail-label">Solutions</span>
+        </a>
+        <a class="rail-btn" href="workflow.html" data-target="#workflow">
+          <span class="rail-icon"><iconify-icon icon="solar:graph-new-up-linear" width="18"></iconify-icon></span>
+          <span class="rail-label">Workflow</span>
+        </a>
+        <a class="rail-btn" href="company.html" data-target="#company">
+          <span class="rail-icon"><iconify-icon icon="solar:buildings-3-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Company</span>
+        </a>
+        <a class="rail-btn" href="pricing.html" data-target="#pricing">
+          <span class="rail-icon"><iconify-icon icon="solar:tag-price-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Pricing</span>
+        </a>
+      </div>
+
+      <div class="cta-wrap">
+        <div class="rail-box">
+          <a class="rail-btn cta" href="sign-in.html" data-target="#contact">
+  <span class="rail-icon cursor-pointer" onclick="window.location.href='sign-in.html'" role="button"><iconify-icon icon="solar:arrow-right-linear" width="18" class=""></iconify-icon></span>
+  <span class="rail-label">Start Free Trial</span>
+</a>
+        </div>
+      </div>
+
+      <script class="">
+        (() => {
+          const sectionRail = document.getElementById("rail-sections");
+          if (!sectionRail) return;
+
+          const allBtns = Array.from(document.querySelectorAll("#rail-nav .rail-btn")).filter(
+            (a) => a.dataset.target
+          );
+
+          allBtns.forEach((a) => {
+            a.addEventListener("click", (e) => {
+              const el = document.querySelector(a.dataset.target);
+              if (!el) return;
+              e.preventDefault();
+              el.scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+          });
+
+          const spyBtns = Array.from(sectionRail.querySelectorAll(".rail-btn"));
+          const spyTargets = spyBtns.map((a) => document.querySelector(a.dataset.target)).filter(Boolean);
+
+          let activeIndex = 0;
+          const setActive = (idx) => {
+            activeIndex = Math.max(0, Math.min(spyBtns.length - 1, idx));
+            spyBtns.forEach((a, i) => a.classList.toggle("is-active", i === activeIndex));
+          };
+
+          const io = new IntersectionObserver(
+            (entries) => {
+              const visible = entries.filter((e) => e.isIntersecting);
+              if (!visible.length) return;
+
+              const mid = window.innerHeight * 0.52;
+              visible.sort((a, b) => {
+                const da = Math.abs(a.boundingClientRect.top + a.boundingClientRect.height / 2 - mid);
+                const db = Math.abs(b.boundingClientRect.top + b.boundingClientRect.height / 2 - mid);
+                return da - db;
+              });
+
+              const best = visible[0].target;
+              const idx = spyTargets.indexOf(best);
+              if (idx !== -1 && idx !== activeIndex) setActive(idx);
+            },
+            { threshold: [0.22, 0.35, 0.5, 0.65] }
+          );
+
+          spyTargets.forEach((s) => io.observe(s));
+        })();
+      </script>
+    </nav>
+
+
+
+    <!-- HERO SECTION -->
+    <section id="home" class="relative min-h-[85vh] flex flex-col justify-center px-6 overflow-hidden pt-24 bg-black" style=" filter: blur(0px);">
+      <div class="absolute inset-0 z-0 feat-hero-bg will-transform" style="background-position: 63.0376px 63.0376px;"></div>
+      <div class="max-w-7xl mx-auto w-full relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div class="lg:col-span-7">
+          <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md mb-8">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+            </span>
+            <span class="text-[11px] font-mono uppercase tracking-widest text-neutral-300">
+              Platform 2.0
+            </span>
+          </div>
+          <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-semibold tracking-tighter text-white leading-[0.95] mb-8 reveal-clip" style=" clip-path: inset(0% 0px round 18px);">
+            The Intelligence
+            <br>
+            <span class="text-neutral-500 font-serif italic font-light">
+              Infrastructure.
+            </span>
+          </h1>
+          <p class="text-neutral-400 max-w-xl text-lg leading-relaxed font-light">
+            Nexus isn't just hosting. It's a cognitive layer that reasons,
+            adapts, and scales your applications automatically. Built for the
+            next generation of AI workloads.
+          </p>
+        </div>
+        <div class="lg:col-span-5 relative hidden lg:block">
+          <div class="relative aspect-square w-full max-w-[500px] mx-auto">
+            <div class="absolute inset-0 bg-gradient-to-tr from-blue-500/10 to-purple-500/10 rounded-full blur-[80px]"></div>
+            <div class="absolute inset-0 border border-white/5 rounded-full animate-[spin_30s_linear_infinite]"></div>
+            <div class="absolute inset-[15%] border border-white/10 rounded-full animate-[spin_20s_linear_infinite_reverse]"></div>
+            <div class="absolute inset-[30%] bg-white/5 backdrop-blur-3xl rounded-full flex items-center justify-center border border-white/10 shadow-2xl">
+              <iconify-icon icon="solar:cpu-bolt-linear" width="64" class="text-white opacity-80"></iconify-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="bg-black pt-32 px-6 pb-32 relative" id="features" style=" filter: blur(0px);">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex flex-col md:flex-row items-end justify-between mb-20">
+      <div>
+        <h2 class="text-3xl md:text-4xl font-display font-semibold text-white tracking-tight">
+          System Modules
+        </h2>
+        <p class="text-neutral-500 mt-2 font-mono text-xs uppercase tracking-widest">
+          Core Architecture Overview
+        </p>
+      </div>
+      <div class="hidden md:block h-px flex-1 bg-white/10 mx-8 mb-2"></div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+  <!-- Card 1 -->
+  <div class="soft-card p-8 rounded-3xl group overflow-hidden relative">
+
+    <!-- Arrow -->
+    <div class="absolute right-0 top-0 p-8 opacity-20 group-hover:opacity-100 transition duration-500">
+      <iconify-icon icon="solar:arrow-right-up-linear" width="24" class="text-white/60"></iconify-icon>
+    </div>
+
+    <!-- Icon (clean style) -->
+    <iconify-icon icon="solar:server-square-linear" width="28" class="text-white/70 mb-6 group-hover:text-white transition duration-500">
+    </iconify-icon>
+
+    <h3 class="text-xl font-display font-medium text-white mb-3">
+      Neural Compute
+    </h3>
+    <p class="text-neutral-400 text-sm leading-relaxed">
+      On-demand TPU clusters provisioned in milliseconds. Train models closer to your users.
+    </p>
+  </div>
+
+
+  <!-- Card 2 (FIXED GLOBAL MESH ICON) -->
+  <div class="soft-card p-8 rounded-3xl group overflow-hidden relative">
+
+    <!-- Arrow -->
+    <div class="absolute right-0 top-0 p-8 opacity-20 group-hover:opacity-100 transition duration-500">
+      <iconify-icon icon="solar:arrow-right-up-linear" width="24" class="text-white/60"></iconify-icon>
+    </div>
+
+    <!-- ✅ Missing icon added -->
+    <iconify-icon icon="solar:globe-linear" width="28" class="text-white/70 mb-6 group-hover:text-white transition duration-500">
+    </iconify-icon>
+
+    <h3 class="text-xl font-display font-medium text-white mb-3">
+      Global Mesh
+    </h3>
+    <p class="text-neutral-400 text-sm leading-relaxed">
+      Data state synchronization across 35 regions with guaranteed sub-50ms latency.
+    </p>
+  </div>
+
+
+  <!-- Card 3 -->
+  <div class="soft-card p-8 rounded-3xl group overflow-hidden relative lg:row-span-2 flex flex-col justify-between">
+
+    <!-- Arrow -->
+    <div class="absolute right-0 top-0 p-8 opacity-20 group-hover:opacity-100 transition duration-500">
+      <iconify-icon icon="solar:arrow-right-up-linear" width="24" class="text-white/60"></iconify-icon>
+    </div>
+
+    <div>
+      <iconify-icon icon="solar:shield-check-linear" width="28" class="text-white/70 mb-6 group-hover:text-white transition duration-500">
+      </iconify-icon>
+
+      <h3 class="text-xl font-display font-medium text-white mb-3">
+        Sentinel Vault
+      </h3>
+      <p class="text-neutral-400 text-sm leading-relaxed">
+        Military-grade encryption for data at rest and in transit. Your keys, your rules.
+      </p>
+    </div>
+
+    <div class="mt-10">
+      <div class="bg-white/5 rounded-xl p-4 border border-white/5">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+          <span class="text-[10px] font-mono uppercase text-white/50">
+            System Status
+          </span>
+        </div>
+        <div class="text-white font-mono text-sm">
+          All Systems Operational
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Card 4 -->
+  <div class="soft-card p-8 rounded-3xl group overflow-hidden relative">
+
+    <div class="absolute right-0 top-0 p-8 opacity-20 group-hover:opacity-100 transition duration-500">
+      <iconify-icon icon="solar:arrow-right-up-linear" width="24" class="text-white/60"></iconify-icon>
+    </div>
+
+    <iconify-icon icon="solar:graph-new-up-linear" width="28" class="text-white/70 mb-6 group-hover:text-white transition duration-500">
+    </iconify-icon>
+
+    <h3 class="text-xl font-display font-medium text-white mb-3">
+      Deep Observability
+    </h3>
+    <p class="text-neutral-400 text-sm leading-relaxed">
+      Full-stack tracing built directly into the deployment pipeline. No agents required.
+    </p>
+  </div>
+
+
+  <!-- Card 5 -->
+  <div class="soft-card p-8 rounded-3xl group overflow-hidden relative">
+
+    <div class="absolute right-0 top-0 p-8 opacity-20 group-hover:opacity-100 transition duration-500">
+      <iconify-icon icon="solar:arrow-right-up-linear" width="24" class="text-white/60"></iconify-icon>
+    </div>
+
+    <iconify-icon icon="solar:layers-linear" width="28" class="text-white/70 mb-6 group-hover:text-white transition duration-500">
+    </iconify-icon>
+
+    <h3 class="text-xl font-display font-medium text-white mb-3">
+      Auto-Scaling
+    </h3>
+    <p class="text-neutral-400 text-sm leading-relaxed">
+      Predictive algorithms that spin up resources before traffic spikes hit.
+    </p>
+  </div>
+
+</div>
+  </div>
+</section>
+
+    <!-- SOLUTIONS -->
+    <section id="solutions" class="py-32 px-6 bg-neutral-950 border-t border-white/5" style=" filter: blur(6px);">
+      <div class="grid grid-cols-1 lg:grid-cols-12 max-w-6xl mr-auto ml-auto gap-x-16 gap-y-16">
+        <!-- Controls -->
+        <div class="lg:col-span-4 flex flex-col justify-center space-y-2" id="spotlight-controls">
+          <div class="mb-8">
+            <h2 class="text-3xl font-display font-semibold text-white">
+              Focus Mode
+            </h2>
+            <p class="text-neutral-500 text-sm mt-2">
+              Control every aspect of the pipeline.
+            </p>
+          </div>
+
+          <button class="spotlight-tab active w-full text-left px-6 py-5 rounded-xl border border-transparent text-neutral-500 transition-all hover:text-white flex items-center justify-between group" data-target="s-deploy">
+            <div>
+              <span class="block text-[10px] font-mono mb-1 group-hover:text-blue-400 transition-colors">
+                MODULE 01
+              </span>
+              <span class="text-lg font-display font-medium text-white">
+                Smart Deploy
+              </span>
+            </div>
+            <iconify-icon icon="solar:rocket-linear" width="20"></iconify-icon>
+          </button>
+
+          <button class="spotlight-tab w-full text-left px-6 py-5 rounded-xl border border-transparent text-neutral-500 transition-all hover:text-white flex items-center justify-between group" data-target="s-monitor">
+            <div>
+              <span class="block text-[10px] font-mono mb-1 group-hover:text-blue-400 transition-colors">
+                MODULE 02
+              </span>
+              <span class="text-lg font-display font-medium">Live Monitor</span>
+            </div>
+            <iconify-icon icon="solar:chart-2-linear" width="20"></iconify-icon>
+          </button>
+
+          <button class="spotlight-tab w-full text-left px-6 py-5 rounded-xl border border-transparent text-neutral-500 transition-all hover:text-white flex items-center justify-between group" data-target="s-security">
+            <div>
+              <span class="block text-[10px] font-mono mb-1 group-hover:text-blue-400 transition-colors">
+                MODULE 03
+              </span>
+              <span class="text-lg font-display font-medium">Zero Trust</span>
+            </div>
+            <iconify-icon icon="solar:lock-password-linear" width="20"></iconify-icon>
+          </button>
+        </div>
+
+        <!-- Display Area -->
+        <div class="lg:col-span-8 relative min-h-[500px]">
+          <!-- Panel 1 -->
+          <div id="s-deploy" class="spotlight-panel active reveal-clip" style=" clip-path: inset(18% 0px round 18px);">
+            <div class="h-full w-full rounded-2xl bg-black border border-white/10 p-8 md:p-12 flex flex-col justify-between relative overflow-hidden">
+              <div class="absolute right-0 top-0 w-[400px] h-[400px] bg-blue-600/10 blur-[100px] rounded-full"></div>
+              <div class="relative z-10">
+                <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400 mb-8 border border-blue-500/20">
+                  <iconify-icon icon="solar:rocket-bold" width="24"></iconify-icon>
+                </div>
+                <h3 class="text-3xl font-display font-semibold text-white mb-4">
+                  Push to production in seconds.
+                </h3>
+                <p class="text-neutral-400 max-w-md text-lg leading-relaxed">
+                  Connect your Git repository and let Nexus handle the build,
+                  provision, and global propagation. No configuration files
+                  required.
+                </p>
+              </div>
+              <div class="mt-12 p-4 rounded-lg bg-neutral-900 border border-white/10 font-mono text-xs text-neutral-400">
+                <div class="flex gap-2 mb-2">
+                  <span class="text-blue-400">&gt;</span>
+                  <span class="">git push nexus main</span>
+                </div>
+                <div class="flex gap-2 mb-2">
+                  <span class="text-green-400">✓</span>
+                  <span>Build completed in 420ms</span>
+                </div>
+                <div class="flex gap-2">
+                  <span class="text-green-400">✓</span>
+                  <span>Propagated to 35 edge regions</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel 2 -->
+          <div id="s-monitor" class="spotlight-panel">
+            <div class="h-full w-full rounded-2xl bg-black border border-white/10 p-8 md:p-12 flex flex-col justify-between relative overflow-hidden">
+              <div class="absolute right-0 top-0 w-[400px] h-[400px] bg-purple-600/10 blur-[100px] rounded-full"></div>
+              <div class="relative z-10">
+                <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center text-purple-400 mb-8 border border-purple-500/20">
+                  <iconify-icon icon="solar:chart-2-bold" width="24"></iconify-icon>
+                </div>
+                <h3 class="text-3xl font-display font-semibold text-white mb-4">
+                  See everything, instantly.
+                </h3>
+                <p class="text-neutral-400 max-w-md text-lg leading-relaxed">
+                  Real-time metrics with 1-second granularity. Trace requests
+                  across microservices and database calls without leaving the
+                  dashboard.
+                </p>
+              </div>
+              <div class="mt-12 grid grid-cols-3 gap-4">
+                <div class="p-4 rounded-lg bg-neutral-900 border border-white/10">
+                  <div class="text-[10px] uppercase text-neutral-500 mb-1">
+                    Latency
+                  </div>
+                  <div class="text-white font-mono">12ms</div>
+                </div>
+                <div class="p-4 rounded-lg bg-neutral-900 border border-white/10">
+                  <div class="text-[10px] uppercase text-neutral-500 mb-1">
+                    Requests
+                  </div>
+                  <div class="text-white font-mono">42k/s</div>
+                </div>
+                <div class="p-4 rounded-lg bg-neutral-900 border border-white/10">
+                  <div class="text-[10px] uppercase text-neutral-500 mb-1">
+                    Errors
+                  </div>
+                  <div class="text-green-400 font-mono">0.00%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel 3 -->
+          <div id="s-security" class="spotlight-panel">
+            <div class="h-full w-full rounded-2xl bg-black border border-white/10 p-8 md:p-12 flex flex-col justify-between relative overflow-hidden">
+              <div class="absolute right-0 top-0 w-[400px] h-[400px] bg-green-600/10 blur-[100px] rounded-full"></div>
+              <div class="relative z-10">
+                <div class="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center text-green-400 mb-8 border border-green-500/20">
+                  <iconify-icon icon="solar:lock-password-bold" width="24"></iconify-icon>
+                </div>
+                <h3 class="text-3xl font-display font-semibold text-white mb-4">
+                  Security by default.
+                </h3>
+                <p class="text-neutral-400 max-w-md text-lg leading-relaxed">
+                  Automated vulnerability scanning, DDoS protection, and WAF
+                  rules deployed instantly. Your infrastructure is hardened from
+                  day one.
+                </p>
+              </div>
+              <div class="mt-12">
+                <div class="flex items-center gap-3 text-sm text-neutral-300 py-2 border-b border-white/5">
+                  <iconify-icon icon="solar:check-circle-bold" class="text-green-400"></iconify-icon>
+                  SOC2 Type II Compliant
+                </div>
+                <div class="flex items-center gap-3 text-sm text-neutral-300 py-2 border-b border-white/5">
+                  <iconify-icon icon="solar:check-circle-bold" class="text-green-400"></iconify-icon>
+                  End-to-end Encryption
+                </div>
+                <div class="flex items-center gap-3 text-sm text-neutral-300 py-2 border-b border-white/5">
+                  <iconify-icon icon="solar:check-circle-bold" class="text-green-400"></iconify-icon>
+                  Automated Pen Testing
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKFLOW -->
+    <section id="workflow" class="py-32 px-6 bg-black relative" style=" filter: blur(6px);">
+      <div class="max-w-7xl mx-auto">
+        <div class="mb-16 text-center">
+          <span class="font-mono text-xs text-blue-500 uppercase tracking-widest">
+            Pipeline
+          </span>
+          <h2 class="text-3xl md:text-4xl font-display font-semibold text-white mt-3">
+            How data moves
+          </h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
+          <!-- Connecting Line (Desktop) -->
+          <div class="hidden md:block absolute top-12 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+
+          <div class="relative pt-8 text-center group">
+            <div class="w-3 h-3 bg-neutral-800 border border-white/20 rounded-full mx-auto mb-6 relative z-10 group-hover:bg-blue-500 group-hover:border-blue-400 transition-colors duration-300"></div>
+            <h3 class="text-lg font-medium text-white mb-2">Ingest</h3>
+            <p class="text-xs text-neutral-500 leading-relaxed max-w-[200px] mx-auto">
+              Multi-source data collection via API or direct edge connectors.
+            </p>
+          </div>
+
+          <div class="relative pt-8 text-center group">
+            <div class="w-3 h-3 bg-neutral-800 border border-white/20 rounded-full mx-auto mb-6 relative z-10 group-hover:bg-purple-500 group-hover:border-purple-400 transition-colors duration-300"></div>
+            <h3 class="text-lg font-medium text-white mb-2">Process</h3>
+            <p class="text-xs text-neutral-500 leading-relaxed max-w-[200px] mx-auto">
+              Serverless transformation and vector embedding generation.
+            </p>
+          </div>
+
+          <div class="relative pt-8 text-center group">
+            <div class="w-3 h-3 bg-neutral-800 border border-white/20 rounded-full mx-auto mb-6 relative z-10 group-hover:bg-green-500 group-hover:border-green-400 transition-colors duration-300"></div>
+            <h3 class="text-lg font-medium text-white mb-2">Store</h3>
+            <p class="text-xs text-neutral-500 leading-relaxed max-w-[200px] mx-auto">
+              Distributed sharding across global high-availability zones.
+            </p>
+          </div>
+
+          <div class="relative pt-8 text-center group">
+            <div class="w-3 h-3 bg-neutral-800 border border-white/20 rounded-full mx-auto mb-6 relative z-10 group-hover:bg-orange-500 group-hover:border-orange-400 transition-colors duration-300"></div>
+            <h3 class="text-lg font-medium text-white mb-2">Serve</h3>
+            <p class="text-xs text-neutral-500 leading-relaxed max-w-[200px] mx-auto">
+              Sub-millisecond inference delivery to client applications.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPANY -->
+    <section id="company" class="py-32 px-6 bg-neutral-950 border-y border-white/5" style=" filter: blur(6px);">
+      <div class="max-w-5xl mx-auto">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+          <div>
+            <div class="text-4xl md:text-5xl font-display font-bold text-white mb-3 tracking-tight">&lt;0ms</div>
+            <div class="text-[10px] font-mono text-neutral-500 uppercase tracking-widest">
+              Global Latency
+            </div>
+          </div>
+          <div class="">
+            <div class="text-4xl md:text-5xl font-display font-bold text-white mb-3 tracking-tight">0TB</div>
+            <div class="text-[10px] font-mono text-neutral-500 uppercase tracking-widest">
+              Daily Ingest
+            </div>
+          </div>
+          <div>
+            <div class="text-4xl md:text-5xl font-display font-bold text-white mb-3 tracking-tight">0.0%</div>
+            <div class="text-[10px] font-mono text-neutral-500 uppercase tracking-widest">
+              Uptime SLA
+            </div>
+          </div>
+          <div>
+            <div class="text-4xl md:text-5xl font-display font-bold text-white mb-3 tracking-tight">AES0</div>
+            <div class="text-[10px] font-mono text-neutral-500 uppercase tracking-widest">
+              Encryption
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing" class="relative py-40 px-6 bg-black text-center overflow-hidden" style=" filter: blur(6px);">
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_100%,rgba(59,130,246,0.15),transparent_50%)] pointer-events-none"></div>
+      <div class="relative z-10 max-w-2xl mx-auto">
+        <h2 class="text-4xl md:text-6xl font-display font-semibold text-white mb-8 tracking-tight reveal-clip" style=" clip-path: inset(18% 0px round 18px);">
+          Ready to modernize?
+        </h2>
+        <p class="text-neutral-400 mb-10 text-lg">
+          Join the engineering teams building the next generation of intelligent
+          applications.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="/free-trial" class="inline-flex items-center justify-center hover:bg-neutral-200 transition-colors text-sm font-semibold text-black bg-white rounded-full pt-4 pr-8 pb-4 pl-8">
+            Start Building
+          </a>
+          <a href="#" class="inline-flex items-center justify-center px-8 py-4 text-sm font-semibold text-white bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-colors">
+            Contact Sales
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ✅ TESTIMONIALS (FIXED + ANIMATED) -->
+
+    <!-- CONTACT -->
+
+    <footer class="py-10 border-t border-white/5 text-center text-neutral-600 text-xs font-mono">
+      <p class="">© 2024 Nexus Inc. All rights reserved.</p>
+    </footer>
+
+    <script>
+      // --- 1. Mouse Tracking (Modified) ---
+      document.addEventListener('mousemove', (e) => {
+        document.documentElement.style.setProperty('--mouse-x', e.clientX + 'px');
+        document.documentElement.style.setProperty('--mouse-y', e.clientY + 'px');
+      });
+
+      // --- 2. Canvas Particle Network ---
+      const canvas = document.getElementById('hero-canvas');
+      const ctx = canvas.getContext('2d');
+      let particlesArray;
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+        initParticles();
+      });
+      resizeCanvas();
+
+      class Particle {
+        constructor(x, y, directionX, directionY, size) {
+          this.x = x;
+          this.y = y;
+          this.directionX = directionX;
+          this.directionY = directionY;
+          this.size = size;
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+          ctx.fillStyle = 'rgba(255,255,255,0.5)';
+          ctx.fill();
+        }
+        update() {
+          if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+          if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+          this.x += this.directionX;
+          this.y += this.directionY;
+          this.draw();
+        }
+      }
+
+      function initParticles() {
+        particlesArray = [];
+        const numberOfParticles = (canvas.height * canvas.width) / 15000;
+        for (let i = 0; i < numberOfParticles; i++) {
+          const size = (Math.random() * 2) + 0.5;
+          const x = Math.random() * canvas.width;
+          const y = Math.random() * canvas.height;
+          const directionX = (Math.random() * 0.4) - 0.2;
+          const directionY = (Math.random() * 0.4) - 0.2;
+          particlesArray.push(new Particle(x, y, directionX, directionY, size));
+        }
+      }
+
+      function animateParticles() {
+        requestAnimationFrame(animateParticles);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < particlesArray.length; i++) particlesArray[i].update();
+        connectParticles();
+      }
+
+      function connectParticles() {
+        for (let a = 0; a < particlesArray.length; a++) {
+          for (let b = a; b < particlesArray.length; b++) {
+            const distance = ((particlesArray[a].x - particlesArray[b].x) ** 2) + ((particlesArray[a].y - particlesArray[b].y) ** 2);
+            if (distance < (canvas.width / 9) * (canvas.height / 9)) {
+              const opacityValue = 1 - (distance / 20000);
+              ctx.strokeStyle = 'rgba(255, 255, 255,' + (opacityValue * 0.1) + ')';
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+              ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+              ctx.stroke();
+            }
+          }
+        }
+      }
+
+      initParticles();
+      animateParticles();
+
+      // --- 3. Sticky Scroll & Door Interaction ---
+      const doorLeft = document.getElementById('door-left');
+      const doorRight = document.getElementById('door-right');
+      const heroBg = document.getElementById('hero-bg-image');
+      const heroContent = document.getElementById('hero-content');
+      const scrollHint = document.getElementById('scroll-hint');
+
+      window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+        const windowHeight = window.innerHeight;
+        const progress = Math.max(0, Math.min(1, scrollY / (windowHeight * 1.2)));
+
+        const moveDist = progress * 60;
+        if (doorLeft && doorRight) {
+          doorLeft.style.transform = `translateX(-${moveDist}vw)`;
+          doorRight.style.transform = `translateX(${moveDist}vw)`;
+          doorLeft.style.opacity = 1 - (progress * 1.5);
+          doorRight.style.opacity = 1 - (progress * 1.5);
+        }
+
+        if (heroBg) {
+          heroBg.style.opacity = progress;
+          heroBg.style.transform = `scale(${0.9 + (progress * 0.1)})`;
+          heroBg.style.filter = `blur(${(1 - progress) * 10}px)`;
+        }
+
+        if (scrollHint) scrollHint.style.opacity = 1 - (progress * 3);
+
+        if (heroContent) {
+          if (progress > 0.6) {
+            const localProgress = (progress - 0.6) * 2.5;
+            heroContent.style.opacity = Math.min(1, localProgress);
+            heroContent.style.transform = `translateY(${(1 - Math.min(1, localProgress)) * 40}px)`;
+          } else {
+            heroContent.style.opacity = 0;
+          }
+        }
+      });
+
+      // --- 4. Intersection Observer for Reveals ---
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+      document.querySelectorAll('.scroll-reveal').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(40px)';
+        el.style.transition = 'opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
+        observer.observe(el);
+      });
+
+      // ✅ Testimonials reveal animation
+      const tReveal = document.querySelector('.t-reveal');
+      if (tReveal) {
+        const tObs = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              tObs.disconnect();
+            }
+          });
+        }, { threshold: 0.2 });
+
+        tObs.observe(tReveal);
+      }
+
+      // --- 6. Mobile Menu Toggle ---
+      const menuBtn = document.getElementById('mobile-menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      if (menuBtn && mobileMenu) {
+        menuBtn.addEventListener('click', () => {
+          mobileMenu.classList.toggle('hidden');
+        });
+      }
+
+      // --- 7. Hide header on scroll down, show on up (Mobile) ---
+      let lastScroll = 0;
+      const mobileHeader = document.getElementById('mobile-header');
+      window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        if (!mobileHeader) return;
+        if (currentScroll > lastScroll && currentScroll > 50) {
+          mobileHeader.style.transform = 'translateY(-100%)';
+        } else {
+          mobileHeader.style.transform = 'translateY(0)';
+        }
+        lastScroll = currentScroll;
+      });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        gsap.registerPlugin(ScrollTrigger);
+
+        const data = [
+          { id: "01", name: "Sarah Chen", role: "CTO, TechFlow", quote: "We reduced our deployment time by 40% in the first week. It feels like magic.", metric: "-40% Time", img: "https://randomuser.me/api/portraits/women/44.jpg" },
+          { id: "02", name: "Mark Davis", role: "Lead Dev, ScaleUp", quote: "Zero downtime during our biggest migration ever. The reliability is unmatched.", metric: "100% Uptime", img: "https://randomuser.me/api/portraits/men/32.jpg" },
+          { id: "03", name: "Elena Rodriguez", role: "VP Eng, Nexus", quote: "The observability suite saved us 15 engineering hours per week.", metric: "15hr/wk Saved", img: "https://randomuser.me/api/portraits/women/65.jpg" },
+          { id: "04", name: "David Kim", role: "Architect, CoreSys", quote: "Global latency dropped to under 50ms immediately after switching to Nexus Edge.", metric: "<50ms Latency", img: "https://randomuser.me/api/portraits/men/86.jpg" },
+          { id: "05", name: "Alex Morgan", role: "DevOps, CloudNine", quote: "Setup took less than an hour. The developer experience is world-class.", metric: "1hr Setup", img: "https://randomuser.me/api/portraits/men/22.jpg" },
+          { id: "06", name: "Priya Patel", role: "Founder, StartUp", quote: "Security compliance out of the box was a game changer for our Series A.", metric: "SOC2 Ready", img: "https://randomuser.me/api/portraits/women/28.jpg" }
+        ];
+
+        const container = document.getElementById('orbit-container');
+        const spotlightPanel = document.getElementById('spotlight-panel');
+        const panelAnchor = document.getElementById('panel-anchor');
+        const connectionPath = document.getElementById('connection-line');
+        const connectionDot = document.getElementById('connection-dot');
+
+        // Spotlight Elements
+        const sName = document.getElementById('s-name');
+        const sRole = document.getElementById('s-role');
+        const sQuote = document.getElementById('s-quote');
+        const sImg = document.getElementById('s-img');
+        const sMetric = document.getElementById('s-metric');
+        const sId = document.getElementById('s-id');
+        const sContent = document.getElementById('spotlight-content');
+        const scanLine = document.getElementById('scan-line');
+
+        let activeIndex = 0;
+        let capsules = [];
+
+        // Define positions (percentage based to be responsive)
+        const positions = [
+          { top: 20, left: 15 },  // Top Left
+          { top: 15, left: 75 },  // Top Right
+          { top: 50, left: 85 },  // Mid Right
+          { top: 80, left: 70 },  // Bottom Right
+          { top: 85, left: 25 },  // Bottom Left
+          { top: 55, left: 10 }   // Mid Left
+        ];
+
+        // Render Capsules
+        data.forEach((item, i) => {
+          const btn = document.createElement('button');
+          btn.className = `absolute group pointer-events-auto focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full transition-all duration-300`;
+          btn.style.top = `${positions[i].top}%`;
+          btn.style.left = `${positions[i].left}%`;
+          btn.setAttribute('aria-label', `View testimonial by ${item.name}`);
+          btn.innerHTML = `
+            <div class="relative">
+               <div class="w-12 h-12 md:w-14 md:h-14 rounded-full p-0.5 border border-white/20 bg-neutral-900/80 backdrop-blur-md group-hover:border-blue-400 group-hover:scale-110 transition-all duration-300 shadow-lg overflow-hidden">
+                 <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/917d6f93-fb36-439a-8c48-884b67b35381_1600w.jpg" class="w-full h-full rounded-full object-cover opacity-70 group-hover:opacity-100 transition-opacity grayscale group-hover:grayscale-0" alt="${item.name}">
+               </div>
+               <!-- Label -->
+               <div class="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-50">
+                  <div class="bg-neutral-900/90 text-white text-[10px] px-2 py-1 rounded border border-white/10 backdrop-blur font-mono">
+                    ${item.name}
+                  </div>
+               </div>
+               <!-- Pulse Dot -->
+               <div class="absolute top-0 right-0 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-black scale-0 group-hover:scale-100 transition-transform duration-300 animate-pulse"></div>
+            </div>
+          `;
+
+          // Random float animation
+          gsap.to(btn, {
+            y: "random(-15, 15)",
+            x: "random(-10, 10)",
+            duration: "random(3, 5)",
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+            delay: Math.random() * 2
+          });
+
+          btn.addEventListener('mouseenter', () => {
+            gsap.to(btn, { scale: 1.1, duration: 0.3 });
+          });
+          btn.addEventListener('mouseleave', () => {
+            if(activeIndex !== i) gsap.to(btn, { scale: 1, duration: 0.3 });
+          });
+          btn.addEventListener('click', () => updateActive(i));
+
+          container.appendChild(btn);
+          capsules.push(btn);
+        });
+
+        // ScrollTrigger Entry Animation
+        gsap.from(capsules, {
+          scrollTrigger: {
+            trigger: "#testimonials",
+            start: "top 70%",
+          },
+          scale: 0,
+          opacity: 0,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: "back.out(1.7)"
+        });
+
+        gsap.from(spotlightPanel, {
+          scrollTrigger: {
+             trigger: "#testimonials",
+             start: "top 70%",
+          },
+          y: 50,
+          opacity: 0,
+          duration: 0.8,
+          delay: 0.2
+        });
+
+        // Core Update Function
+        function updateActive(index) {
+          if (index < 0) index = data.length - 1;
+          if (index >= data.length) index = 0;
+          activeIndex = index;
+
+          // Update UI state of capsules
+          capsules.forEach((cap, i) => {
+            const img = cap.querySelector('img');
+            const wrapper = cap.querySelector('div > div');
+            if (i === index) {
+               gsap.to(wrapper, { borderColor: '#3b82f6', scale: 1.15, duration: 0.3 });
+               gsap.to(img, { opacity: 1, grayscale: 0, duration: 0.3 });
+            } else {
+               gsap.to(wrapper, { borderColor: 'rgba(255,255,255,0.2)', scale: 1, duration: 0.3 });
+               gsap.to(img, { opacity: 0.7, grayscale: 1, duration: 0.3 });
+            }
+          });
+
+          // Animate Panel Content Swap
+          sContent.style.opacity = 0;
+          setTimeout(() => {
+             const item = data[index];
+             sName.textContent = item.name;
+             sRole.textContent = item.role;
+             sQuote.textContent = item.quote;
+             sMetric.textContent = item.metric;
+             sId.textContent = item.id;
+             sImg.src = item.img;
+             sContent.style.opacity = 1;
+
+             // Scan effect
+             gsap.fromTo(scanLine, { top: '0%', opacity: 1 }, { top: '100%', opacity: 0, duration: 0.8, ease: "power2.inOut" });
+
+             updateLine();
+          }, 300);
+        }
+
+        // SVG Line Logic
+        function updateLine() {
+          const activeCap = capsules[activeIndex];
+          if (!activeCap || !panelAnchor) return;
+
+          const startRect = activeCap.getBoundingClientRect();
+          const endRect = panelAnchor.getBoundingClientRect();
+          const containerRect = document.getElementById('testimonials').getBoundingClientRect();
+
+          // Calculate relative coordinates
+          const x1 = startRect.left + startRect.width / 2 - containerRect.left;
+          const y1 = startRect.top + startRect.height / 2 - containerRect.top;
+          const x2 = endRect.left + endRect.width / 2 - containerRect.left;
+          const y2 = endRect.top + endRect.height / 2 - containerRect.top;
+
+          // Draw Curve
+          const deltaX = x2 - x1;
+          const cp1x = x1 + deltaX * 0.5;
+          const cp1y = y1;
+          const cp2x = x2 - deltaX * 0.5;
+          const cp2y = y2;
+
+          const pathString = `M ${x1} ${y1} C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${x2} ${y2}`;
+
+          connectionPath.setAttribute('d', pathString);
+          connectionPath.classList.remove('opacity-0');
+
+          // Animate line drawing
+          const length = connectionPath.getTotalLength();
+          connectionPath.style.strokeDasharray = length;
+          connectionPath.style.strokeDashoffset = length;
+
+          // Trigger reflow
+          connectionPath.getBoundingClientRect();
+
+          gsap.to(connectionPath, {
+             strokeDashoffset: 0,
+             duration: 0.6,
+             ease: "power2.out"
+          });
+
+          // Move dot
+          gsap.killTweensOf(connectionDot);
+          gsap.to(connectionDot, {
+             motionPath: {
+                path: pathString,
+                align: "#connection-line",
+                alignOrigin: [0.5, 0.5],
+             },
+             duration: 1,
+             repeat: -1,
+             repeatDelay: 1,
+             ease: "power1.inOut",
+             opacity: 1
+          });
+        }
+
+        // Initialization
+        updateActive(0);
+        window.addEventListener('resize', () => {
+            updateLine();
+        });
+
+        // Keyboard Nav
+        document.addEventListener('keydown', (e) => {
+           const tSection = document.getElementById('testimonials');
+           const rect = tSection.getBoundingClientRect();
+           if (rect.top < window.innerHeight && rect.bottom > 0) {
+              if (e.key === 'ArrowRight') updateActive(activeIndex + 1);
+              if (e.key === 'ArrowLeft') updateActive(activeIndex - 1);
+           }
+        });
+
+      });
+    </script>
+
+    <script>
+      // Feature Spotlight Tabs Logic
+      document.addEventListener('DOMContentLoaded', () => {
+        const tabs = document.querySelectorAll('.spotlight-tab');
+        const panels = document.querySelectorAll('.spotlight-panel');
+
+        tabs.forEach(tab => {
+          tab.addEventListener('click', () => {
+            const targetId = tab.dataset.target;
+
+            // Update Tabs
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            // Update Panels
+            panels.forEach(p => {
+              if (p.id === targetId) {
+                p.classList.add('active');
+              } else {
+                p.classList.remove('active');
+              }
+            });
+          });
+        });
+      });
+    </script><script>
+document.addEventListener("DOMContentLoaded", () => {
+  if (!window.gsap || !window.ScrollTrigger) return;
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Respect reduced motion
+  const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce) return;
+
+  // ---------- Helpers ----------
+  const q = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+  // Subtle section “enter” fade + depth
+  function sectionBase(sectionSel) {
+    const el = document.querySelector(sectionSel);
+    if (!el) return;
+
+    gsap.fromTo(el,
+      { opacity: 0.001, y: 24, filter: "blur(6px)" },
+      {
+        opacity: 1,
+        y: 0,
+        filter: "blur(0px)",
+        duration: 1.0,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 75%",
+          toggleActions: "play none none reverse"
+        }
+      }
+    );
+  }
+
+  // Clip-reveal for a key block
+  function clipReveal(target, triggerEl, delay = 0) {
+    if (!target) return;
+    target.classList.add("reveal-clip");
+
+    gsap.fromTo(target,
+      { opacity: 0.001, y: 18, clipPath: "inset(18% 0 18% 0 round 18px)" },
+      {
+        opacity: 1,
+        y: 0,
+        clipPath: "inset(0% 0 0% 0 round 18px)",
+        duration: 1.0,
+        delay,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: triggerEl || target,
+          start: "top 75%"
+        }
+      }
+    );
+  }
+
+  // Count up text like "100TB", "<5ms", "99.9%"
+  function animateStat(el) {
+    const raw = (el.textContent || "").trim();
+    if (!raw) return;
+
+    // Extract first number in string
+    const m = raw.match(/-?\d+(\.\d+)?/);
+    if (!m) return;
+
+    const number = parseFloat(m[0]);
+    const prefix = raw.slice(0, m.index);
+    const suffix = raw.slice(m.index + m[0].length);
+
+    const obj = { v: 0 };
+    gsap.fromTo(obj, { v: 0 }, {
+      v: number,
+      duration: 1.25,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: el,
+        start: "top 85%"
+      },
+      onUpdate: () => {
+        // keep decimals if original had decimals
+        const hasDecimal = m[0].includes(".");
+        const value = hasDecimal ? obj.v.toFixed(1) : Math.round(obj.v).toString();
+        el.textContent = `${prefix}${value}${suffix}`;
+      }
+    });
+  }
+
+  // ---------- 1) Base section entrance ----------
+  ["#home", "#features", "#solutions", "#workflow", "#company", "#pricing"].forEach(sectionBase);
+
+  // ---------- 2) HERO: parallax + headline reveal ----------
+  const hero = document.querySelector("#home");
+  if (hero) {
+    const heroGrid = hero.querySelector(".feat-hero-bg");
+    const heroH1 = hero.querySelector("h1");
+    const heroP  = hero.querySelector("p");
+
+    if (heroGrid) {
+      heroGrid.classList.add("will-transform");
+      gsap.to(heroGrid, {
+        backgroundPosition: "80px 80px",
+        ease: "none",
+        scrollTrigger: {
+          trigger: hero,
+          start: "top top",
+          end: "bottom top",
+          scrub: 0.6
+        }
+      });
+      gsap.fromTo(heroGrid,
+        { opacity: 0.0 },
+        { opacity: 1, duration: 1.2, ease: "power2.out", scrollTrigger: { trigger: hero, start: "top 85%" } }
+      );
+    }
+
+    if (heroH1) {
+      clipReveal(heroH1, hero, 0.05);
+    }
+    if (heroP) {
+      gsap.fromTo(heroP,
+        { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.9, ease: "power3.out", delay: 0.1,
+          scrollTrigger: { trigger: hero, start: "top 80%" }
+        }
+      );
+    }
+  }
+
+  // ---------- 3) FEATURES: stagger cards ----------
+  const features = document.querySelector("#features");
+  if (features) {
+    const cards = q("#features .soft-card");
+    if (cards.length) {
+      gsap.fromTo(cards,
+        { opacity: 0, y: 26, rotateX: 6, transformPerspective: 900 },
+        {
+          opacity: 1,
+          y: 0,
+          rotateX: 0,
+          duration: 0.9,
+          ease: "power3.out",
+          stagger: 0.08,
+          scrollTrigger: {
+            trigger: features,
+            start: "top 70%"
+          }
+        }
+      );
+    }
+  }
+
+  // ---------- 4) SOLUTIONS: controls slide + panel mask ----------
+  const solutions = document.querySelector("#solutions");
+  if (solutions) {
+    const controls = document.querySelector("#spotlight-controls");
+    const activePanel = document.querySelector("#solutions .spotlight-panel.active");
+
+    if (controls) {
+      gsap.fromTo(controls,
+        { opacity: 0, x: -22 },
+        {
+          opacity: 1, x: 0, duration: 0.9, ease: "power3.out",
+          scrollTrigger: { trigger: solutions, start: "top 70%" }
+        }
+      );
+    }
+
+    if (activePanel) {
+      clipReveal(activePanel, solutions, 0.12);
+    }
+
+    // When tabs change, animate the new panel in (your logic toggles .active)
+    const tabs = q(".spotlight-tab");
+    const panels = q(".spotlight-panel");
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        const id = tab.dataset.target;
+        const p = panels.find(x => x.id === id);
+        if (!p) return;
+
+        gsap.fromTo(p,
+          { opacity: 0, y: 10, clipPath: "inset(10% 0 10% 0 round 18px)" },
+          { opacity: 1, y: 0, clipPath: "inset(0% 0 0% 0 round 18px)", duration: 0.55, ease: "power3.out" }
+        );
+      });
+    });
+  }
+
+  // ---------- 5) WORKFLOW: wave-in nodes ----------
+  const workflow = document.querySelector("#workflow");
+  if (workflow) {
+    const items = q("#workflow .grid > div.relative.pt-8");
+    if (items.length) {
+      gsap.fromTo(items,
+        { opacity: 0, y: 18 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.75,
+          ease: "power3.out",
+          stagger: 0.12,
+          scrollTrigger: {
+            trigger: workflow,
+            start: "top 70%"
+          }
+        }
+      );
+    }
+
+    const line = workflow.querySelector(".hidden.md\\:block.absolute.top-12");
+    if (line) {
+      gsap.fromTo(line,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.8, ease: "power2.out", scrollTrigger: { trigger: workflow, start: "top 72%" } }
+      );
+    }
+  }
+
+  // ---------- 6) COMPANY: count up stats ----------
+  const company = document.querySelector("#company");
+  if (company) {
+    const stats = q("#company .text-4xl, #company .text-5xl");
+    stats.forEach(animateStat);
+  }
+
+  // ---------- 7) PRICING: CTA “decision moment” ----------
+  const pricing = document.querySelector("#pricing");
+  if (pricing) {
+    const glow = pricing.querySelector(".absolute.inset-0");
+    const title = pricing.querySelector("h2");
+    const copy = pricing.querySelector("p");
+    const buttons = q("#pricing a");
+
+    if (glow) {
+      gsap.fromTo(glow,
+        { opacity: 0.2, scale: 0.98 },
+        {
+          opacity: 0.9,
+          scale: 1,
+          duration: 1.2,
+          ease: "power2.out",
+          scrollTrigger: { trigger: pricing, start: "top 80%" }
+        }
+      );
+
+      // soft breathing
+      gsap.to(glow, { opacity: 0.65, duration: 2.6, yoyo: true, repeat: -1, ease: "sine.inOut" });
+    }
+
+    if (title) clipReveal(title, pricing, 0.05);
+
+    if (copy) {
+      gsap.fromTo(copy,
+        { opacity: 0, y: 14 },
+        { opacity: 1, y: 0, duration: 0.9, ease: "power3.out",
+          scrollTrigger: { trigger: pricing, start: "top 78%" }
+        }
+      );
+    }
+
+    if (buttons.length) {
+      gsap.fromTo(buttons,
+        { opacity: 0, y: 14 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.75,
+          ease: "power3.out",
+          stagger: 0.12,
+          scrollTrigger: { trigger: pricing, start: "top 72%" }
+        }
+      );
+    }
+  }
+
+});
+</script>
+
+  
+</body></html>
