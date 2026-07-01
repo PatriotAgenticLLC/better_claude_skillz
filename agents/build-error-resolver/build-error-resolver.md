@@ -101,12 +101,12 @@ For each error:
 
 **Pattern 1: Type Inference Failure**
 ```typescript
-// ERROR: Parameter 'x' implicitly has an 'any' type
+// ❌ ERROR: Parameter 'x' implicitly has an 'any' type
 function add(x, y) {
   return x + y
 }
 
-// FIX: Add type annotations
+// ✅ FIX: Add type annotations
 function add(x: number, y: number): number {
   return x + y
 }
@@ -114,25 +114,25 @@ function add(x: number, y: number): number {
 
 **Pattern 2: Null/Undefined Errors**
 ```typescript
-// ERROR: Object is possibly 'undefined'
+// ❌ ERROR: Object is possibly 'undefined'
 const name = user.name.toUpperCase()
 
-// FIX: Optional chaining
+// ✅ FIX: Optional chaining
 const name = user?.name?.toUpperCase()
 
-// OR: Null check
+// ✅ OR: Null check
 const name = user && user.name ? user.name.toUpperCase() : ''
 ```
 
 **Pattern 3: Missing Properties**
 ```typescript
-// ERROR: Property 'age' does not exist on type 'User'
+// ❌ ERROR: Property 'age' does not exist on type 'User'
 interface User {
   name: string
 }
 const user: User = { name: 'John', age: 30 }
 
-// FIX: Add property to interface
+// ✅ FIX: Add property to interface
 interface User {
   name: string
   age?: number // Optional if not always present
@@ -141,10 +141,10 @@ interface User {
 
 **Pattern 4: Import Errors**
 ```typescript
-// ERROR: Cannot find module '@/lib/utils'
+// ❌ ERROR: Cannot find module '@/lib/utils'
 import { formatDate } from '@/lib/utils'
 
-// FIX 1: Check tsconfig paths are correct
+// ✅ FIX 1: Check tsconfig paths are correct
 {
   "compilerOptions": {
     "paths": {
@@ -153,38 +153,38 @@ import { formatDate } from '@/lib/utils'
   }
 }
 
-// FIX 2: Use relative import
+// ✅ FIX 2: Use relative import
 import { formatDate } from '../lib/utils'
 
-// FIX 3: Install missing package
+// ✅ FIX 3: Install missing package
 npm install @/lib/utils
 ```
 
 **Pattern 5: Type Mismatch**
 ```typescript
-// ERROR: Type 'string' is not assignable to type 'number'
+// ❌ ERROR: Type 'string' is not assignable to type 'number'
 const age: number = "30"
 
-// FIX: Parse string to number
+// ✅ FIX: Parse string to number
 const age: number = parseInt("30", 10)
 
-// OR: Change type
+// ✅ OR: Change type
 const age: string = "30"
 ```
 
 **Pattern 6: Generic Constraints**
 ```typescript
-// ERROR: Type 'T' is not assignable to type 'string'
+// ❌ ERROR: Type 'T' is not assignable to type 'string'
 function getLength<T>(item: T): number {
   return item.length
 }
 
-// FIX: Add constraint
+// ✅ FIX: Add constraint
 function getLength<T extends { length: number }>(item: T): number {
   return item.length
 }
 
-// OR: More specific constraint
+// ✅ OR: More specific constraint
 function getLength<T extends string | any[]>(item: T): number {
   return item.length
 }
@@ -192,14 +192,14 @@ function getLength<T extends string | any[]>(item: T): number {
 
 **Pattern 7: React Hook Errors**
 ```typescript
-// ERROR: React Hook "useState" cannot be called in a function
+// ❌ ERROR: React Hook "useState" cannot be called in a function
 function MyComponent() {
   if (condition) {
     const [state, setState] = useState(0) // ERROR!
   }
 }
 
-// FIX: Move hooks to top level
+// ✅ FIX: Move hooks to top level
 function MyComponent() {
   const [state, setState] = useState(0)
 
@@ -213,12 +213,12 @@ function MyComponent() {
 
 **Pattern 8: Async/Await Errors**
 ```typescript
-// ERROR: 'await' expressions are only allowed within async functions
+// ❌ ERROR: 'await' expressions are only allowed within async functions
 function fetchData() {
   const data = await fetch('/api/data')
 }
 
-// FIX: Add async keyword
+// ✅ FIX: Add async keyword
 async function fetchData() {
   const data = await fetch('/api/data')
 }
@@ -226,14 +226,14 @@ async function fetchData() {
 
 **Pattern 9: Module Not Found**
 ```typescript
-// ERROR: Cannot find module 'react' or its corresponding type declarations
+// ❌ ERROR: Cannot find module 'react' or its corresponding type declarations
 import React from 'react'
 
-// FIX: Install dependencies
+// ✅ FIX: Install dependencies
 npm install react
 npm install --save-dev @types/react
 
-// CHECK: Verify package.json has dependency
+// ✅ CHECK: Verify package.json has dependency
 {
   "dependencies": {
     "react": "^19.0.0"
@@ -246,18 +246,18 @@ npm install --save-dev @types/react
 
 **Pattern 10: Next.js Specific Errors**
 ```typescript
-// ERROR: Fast Refresh had to perform a full reload
+// ❌ ERROR: Fast Refresh had to perform a full reload
 // Usually caused by exporting non-component
 
-// FIX: Separate exports
-// WRONG: file.tsx
+// ✅ FIX: Separate exports
+// ❌ WRONG: file.tsx
 export const MyComponent = () => <div />
 export const someConstant = 42 // Causes full reload
 
-// CORRECT: component.tsx
+// ✅ CORRECT: component.tsx
 export const MyComponent = () => <div />
 
-// CORRECT: constants.ts
+// ✅ CORRECT: constants.ts
 export const someConstant = 42
 ```
 
@@ -265,7 +265,7 @@ export const someConstant = 42
 
 ### Next.js 15 + React 19 Compatibility
 ```typescript
-// ERROR: React 19 type changes
+// ❌ ERROR: React 19 type changes
 import { FC } from 'react'
 
 interface Props {
@@ -276,7 +276,7 @@ const Component: FC<Props> = ({ children }) => {
   return <div>{children}</div>
 }
 
-// FIX: React 19 doesn't need FC
+// ✅ FIX: React 19 doesn't need FC
 interface Props {
   children: React.ReactNode
 }
@@ -286,42 +286,52 @@ const Component = ({ children }: Props) => {
 }
 ```
 
-### Database Client Types
+### Supabase Client Types
 ```typescript
-// ERROR: Type 'any' not assignable
-const { data } = await db
-  .from('items')
+// ❌ ERROR: Type 'any' not assignable
+const { data } = await supabase
+  .from('markets')
   .select('*')
 
-// FIX: Add type annotation
-interface Item {
+// ✅ FIX: Add type annotation
+interface Market {
   id: string
   name: string
   slug: string
   // ... other fields
 }
 
-const { data } = await db
-  .from('items')
-  .select('*') as { data: Item[] | null, error: any }
+const { data } = await supabase
+  .from('markets')
+  .select('*') as { data: Market[] | null, error: any }
 ```
 
-### Cache Client Types
+### Redis Stack Types
 ```typescript
-// ERROR: Property 'search' does not exist on type 'CacheClientType'
-const results = await client.search('idx:items', query)
+// ❌ ERROR: Property 'ft' does not exist on type 'RedisClientType'
+const results = await client.ft.search('idx:markets', query)
 
-// FIX: Use proper cache client types
+// ✅ FIX: Use proper Redis Stack types
 import { createClient } from 'redis'
 
 const client = createClient({
-  url: process.env.CACHE_URL
+  url: process.env.REDIS_URL
 })
 
 await client.connect()
 
 // Type is inferred correctly now
-const results = await client.ft.search('idx:items', query)
+const results = await client.ft.search('idx:markets', query)
+```
+
+### Solana Web3.js Types
+```typescript
+// ❌ ERROR: Argument of type 'string' not assignable to 'PublicKey'
+const publicKey = wallet.address
+
+// ✅ FIX: Use PublicKey constructor
+import { PublicKey } from '@solana/web3.js'
+const publicKey = new PublicKey(wallet.address)
 ```
 
 ## Minimal Diff Strategy
@@ -329,34 +339,34 @@ const results = await client.ft.search('idx:items', query)
 **CRITICAL: Make smallest possible changes**
 
 ### DO:
-- Add type annotations where missing
-- Add null checks where needed
-- Fix imports/exports
-- Add missing dependencies
-- Update type definitions
-- Fix configuration files
+✅ Add type annotations where missing
+✅ Add null checks where needed
+✅ Fix imports/exports
+✅ Add missing dependencies
+✅ Update type definitions
+✅ Fix configuration files
 
 ### DON'T:
-- Refactor unrelated code
-- Change architecture
-- Rename variables/functions (unless causing error)
-- Add new features
-- Change logic flow (unless fixing error)
-- Optimize performance
-- Improve code style
+❌ Refactor unrelated code
+❌ Change architecture
+❌ Rename variables/functions (unless causing error)
+❌ Add new features
+❌ Change logic flow (unless fixing error)
+❌ Optimize performance
+❌ Improve code style
 
 **Example of Minimal Diff:**
 
 ```typescript
 // File has 200 lines, error on line 45
 
-// WRONG: Refactor entire file
+// ❌ WRONG: Refactor entire file
 // - Rename variables
 // - Extract functions
 // - Change patterns
 // Result: 50 lines changed
 
-// CORRECT: Fix only the error
+// ✅ CORRECT: Fix only the error
 // - Add type annotation on line 45
 // Result: 1 line changed
 
@@ -364,12 +374,12 @@ function processData(data) { // Line 45 - ERROR: 'data' implicitly has 'any' typ
   return data.map(item => item.value)
 }
 
-// MINIMAL FIX:
+// ✅ MINIMAL FIX:
 function processData(data: any[]) { // Only change this line
   return data.map(item => item.value)
 }
 
-// BETTER MINIMAL FIX (if type known):
+// ✅ BETTER MINIMAL FIX (if type known):
 function processData(data: Array<{ value: number }>) {
   return data.map(item => item.value)
 }
@@ -384,24 +394,24 @@ function processData(data: Array<{ value: number }>) {
 **Build Target:** Next.js Production / TypeScript Check / ESLint
 **Initial Errors:** X
 **Errors Fixed:** Y
-**Build Status:** PASSING / FAILING
+**Build Status:** ✅ PASSING / ❌ FAILING
 
 ## Errors Fixed
 
 ### 1. [Error Category - e.g., Type Inference]
-**Location:** `src/components/ItemCard.tsx:45`
+**Location:** `src/components/MarketCard.tsx:45`
 **Error Message:**
 ```
-Parameter 'item' implicitly has an 'any' type.
+Parameter 'market' implicitly has an 'any' type.
 ```
 
 **Root Cause:** Missing type annotation for function parameter
 
 **Fix Applied:**
 ```diff
-- function formatItem(item) {
-+ function formatItem(item: Item) {
-    return item.name
+- function formatMarket(market) {
++ function formatMarket(market: Market) {
+    return market.name
   }
 ```
 
@@ -418,17 +428,17 @@ Parameter 'item' implicitly has an 'any' type.
 
 ## Verification Steps
 
-1. TypeScript check passes: `npx tsc --noEmit`
-2. Next.js build succeeds: `npm run build`
-3. ESLint check passes: `npx eslint .`
-4. No new errors introduced
-5. Development server runs: `npm run dev`
+1. ✅ TypeScript check passes: `npx tsc --noEmit`
+2. ✅ Next.js build succeeds: `npm run build`
+3. ✅ ESLint check passes: `npx eslint .`
+4. ✅ No new errors introduced
+5. ✅ Development server runs: `npm run dev`
 
 ## Summary
 
 - Total errors resolved: X
 - Total lines changed: Y
-- Build status: PASSING
+- Build status: ✅ PASSING
 - Time to fix: Z minutes
 - Blocking issues: 0 remaining
 
@@ -458,19 +468,19 @@ Parameter 'item' implicitly has an 'any' type.
 
 ## Build Error Priority Levels
 
-### CRITICAL (Fix Immediately)
+### 🔴 CRITICAL (Fix Immediately)
 - Build completely broken
 - No development server
 - Production deployment blocked
 - Multiple files failing
 
-### HIGH (Fix Soon)
+### 🟡 HIGH (Fix Soon)
 - Single file failing
 - Type errors in new code
 - Import errors
 - Non-critical build warnings
 
-### MEDIUM (Fix When Possible)
+### 🟢 MEDIUM (Fix When Possible)
 - Linter warnings
 - Deprecated API usage
 - Non-strict type issues
@@ -509,13 +519,13 @@ npm install
 ## Success Metrics
 
 After build error resolution:
-- `npx tsc --noEmit` exits with code 0
-- `npm run build` completes successfully
-- No new errors introduced
-- Minimal lines changed (< 5% of affected file)
-- Build time not significantly increased
-- Development server runs without errors
-- Tests still passing
+- ✅ `npx tsc --noEmit` exits with code 0
+- ✅ `npm run build` completes successfully
+- ✅ No new errors introduced
+- ✅ Minimal lines changed (< 5% of affected file)
+- ✅ Build time not significantly increased
+- ✅ Development server runs without errors
+- ✅ Tests still passing
 
 ---
 

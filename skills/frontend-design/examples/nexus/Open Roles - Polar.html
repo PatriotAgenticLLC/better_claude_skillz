@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus — Open Roles</title>
+<meta name="description" content="Nexus — Join our team. Build enterprise-grade cloud infrastructure that matters. Remote-first, async-friendly careers.">
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&amp;family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<!-- Iconify -->
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+fontFamily: {
+sans: ["Inter", "sans-serif"],
+serif: ["Instrument Serif", "serif"],
+display: ["Space Grotesk", "sans-serif"],
+},
+colors: {
+neutral: {
+850: "#1f1f1f",
+950: "#0a0a0a",
+},
+},
+},
+},
+};
+</script>
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+:root {
+--mouse-x: 0px;
+--mouse-y: 0px;
+}
+body {
+background-color: #050505;
+color: #e5e5e5;
+overflow-x: hidden;
+}
+/* Film Grain */
+@keyframes grain {
+0%,
+100% {
+transform: translate(0, 0);
+}
+10% {
+transform: translate(-5%, -10%);
+}
+20% {
+transform: translate(-15%, 5%);
+}
+30% {
+transform: translate(7%, -25%);
+}
+40% {
+transform: translate(-5%, 25%);
+}
+50% {
+transform: translate(-15%, 10%);
+}
+60% {
+transform: translate(15%, 0%);
+}
+70% {
+transform: translate(0%, 15%);
+}
+80% {
+transform: translate(3%, 35%);
+}
+90% {
+transform: translate(-10%, 10%);
+}
+}
+.bg-grain::after {
+content: "";
+background-image: url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png");
+height: 300%;
+width: 300%;
+position: fixed;
+top: -100%;
+left: -100%;
+opacity: 0.04;
+animation: grain 8s steps(10) infinite;
+pointer-events: none;
+z-index: 9998;
+}
+/* Glass utilities */
+.glass-panel {
+background: rgba(255, 255, 255, 0.03);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+border: 1px solid rgba(255, 255, 255, 0.08);
+}
+/* Spotlight Card */
+.spotlight-card {
+position: relative;
+overflow: hidden;
+background: rgba(20, 20, 20, 0.4);
+border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.spotlight-card::before {
+content: "";
+position: absolute;
+inset: 0;
+background: radial-gradient(
+600px circle at var(--mouse-x) var(--mouse-y),
+rgba(255, 255, 255, 0.08),
+transparent 40%
+);
+opacity: 0;
+transition: opacity 0.5s;
+pointer-events: none;
+z-index: 2;
+}
+.spotlight-card:hover::before {
+opacity: 1;
+}
+/* Clean mono ambient */
+.section-aura {
+position: absolute;
+inset: 0;
+pointer-events: none;
+z-index: 0;
+opacity: 0.9;
+background: radial-gradient(
+80% 70% at 20% 30%,
+rgba(255, 255, 255, 0.06),
+transparent 55%
+),
+radial-gradient(
+70% 70% at 75% 70%,
+rgba(255, 255, 255, 0.04),
+transparent 60%
+);
+filter: contrast(1.05);
+}
+.section-grid {
+position: absolute;
+inset: 0;
+pointer-events: none;
+z-index: 0;
+opacity: 0.22;
+background: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+background-size: 72px 72px;
+-webkit-mask-image: radial-gradient(
+ellipse at 50% 30%,
+#000 35%,
+transparent 72%
+);
+mask-image: radial-gradient(ellipse at 50% 30%, #000 35%, transparent 72%);
+}
+/* Reveal targets */
+[data-reveal] {
+opacity: 0;
+transform: translateY(22px);
+will-change: transform, opacity;
+}
+/* Hairline shimmer (animated via GSAP) */
+.hairline {
+height: 1px;
+background: rgba(255, 255, 255, 0.10);
+position: relative;
+overflow: hidden;
+}
+.hairline::after {
+content: "";
+position: absolute;
+inset: 0;
+background: linear-gradient(
+90deg,
+transparent,
+rgba(255, 255, 255, 0.55),
+transparent
+);
+transform: translateX(-120%);
+}
+/* Buttons focus */
+a:focus-visible,
+button:focus-visible {
+outline: none;
+box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.22),
+0 0 0 10px rgba(255, 255, 255, 0.06);
+border-radius: 9999px;
+}
+/* Marquee mask */
+.marquee-mask {
+mask-image: linear-gradient(
+90deg,
+transparent,
+white 18%,
+white 82%,
+transparent
+);
+-webkit-mask-image: linear-gradient(
+90deg,
+transparent,
+white 18%,
+white 82%,
+transparent
+);
+}
+@keyframes marqueeLeft {
+from {
+transform: translateX(0);
+}
+to {
+transform: translateX(-50%);
+}
+}
+@keyframes marqueeRight {
+from {
+transform: translateX(-50%);
+}
+to {
+transform: translateX(0);
+}
+}
+.animate-marquee-left {
+animation: marqueeLeft 34s linear infinite;
+}
+.animate-marquee-right {
+animation: marqueeRight 38s linear infinite;
+}
+.marquee-group:hover .animate-marquee-left,
+.marquee-group:hover .animate-marquee-right {
+animation-play-state: paused;
+}
+/* Small utility */
+.text-glow {
+text-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
+}
+/* Orbit ring */
+.ring {
+position: absolute;
+inset: 0;
+border-radius: 9999px;
+border: 1px solid rgba(255, 255, 255, 0.08);
+transform: translateZ(0);
+}
+/* Make horizontal scroller feel premium */
+.hscroll {
+scrollbar-width: none;
+}
+.hscroll::-webkit-scrollbar {
+display: none;
+}
+</style>
+<style>
+.active-filter {
+background: rgba(255, 255, 255, 0.1) !important;
+color: rgba(255, 255, 255, 0.9) !important;
+border: none;
+}
+.filter-btn {
+cursor: pointer;
+border: none;
+background: transparent;
+}
+.filter-btn:hover {
+background: rgba(255, 255, 255, 0.05);
+}
+</style></head>
+
+  <body class="bg-grain antialiased selection:bg-white selection:text-black">
+    <!-- Mobile / Tablet Header -->
+<header class="fixed top-0 left-0 right-0 z-50 lg:hidden px-4 pt-4" id="mobile-header">
+  <!-- Toggle -->
+  <input id="nav-toggle" type="checkbox" class="peer hidden">
+
+  <div class="glass-panel rounded-full px-5 py-3 flex items-center justify-between shadow-2xl">
+    <a href="index.html" class="font-display font-bold text-lg tracking-tight">
+      NEXUS.
+    </a>
+
+    <!-- Burger / Close trigger -->
+    <label for="nav-toggle" class="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-xl border border-white/10 hover:bg-white/15 transition cursor-pointer select-none" aria-label="Toggle menu">
+      <!-- Burger -->
+      <iconify-icon icon="solar:hamburger-menu-linear" width="22" class="burger-icon transition-all duration-300"></iconify-icon>
+
+      <!-- Close -->
+      <iconify-icon icon="solar:close-circle-linear" width="22" class="close-icon absolute opacity-0 scale-75 transition-all duration-300"></iconify-icon>
+    </label>
+  </div>
+
+  <!-- Backdrop -->
+  <label for="nav-toggle" class="backdrop fixed inset-0 bg-black/40 opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"></label>
+
+  <!-- Menu panel -->
+  <nav id="mobile-menu" class="absolute top-20 left-4 right-4 glass-panel rounded-[2rem] p-5 border border-white/10 origin-top opacity-0 scale-[0.98] -translate-y-2 pointer-events-none transition-all duration-300" aria-label="Mobile navigation">
+    <!-- Top row inside panel -->
+    <div class="mb-2">
+  <div class="text-[11px] uppercase tracking-[0.22em] font-semibold text-white/40">
+    Menu
+  </div>
+</div>
+
+    <div class="flex flex-col gap-2 text-center">
+      <a href="/Features" class="py-3 text-lg font-medium hover:text-white transition">
+        Features
+      </a>
+      <a href="/Solutions" class="py-3 text-lg font-medium hover:text-white transition">
+        Solutions
+      </a>
+      <a href="/Workflow" class="py-3 text-lg font-medium hover:text-white transition">
+        Workflow
+      </a>
+      <a href="/Company" class="py-3 text-lg font-medium hover:text-white transition">
+        Company
+      </a>
+      <a href="/Pricing" class="py-3 text-lg font-medium hover:text-white transition">
+        Pricing
+      </a>
+    </div>
+
+    <!-- CTA button -->
+    <div class="mt-5 pt-4 border-t border-white/10 flex justify-center">
+      <a href="sign-in.html" class="inline-flex w-full max-w-[360px] items-center justify-center gap-3 rounded-full bg-white text-black font-semibold text-base px-6 py-4 shadow-[0_18px_40px_rgba(0,0,0,0.22)] hover:scale-[1.02] transition-all duration-300">
+        <span>Start Free Trial</span>
+        <iconify-icon icon="solar:arrow-right-linear" width="22"></iconify-icon>
+      </a>
+    </div>
+  </nav>
+
+  <style class="">
+    /* When checked: show backdrop + menu */
+    #mobile-header .peer:checked ~ .backdrop {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #mobile-header .peer:checked ~ #mobile-menu {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    /* Swap burger to close */
+    #mobile-header .peer:checked ~ div label .burger-icon {
+      opacity: 0;
+      transform: scale(0.75);
+    }
+
+    #mobile-header .peer:checked ~ div label .close-icon {
+      opacity: 1;
+      transform: scale(1);
+    }
+  </style>
+</header>
+    <!-- =========================================================
+     DESKTOP LEFT NAV (2 SEPARATE BOXES, NO LAYOUT BREAK)
+     - Buttons stay fixed size (no rail resizing)
+     - Labels expand as a floating pill to the right (smooth)
+     - CTA is a separate box below (hovering it does NOT affect top)
+     - Scroll spy highlights current section (top rail only)
+========================================================= -->
+
+    <!-- DESKTOP LEFT NAV -->
+    <nav class="hidden lg:block fixed top-1/2 -translate-y-1/2 left-6 z-50" aria-label="Section navigation" id="rail-nav">
+      <style class="">
+        #rail-nav {
+          isolation: isolate;
+        }
+        #rail-nav .rail-box {
+          position: relative;
+          width: 72px;
+          padding: 12px 10px;
+          border-radius: 18px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.03);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 10px;
+          user-select: none;
+          overflow: visible;
+        }
+        #rail-nav .rail-box::before {
+          content: "";
+          position: absolute;
+          inset: 8px;
+          border-radius: 14px;
+          background: linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.07),
+            transparent 55%,
+            rgba(255, 255, 255, 0.05)
+          );
+          opacity: 0;
+          pointer-events: none;
+          z-index: 0;
+        }
+        #rail-nav .rail-btn {
+          position: relative;
+          z-index: 1;
+          width: 50px;
+          height: 50px;
+          border-radius: 18px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.02);
+          display: grid;
+          place-items: center;
+          cursor: pointer;
+          outline: none;
+          transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+            background-color 260ms cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 260ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #rail-nav .rail-btn:hover,
+        #rail-nav .rail-btn:focus-visible {
+          transform: translateX(2px);
+          background: rgba(255, 255, 255, 0.05);
+          border-color: rgba(255, 255, 255, 0.16);
+        }
+        #rail-nav .rail-icon {
+          width: 34px;
+          height: 34px;
+          border-radius: 12px;
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.03);
+          display: grid;
+          place-items: center;
+        }
+        #rail-nav .rail-icon iconify-icon {
+          color: rgba(255, 255, 255, 0.9);
+        }
+        #rail-nav .rail-btn.is-active {
+          background: rgba(255, 255, 255, 0.06);
+          border-color: rgba(255, 255, 255, 0.18);
+        }
+        #rail-nav .rail-btn.is-active .rail-icon {
+          background: rgba(255, 255, 255, 0.92);
+          border-color: rgba(255, 255, 255, 0.22);
+          box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.06), 0 18px 40px rgba(0, 0, 0, 0.35);
+        }
+        #rail-nav .rail-btn.is-active .rail-icon iconify-icon {
+          color: #0a0a0a;
+        }
+
+        #rail-nav .rail-label {
+          position: absolute;
+          left: calc(100% + 12px);
+          top: 50%;
+          transform: translateY(-50%) scaleX(0.92);
+          transform-origin: left center;
+          height: 42px;
+          display: inline-flex;
+          align-items: center;
+          padding: 0 14px;
+          border-radius: 14px;
+          background: linear-gradient(
+              180deg,
+              rgba(255, 255, 255, 0.14),
+              rgba(255, 255, 255, 0.06) 45%,
+              rgba(255, 255, 255, 0.03)
+            ),
+            radial-gradient(120% 140% at 20% 10%, rgba(255, 255, 255, 0.1), transparent 55%);
+          border: 1px solid rgba(255, 255, 255, 0.16);
+          backdrop-filter: blur(18px) saturate(1.2);
+          -webkit-backdrop-filter: blur(18px) saturate(1.2);
+          box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.18),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+          color: rgba(255, 255, 255, 0.92);
+          font-size: 12px;
+          font-weight: 800;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          white-space: nowrap;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 220ms cubic-bezier(0.16, 1, 0.3, 1),
+            transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #rail-nav .rail-btn:hover .rail-label,
+        #rail-nav .rail-btn:focus-visible .rail-label {
+          opacity: 1;
+          transform: translateY(-50%) scaleX(1);
+        }
+
+        #rail-nav .cta-wrap {
+          margin-top: 16px;
+        }
+        #rail-nav .rail-btn.cta .rail-icon {
+          background: rgba(255, 255, 255, 0.92);
+          border-color: rgba(255, 255, 255, 0.22);
+          box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.06), 0 18px 40px rgba(0, 0, 0, 0.35);
+        }
+        #rail-nav .rail-btn.cta .rail-icon iconify-icon {
+          color: #0a0a0a;
+        }
+      </style>
+
+      <div class="rail-box" id="rail-sections">
+        <a class="rail-btn" href="index.html" data-target="#home">
+          <span class="rail-icon"><iconify-icon icon="solar:home-angle-2-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Home</span>
+        </a>
+        <a class="rail-btn" href="features.html" data-target="#features">
+          <span class="rail-icon"><iconify-icon icon="solar:widget-3-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Features</span>
+        </a>
+        <a class="rail-btn" href="solutions.html" data-target="#solutions">
+          <span class="rail-icon"><iconify-icon icon="solar:layers-linear" width="18"></iconify-icon></span>
+          <span class="rail-label">Solutions</span>
+        </a>
+        <a class="rail-btn" href="workflow.html" data-target="#workflow">
+          <span class="rail-icon"><iconify-icon icon="solar:graph-new-up-linear" width="18"></iconify-icon></span>
+          <span class="rail-label">Workflow</span>
+        </a>
+        <a class="rail-btn is-active" href="company.html" data-target="#company">
+          <span class="rail-icon"><iconify-icon icon="solar:buildings-3-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Company</span>
+        </a>
+        <a class="rail-btn" href="pricing.html" data-target="#pricing">
+          <span class="rail-icon"><iconify-icon icon="solar:tag-price-linear" width="18" class=""></iconify-icon></span>
+          <span class="rail-label">Pricing</span>
+        </a>
+      </div>
+
+      <div class="cta-wrap">
+        <div class="rail-box">
+          <a class="rail-btn cta" href="sign-in.html" data-target="#contact">
+  <span class="rail-icon cursor-pointer" onclick="window.location.href='sign-in.html'" role="button"><iconify-icon icon="solar:arrow-right-linear" width="18" class=""></iconify-icon></span>
+  <span class="rail-label">Start Free Trial</span>
+</a>
+        </div>
+      </div>
+
+      <script class="">
+        (() => {
+          const sectionRail = document.getElementById("rail-sections");
+          if (!sectionRail) return;
+
+          const allBtns = Array.from(document.querySelectorAll("#rail-nav .rail-btn")).filter(
+            (a) => a.dataset.target
+          );
+
+          allBtns.forEach((a) => {
+            a.addEventListener("click", (e) => {
+              const el = document.querySelector(a.dataset.target);
+              if (!el) return;
+              e.preventDefault();
+              el.scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+          });
+
+          const spyBtns = Array.from(sectionRail.querySelectorAll(".rail-btn"));
+          const spyTargets = spyBtns.map((a) => document.querySelector(a.dataset.target)).filter(Boolean);
+
+          let activeIndex = 0;
+          const setActive = (idx) => {
+            activeIndex = Math.max(0, Math.min(spyBtns.length - 1, idx));
+            spyBtns.forEach((a, i) => a.classList.toggle("is-active", i === activeIndex));
+          };
+
+          const io = new IntersectionObserver(
+            (entries) => {
+              const visible = entries.filter((e) => e.isIntersecting);
+              if (!visible.length) return;
+
+              const mid = window.innerHeight * 0.52;
+              visible.sort((a, b) => {
+                const da = Math.abs(a.boundingClientRect.top + a.boundingClientRect.height / 2 - mid);
+                const db = Math.abs(b.boundingClientRect.top + b.boundingClientRect.height / 2 - mid);
+                return da - db;
+              });
+
+              const best = visible[0].target;
+              const idx = spyTargets.indexOf(best);
+              if (idx !== -1 && idx !== activeIndex) setActive(idx);
+            },
+            { threshold: [0.22, 0.35, 0.5, 0.65] }
+          );
+
+          spyTargets.forEach((s) => io.observe(s));
+        })();
+      </script>
+    </nav>
+
+    <!-- HERO / HOME -->
+    <section id="home" class="relative w-full min-h-[70vh] bg-black flex items-center pt-32 lg:pt-0 overflow-hidden">
+      <div class="section-aura"></div>
+      <div class="section-grid"></div>
+      <div class="absolute inset-0 pointer-events-none z-[1] overflow-hidden">
+        
+      </div>
+      <div class="max-w-4xl mx-auto px-6 w-full relative z-10 text-center">
+        <div class="inline-flex items-center gap-3 mb-8" data-reveal="">
+          <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase text-white/65 glass-panel border border-white/10">
+            Careers
+          </span>
+          <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">
+            Remote-first
+          </span>
+        </div>
+        <h1 class="text-5xl md:text-6xl lg:text-[5rem] font-display font-semibold tracking-tighter text-white leading-[0.95] mb-6" data-reveal="">
+          Build infrastructure
+          <br>
+          that matters.
+        </h1>
+        <p class="text-lg text-neutral-400 leading-relaxed max-w-2xl mx-auto mb-10" data-reveal="">
+          We're hiring engineers, designers, and operators who care about
+          reliability. Remote-first across 30+ countries, async-friendly, and
+          committed to a calm culture.
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4" data-reveal="">
+          <a href="company.html" class="hover:bg-neutral-200 transition font-medium text-black bg-white rounded-full pt-4 pr-8 pb-4 pl-8">
+            Open Roles
+          </a>
+          <a href="#contact" class="px-8 py-4 rounded-full border border-white/10 text-white hover:bg-white/5 transition backdrop-blur-sm">
+            Contact Us
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES (magnetic cards + stagger + subtle clip reveal) -->
+    <section id="features" class="relative py-32 bg-neutral-950 border-t border-white/5 overflow-hidden">
+      <div class="section-aura" style="opacity:.5"></div>
+      <div class="max-w-5xl mx-auto px-6 relative z-10">
+        <div class="text-center mb-14">
+          <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35 mb-4 block" data-reveal="">
+            Life at Nexus
+          </span>
+          <h2 class="text-3xl md:text-4xl font-display font-semibold text-white tracking-tight" data-reveal="">
+            A culture of quiet excellence.
+          </h2>
+          <p class="mt-4 text-neutral-400 max-w-2xl mx-auto" data-reveal="">
+            We believe great work happens when people have space to think, tools
+            that work, and trust from their team.
+          </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="glass-panel border border-white/10 rounded-2xl p-7 transition-all duration-300 hover:border-white/20 hover:-translate-y-1 hover:shadow-2xl" data-reveal="">
+            <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-5">
+              <iconify-icon icon="solar:chat-round-dots-linear" width="20" class="text-white/80"></iconify-icon>
+            </div>
+            <h3 class="text-lg font-medium text-white mb-2">
+              Async by default
+            </h3>
+            <p class="text-sm text-neutral-400 leading-relaxed">
+              No unnecessary meetings. We write things down, communicate
+              clearly, and respect deep work time across every timezone.
+            </p>
+          </div>
+          <div class="glass-panel border border-white/10 rounded-2xl p-7 transition-all duration-300 hover:border-white/20 hover:-translate-y-1 hover:shadow-2xl" data-reveal="">
+            <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-5">
+              <iconify-icon icon="solar:heart-linear" width="20" class="text-white/80"></iconify-icon>
+            </div>
+            <h3 class="text-lg font-medium text-white mb-2">Calm culture</h3>
+            <p class="text-sm text-neutral-400 leading-relaxed">
+              We don't celebrate burnout. Sustainable pace, generous PTO, and a
+              team that trusts you to manage your own time and energy.
+            </p>
+          </div>
+          <div class="glass-panel border border-white/10 rounded-2xl p-7 transition-all duration-300 hover:border-white/20 hover:-translate-y-1 hover:shadow-2xl" data-reveal="">
+            <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-5">
+              <iconify-icon icon="solar:shield-check-linear" width="20" class="text-white/80"></iconify-icon>
+            </div>
+            <h3 class="text-lg font-medium text-white mb-2">
+              Reliability obsessed
+            </h3>
+            <p class="text-sm text-neutral-400 leading-relaxed">
+              We build for the 3am incident. Every engineer ships with
+              confidence knowing testing, observability, and rollback are
+              first-class.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOLUTIONS (pinned “spec sheet” + horizontal cards) -->
+    <section id="roles" class="relative py-32 bg-black border-t border-white/5 overflow-hidden">
+      <div class="section-aura" style="opacity:.45"></div>
+      <div class="section-grid" style="opacity:.15"></div>
+      <div class="max-w-5xl mx-auto px-6 relative z-10">
+        <div class="text-center mb-10">
+          <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35 mb-4 block" data-reveal="">
+            Open Positions
+          </span>
+          <h2 class="text-3xl md:text-4xl font-display font-semibold text-white tracking-tight" data-reveal="">
+            Find your role.
+          </h2>
+          <p class="mt-4 text-neutral-400 max-w-2xl mx-auto" data-reveal="">
+            We're growing across engineering, design, and operations. Every role
+            is remote-friendly.
+          </p>
+        </div>
+
+        <!-- Filters -->
+        <div class="flex flex-wrap items-center justify-center gap-3 mb-12" data-reveal="" id="role-filters">
+          <div class="flex items-center gap-1 glass-panel border border-white/10 rounded-full p-1">
+            <button class="filter-btn department-filter active-filter px-4 py-2 rounded-full text-[11px] font-mono uppercase tracking-widest transition-all duration-200" data-department="all">
+              All
+            </button>
+            <button class="filter-btn department-filter px-4 py-2 rounded-full text-[11px] font-mono uppercase tracking-widest text-white/50 hover:text-white/80 transition-all duration-200" data-department="engineering">
+              Engineering
+            </button>
+            <button class="filter-btn department-filter px-4 py-2 rounded-full text-[11px] font-mono uppercase tracking-widest text-white/50 hover:text-white/80 transition-all duration-200" data-department="design">
+              Design
+            </button>
+            <button class="filter-btn department-filter px-4 py-2 rounded-full text-[11px] font-mono uppercase tracking-widest text-white/50 hover:text-white/80 transition-all duration-200" data-department="platform">
+              Platform
+            </button>
+            <button class="filter-btn department-filter px-4 py-2 rounded-full text-[11px] font-mono uppercase tracking-widest text-white/50 hover:text-white/80 transition-all duration-200" data-department="security">
+              Security
+            </button>
+          </div>
+          <div class="flex items-center gap-1 glass-panel border border-white/10 rounded-full p-1">
+            <button class="filter-btn location-filter active-filter px-4 py-2 rounded-full text-[11px] font-mono uppercase tracking-widest transition-all duration-200" data-location="all">
+              All Locations
+            </button>
+            <button class="filter-btn location-filter px-4 py-2 rounded-full text-[11px] font-mono uppercase tracking-widest text-white/50 hover:text-white/80 transition-all duration-200" data-location="remote">
+              Remote
+            </button>
+            <button class="filter-btn location-filter px-4 py-2 rounded-full text-[11px] font-mono uppercase tracking-widest text-white/50 hover:text-white/80 transition-all duration-200" data-location="hybrid">
+              Hybrid
+            </button>
+          </div>
+          <div class="flex items-center gap-1 glass-panel border border-white/10 rounded-full p-1">
+            <button class="filter-btn level-filter active-filter px-4 py-2 rounded-full text-[11px] font-mono uppercase tracking-widest transition-all duration-200" data-level="all">
+              All Levels
+            </button>
+            <button class="filter-btn level-filter px-4 py-2 rounded-full text-[11px] font-mono uppercase tracking-widest text-white/50 hover:text-white/80 transition-all duration-200" data-level="senior">
+              Senior
+            </button>
+            <button class="filter-btn level-filter px-4 py-2 rounded-full text-[11px] font-mono uppercase tracking-widest text-white/50 hover:text-white/80 transition-all duration-200" data-level="mid">
+              Mid
+            </button>
+            <button class="filter-btn level-filter px-4 py-2 rounded-full text-[11px] font-mono uppercase tracking-widest text-white/50 hover:text-white/80 transition-all duration-200" data-level="lead">
+              Lead
+            </button>
+          </div>
+        </div>
+
+        <!-- Job Cards -->
+        <div class="space-y-4" id="job-listings">
+          <a href="#" class="job-card group glass-panel border border-white/10 rounded-2xl p-6 block transition-all duration-300 hover:border-white/20 hover:-translate-y-0.5 hover:shadow-2xl" data-department="engineering" data-location="remote" data-level="senior" data-reveal="">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <h3 class="text-lg font-medium text-white">
+                    Senior Backend Engineer
+                  </h3>
+                </div>
+                <p class="text-sm text-neutral-400 leading-relaxed mb-3">
+                  Design and scale distributed systems powering our multi-region
+                  control plane.
+                </p>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Engineering
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Remote
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Full-time
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Senior
+                  </span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 text-sm text-white/40 group-hover:text-white/70 transition-colors duration-300 shrink-0">
+                <span class="font-medium">View Role</span>
+                <iconify-icon icon="solar:arrow-right-linear" width="16" class="transition-transform duration-300 group-hover:translate-x-1"></iconify-icon>
+              </div>
+            </div>
+          </a>
+
+          <a href="#" class="job-card group glass-panel border border-white/10 rounded-2xl p-6 block transition-all duration-300 hover:border-white/20 hover:-translate-y-0.5 hover:shadow-2xl" data-department="engineering" data-location="remote" data-level="mid" data-reveal="">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <h3 class="text-lg font-medium text-white">
+                    Infrastructure Engineer
+                  </h3>
+                </div>
+                <p class="text-sm text-neutral-400 leading-relaxed mb-3">
+                  Build and maintain the Kubernetes clusters and networking
+                  fabric across 8 global regions.
+                </p>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Engineering
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Remote
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Full-time
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Mid
+                  </span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 text-sm text-white/40 group-hover:text-white/70 transition-colors duration-300 shrink-0">
+                <span class="font-medium">View Role</span>
+                <iconify-icon icon="solar:arrow-right-linear" width="16" class="transition-transform duration-300 group-hover:translate-x-1"></iconify-icon>
+              </div>
+            </div>
+          </a>
+
+          <a href="#" class="job-card group glass-panel border border-white/10 rounded-2xl p-6 block transition-all duration-300 hover:border-white/20 hover:-translate-y-0.5 hover:shadow-2xl" data-department="design" data-location="remote" data-level="senior" data-reveal="">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <h3 class="text-lg font-medium text-white">
+                    Senior Product Designer
+                  </h3>
+                </div>
+                <p class="text-sm text-neutral-400 leading-relaxed mb-3">
+                  Shape the interface for complex infrastructure workflows with
+                  clarity and calm precision.
+                </p>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Design
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Remote
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Full-time
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Senior
+                  </span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 text-sm text-white/40 group-hover:text-white/70 transition-colors duration-300 shrink-0">
+                <span class="font-medium">View Role</span>
+                <iconify-icon icon="solar:arrow-right-linear" width="16" class="transition-transform duration-300 group-hover:translate-x-1"></iconify-icon>
+              </div>
+            </div>
+          </a>
+
+          <a href="#" class="job-card group glass-panel border border-white/10 rounded-2xl p-6 block transition-all duration-300 hover:border-white/20 hover:-translate-y-0.5 hover:shadow-2xl" data-department="platform" data-location="hybrid" data-level="lead" data-reveal="">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <h3 class="text-lg font-medium text-white">
+                    Platform Engineering Lead
+                  </h3>
+                </div>
+                <p class="text-sm text-neutral-400 leading-relaxed mb-3">
+                  Lead the team responsible for developer experience, CI/CD
+                  pipelines, and internal tooling.
+                </p>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Platform
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Hybrid · SF
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Full-time
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Lead
+                  </span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 text-sm text-white/40 group-hover:text-white/70 transition-colors duration-300 shrink-0">
+                <span class="font-medium">View Role</span>
+                <iconify-icon icon="solar:arrow-right-linear" width="16" class="transition-transform duration-300 group-hover:translate-x-1"></iconify-icon>
+              </div>
+            </div>
+          </a>
+
+          <a href="#" class="job-card group glass-panel border border-white/10 rounded-2xl p-6 block transition-all duration-300 hover:border-white/20 hover:-translate-y-0.5 hover:shadow-2xl" data-department="security" data-location="remote" data-level="senior" data-reveal="">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <h3 class="text-lg font-medium text-white">
+                    Security Engineer
+                  </h3>
+                </div>
+                <p class="text-sm text-neutral-400 leading-relaxed mb-3">
+                  Harden our zero-trust architecture and lead compliance
+                  automation across SOC 2 and ISO frameworks.
+                </p>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Security
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Remote
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Full-time
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Senior
+                  </span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 text-sm text-white/40 group-hover:text-white/70 transition-colors duration-300 shrink-0">
+                <span class="font-medium">View Role</span>
+                <iconify-icon icon="solar:arrow-right-linear" width="16" class="transition-transform duration-300 group-hover:translate-x-1"></iconify-icon>
+              </div>
+            </div>
+          </a>
+
+          <a href="#" class="job-card group glass-panel border border-white/10 rounded-2xl p-6 block transition-all duration-300 hover:border-white/20 hover:-translate-y-0.5 hover:shadow-2xl" data-department="engineering" data-location="remote" data-level="senior" data-reveal="">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <h3 class="text-lg font-medium text-white">
+                    Senior Frontend Engineer
+                  </h3>
+                </div>
+                <p class="text-sm text-neutral-400 leading-relaxed mb-3">
+                  Build the next generation of our dashboard — data-dense
+                  interfaces that feel effortless.
+                </p>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Engineering
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Remote
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Full-time
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Senior
+                  </span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 text-sm text-white/40 group-hover:text-white/70 transition-colors duration-300 shrink-0">
+                <span class="font-medium">View Role</span>
+                <iconify-icon icon="solar:arrow-right-linear" width="16" class="transition-transform duration-300 group-hover:translate-x-1"></iconify-icon>
+              </div>
+            </div>
+          </a>
+
+          <a href="#" class="job-card group glass-panel border border-white/10 rounded-2xl p-6 block transition-all duration-300 hover:border-white/20 hover:-translate-y-0.5 hover:shadow-2xl" data-department="platform" data-location="remote" data-level="mid" data-reveal="">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <h3 class="text-lg font-medium text-white">
+                    Site Reliability Engineer
+                  </h3>
+                </div>
+                <p class="text-sm text-neutral-400 leading-relaxed mb-3">
+                  Own uptime across our global fleet. Build automation that
+                  keeps 99.99% SLA a reality.
+                </p>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Platform
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Remote
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Full-time
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Mid
+                  </span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 text-sm text-white/40 group-hover:text-white/70 transition-colors duration-300 shrink-0">
+                <span class="font-medium">View Role</span>
+                <iconify-icon icon="solar:arrow-right-linear" width="16" class="transition-transform duration-300 group-hover:translate-x-1"></iconify-icon>
+              </div>
+            </div>
+          </a>
+
+          <a href="#" class="job-card group glass-panel border border-white/10 rounded-2xl p-6 block transition-all duration-300 hover:border-white/20 hover:-translate-y-0.5 hover:shadow-2xl" data-department="design" data-location="hybrid" data-level="mid" data-reveal="">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <h3 class="text-lg font-medium text-white">
+                    Design Engineer
+                  </h3>
+                </div>
+                <p class="text-sm text-neutral-400 leading-relaxed mb-3">
+                  Bridge design and code — prototype, build, and ship polished
+                  UI components at production quality.
+                </p>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Design
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Hybrid · London
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Full-time
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-white/5 border border-white/8 text-white/50">
+                    Mid
+                  </span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 text-sm text-white/40 group-hover:text-white/70 transition-colors duration-300 shrink-0">
+                <span class="font-medium">View Role</span>
+                <iconify-icon icon="solar:arrow-right-linear" width="16" class="transition-transform duration-300 group-hover:translate-x-1"></iconify-icon>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- No results message -->
+        <div id="no-results" class="hidden text-center py-16">
+          <p class="text-neutral-500 text-sm font-mono">
+            No roles match your current filters.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKFLOW (timeline + pinned bar + orbit) -->
+
+    <!-- COMPANY (icons grid reveal + subtle line sweep) -->
+
+    <!-- PRICING (counter + reveal + subtle split) -->
+
+    <!-- CONTACT (soft entrance + button micro) -->
+    <section id="contact" class="relative py-32 bg-neutral-950 border-t border-white/5 overflow-hidden">
+      <div class="section-aura" id="careers-aura" style="opacity:.6"></div>
+      <div class="max-w-4xl mx-auto px-6 relative z-10 text-center">
+        <span class="text-[10px] font-mono uppercase tracking-[0.22em] text-white/35 mb-6 block" data-reveal="">
+          Don't see your role?
+        </span>
+        <h2 class="text-4xl md:text-5xl font-display font-semibold text-white tracking-tight mb-7" data-reveal="">
+          We'd still love to hear from you.
+        </h2>
+        <p class="text-neutral-400 leading-relaxed max-w-2xl mx-auto" data-reveal="">
+          Send us a note about what you're passionate about. We're always
+          looking for exceptional people, even if we haven't posted the perfect
+          role yet.
+        </p>
+        <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4" data-reveal="">
+          <a href="#" class="px-8 py-4 rounded-full bg-white text-black font-medium hover:bg-neutral-200 transition">
+            Send a Note
+          </a>
+          <a href="#" class="px-8 py-4 rounded-full border border-white/10 text-white hover:bg-white/5 transition backdrop-blur-sm">
+            Follow Us
+          </a>
+        </div>
+        <div class="mt-14 max-w-xl mx-auto" data-reveal="">
+          <div class="hairline rounded-full"></div>
+          <div class="mt-5 text-[10px] font-mono uppercase tracking-[0.22em] text-white/35">
+            Remote-first · 30+ countries · Async culture
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="py-10 border-t border-white/5 text-center text-neutral-600 text-xs font-mono">
+      <p>© 2024 Nexus Inc. All rights reserved.</p>
+    </footer>
+
+    <script>
+      // Mouse tracking for spotlight cards
+      document.addEventListener('mousemove', (e) => {
+        document.documentElement.style.setProperty('--mouse-x', e.clientX + 'px');
+        document.documentElement.style.setProperty('--mouse-y', e.clientY + 'px');
+      });
+
+      document.addEventListener('DOMContentLoaded', () => {
+        gsap.registerPlugin(ScrollTrigger);
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // Standard reveal
+        const sections = gsap.utils.toArray('section');
+        sections.forEach((sec) => {
+          const targets = sec.querySelectorAll('[data-reveal]');
+          if (!targets.length) return;
+          gsap.fromTo(targets, { opacity: 0, y: 26 }, {
+            opacity: 1, y: 0, duration: 1.0, ease: 'power3.out', stagger: 0.08,
+            scrollTrigger: { trigger: sec, start: 'top 78%' },
+          });
+        });
+
+        // Hero scanline shimmer
+        const scanline = document.getElementById('hero-scanline');
+        if (scanline && !prefersReduced) {
+          gsap.to(scanline, { yPercent: 800, duration: 8, repeat: -1, ease: 'none' });
+        }
+
+        // Hairline shimmer
+        gsap.utils.toArray('.hairline').forEach((line) => {
+          ScrollTrigger.create({
+            trigger: line, start: 'top 90%', once: true,
+            onEnter: () => { gsap.fromTo(line, { opacity: 0.3 }, { opacity: 1, duration: 0.8, ease: 'power2.out' }); },
+          });
+        });
+
+        // Careers aura slow drift
+        const careersAura = document.getElementById('careers-aura');
+        if (careersAura && !prefersReduced) {
+          gsap.to(careersAura, { backgroundPosition: '60% 40%', duration: 12, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+        }
+
+        // Filter logic
+        const filterState = { department: 'all', location: 'all', level: 'all' };
+        const jobCards = document.querySelectorAll('.job-card');
+        const noResults = document.getElementById('no-results');
+
+        function applyFilters() {
+          let visibleCount = 0;
+          jobCards.forEach((card) => {
+            const dept = card.dataset.department;
+            const loc = card.dataset.location;
+            const lvl = card.dataset.level;
+            const matchDept = filterState.department === 'all' || dept === filterState.department;
+            const matchLoc = filterState.location === 'all' || loc === filterState.location;
+            const matchLvl = filterState.level === 'all' || lvl === filterState.level;
+            if (matchDept && matchLoc && matchLvl) {
+              card.style.display = '';
+              visibleCount++;
+            } else {
+              card.style.display = 'none';
+            }
+          });
+          if (noResults) {
+            noResults.classList.toggle('hidden', visibleCount > 0);
+          }
+        }
+
+        function setupFilterGroup(selector, stateKey) {
+          const btns = document.querySelectorAll(selector);
+          btns.forEach((btn) => {
+            btn.addEventListener('click', () => {
+              btns.forEach(b => {
+                b.classList.remove('active-filter');
+                b.classList.add('text-white/50');
+              });
+              btn.classList.add('active-filter');
+              btn.classList.remove('text-white/50');
+              filterState[stateKey] = btn.dataset[stateKey];
+              applyFilters();
+            });
+          });
+        }
+
+        setupFilterGroup('.department-filter', 'department');
+        setupFilterGroup('.location-filter', 'location');
+        setupFilterGroup('.level-filter', 'level');
+      });
+    </script>
+  
+</body></html>

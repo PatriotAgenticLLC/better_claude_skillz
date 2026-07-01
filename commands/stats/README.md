@@ -41,5 +41,5 @@ Copy-Item stats.md "$env:USERPROFILE\.claude\commands\"
 - Pairs with `/prime-quick` and `/prime-full` for understanding token budget impact
 
 ---
-**Author:** Nick Martin, [PatriotAgentic LLC](https://github.com/mindmatter-aia)
+**Author:** Nick Martin, Founder - [PatriotAgentic LLC](https://patriotagentic.com)
 **License:** MIT

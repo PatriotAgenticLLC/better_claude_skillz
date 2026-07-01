@@ -141,8 +141,8 @@ If platform-specific:
 
 ```bash
 # Fork on GitHub, then:
-git clone https://github.com/YOUR-USERNAME/shared_skillz.git
-cd shared_skillz
+git clone https://github.com/YOUR-USERNAME/better_claude_skillz.git
+cd better_claude_skillz
 ```
 
 ### 2. Create Your Skill Directory
@@ -259,8 +259,8 @@ Have an idea for an existing skill?
 
 ## 📞 Questions?
 
-- **General questions**: [GitHub Discussions](https://github.com/mindmatter-aia/shared_skillz/discussions)
-- **Bugs**: [GitHub Issues](https://github.com/mindmatter-aia/shared_skillz/issues)
+- **General questions**: [GitHub Discussions](https://github.com/PatriotAgenticLLC/better_claude_skillz/discussions)
+- **Bugs**: [GitHub Issues](https://github.com/PatriotAgenticLLC/better_claude_skillz/issues)
 - **Pull requests**: Submit and tag maintainers for review
 
 ## 🙏 Thank You!

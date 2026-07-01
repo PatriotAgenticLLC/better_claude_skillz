@@ -32,5 +32,5 @@ Copy-Item -Recurse evolve "$env:USERPROFILE\.claude\skills\"
 
 ---
 **Inspired by:** [Homunculus](https://github.com/humanplane/homunculus) by humanplane and [The Longform Guide](https://x.com/affaanmustafa) by @affaanmustafa
-**Augmented by:** Nick Martin, [PatriotAgentic LLC](https://github.com/mindmatter-aia)
+**Augmented by:** Nick Martin, Founder - [PatriotAgentic LLC](https://patriotagentic.com)
 **License:** MIT

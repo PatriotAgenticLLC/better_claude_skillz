@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#1e293b"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3b82f6"/>
+      <stop offset="100%" style="stop-color:#8b5cf6"/>
+    </linearGradient>
+    <linearGradient id="greenAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#10b981"/>
+      <stop offset="100%" style="stop-color:#34d399"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Subtle grid pattern -->
+  <g opacity="0.04">
+    <line x1="0" y1="0" x2="0" y2="630" stroke="#fff" stroke-width="1"/>
+    <line x1="60" y1="0" x2="60" y2="630" stroke="#fff" stroke-width="1"/>
+    <line x1="120" y1="0" x2="120" y2="630" stroke="#fff" stroke-width="1"/>
+    <line x1="180" y1="0" x2="180" y2="630" stroke="#fff" stroke-width="1"/>
+    <line x1="240" y1="0" x2="240" y2="630" stroke="#fff" stroke-width="1"/>
+    <line x1="300" y1="0" x2="300" y2="630" stroke="#fff" stroke-width="1"/>
+    <line x1="360" y1="0" x2="360" y2="630" stroke="#fff" stroke-width="1"/>
+    <line x1="420" y1="0" x2="420" y2="630" stroke="#fff" stroke-width="1"/>
+    <line x1="480" y1="0" x2="480" y2="630" stroke="#fff" stroke-width="1"/>
+    <line x1="540" y1="0" x2="540" y2="630" stroke="#fff" stroke-width="1"/>
+    <line x1="600" y1="0" x2="600" y2="630" stroke="#fff" stroke-width="1"/>
+    <line x1="660" y1="0" x2="660" y2="630" stroke="#fff" stroke-width="1"/>
+    <line x1="720" y1="0" x2="720" y2="630" stroke="#fff" stroke-width="1"/>
+    <line x1="780" y1="0" x2="780" y2="630" stroke="#fff" stroke-width="1"/>
+    <line x1="840" y1="0" x2="840" y2="630" stroke="#fff" stroke-width="1"/>
+    <line x1="900" y1="0" x2="900" y2="630" stroke="#fff" stroke-width="1"/>
+    <line x1="960" y1="0" x2="960" y2="630" stroke="#fff" stroke-width="1"/>
+    <line x1="1020" y1="0" x2="1020" y2="630" stroke="#fff" stroke-width="1"/>
+    <line x1="1080" y1="0" x2="1080" y2="630" stroke="#fff" stroke-width="1"/>
+    <line x1="1140" y1="0" x2="1140" y2="630" stroke="#fff" stroke-width="1"/>
+    <line x1="1200" y1="0" x2="1200" y2="630" stroke="#fff" stroke-width="1"/>
+    <line x1="0" y1="60" x2="1200" y2="60" stroke="#fff" stroke-width="1"/>
+    <line x1="0" y1="120" x2="1200" y2="120" stroke="#fff" stroke-width="1"/>
+    <line x1="0" y1="180" x2="1200" y2="180" stroke="#fff" stroke-width="1"/>
+    <line x1="0" y1="240" x2="1200" y2="240" stroke="#fff" stroke-width="1"/>
+    <line x1="0" y1="300" x2="1200" y2="300" stroke="#fff" stroke-width="1"/>
+    <line x1="0" y1="360" x2="1200" y2="360" stroke="#fff" stroke-width="1"/>
+    <line x1="0" y1="420" x2="1200" y2="420" stroke="#fff" stroke-width="1"/>
+    <line x1="0" y1="480" x2="1200" y2="480" stroke="#fff" stroke-width="1"/>
+    <line x1="0" y1="540" x2="1200" y2="540" stroke="#fff" stroke-width="1"/>
+  </g>
+
+  <!-- Decorative glow -->
+  <circle cx="900" cy="315" r="250" fill="#3b82f6" opacity="0.05"/>
+  <circle cx="300" cy="400" r="200" fill="#8b5cf6" opacity="0.04"/>
+
+  <!-- Left side: R/T/S/C/E/N framework blocks -->
+  <g transform="translate(80, 115)">
+    <!-- Section labels with status indicators -->
+    <rect x="0" y="0" width="280" height="44" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <text x="16" y="28" font-family="monospace" font-size="16" font-weight="bold" fill="#3b82f6"># Role</text>
+    <circle cx="248" cy="22" r="8" fill="#10b981"/>
+    <text x="232" y="27" font-family="monospace" font-size="11" fill="#0f172a" text-anchor="middle" font-weight="bold"/>
+
+    <rect x="0" y="54" width="280" height="44" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <text x="16" y="82" font-family="monospace" font-size="16" font-weight="bold" fill="#3b82f6"># Task</text>
+    <circle cx="248" cy="76" r="8" fill="#10b981"/>
+
+    <rect x="0" y="108" width="280" height="44" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <text x="16" y="136" font-family="monospace" font-size="16" font-weight="bold" fill="#3b82f6"># Specifics</text>
+    <circle cx="248" cy="130" r="8" fill="#f59e0b"/>
+
+    <rect x="0" y="162" width="280" height="44" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <text x="16" y="190" font-family="monospace" font-size="16" font-weight="bold" fill="#3b82f6"># Context</text>
+    <circle cx="248" cy="184" r="8" fill="#10b981"/>
+
+    <rect x="0" y="216" width="280" height="44" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <text x="16" y="244" font-family="monospace" font-size="16" font-weight="bold" fill="#3b82f6"># Examples</text>
+    <circle cx="248" cy="238" r="8" fill="#ef4444"/>
+
+    <rect x="0" y="270" width="280" height="44" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <text x="16" y="298" font-family="monospace" font-size="16" font-weight="bold" fill="#3b82f6"># Notes</text>
+    <circle cx="248" cy="292" r="8" fill="#10b981"/>
+
+    <!-- Legend -->
+    <circle cx="16" cy="340" r="5" fill="#10b981"/>
+    <text x="28" y="344" font-family="sans-serif" font-size="11" fill="#94a3b8">Present</text>
+    <circle cx="96" cy="340" r="5" fill="#f59e0b"/>
+    <text x="108" y="344" font-family="sans-serif" font-size="11" fill="#94a3b8">Weak</text>
+    <circle cx="166" cy="340" r="5" fill="#ef4444"/>
+    <text x="178" y="344" font-family="sans-serif" font-size="11" fill="#94a3b8">Missing</text>
+  </g>
+
+  <!-- Center divider arrow -->
+  <g transform="translate(420, 280)">
+    <line x1="0" y1="35" x2="60" y2="35" stroke="#3b82f6" stroke-width="2" opacity="0.6"/>
+    <polygon points="60,28 78,35 60,42" fill="#3b82f6" opacity="0.6"/>
+  </g>
+
+  <!-- Right side: Title and description -->
+  <g transform="translate(530, 130)">
+    <!-- Command badge -->
+    <rect x="0" y="0" width="180" height="36" rx="18" fill="url(#accent)"/>
+    <text x="90" y="24" font-family="monospace" font-size="16" font-weight="bold" fill="#fff" text-anchor="middle">/prompt-audit</text>
+
+    <!-- Main title -->
+    <text x="0" y="90" font-family="sans-serif" font-size="48" font-weight="bold" fill="#f8fafc">Discover.</text>
+    <text x="0" y="145" font-family="sans-serif" font-size="48" font-weight="bold" fill="#f8fafc">Audit.</text>
+    <text x="0" y="200" font-family="sans-serif" font-size="48" font-weight="bold" fill="#f8fafc">Rewrite.</text>
+
+    <!-- Subtitle -->
+    <text x="0" y="250" font-family="sans-serif" font-size="18" fill="#94a3b8">Find every LLM prompt in your codebase.</text>
+    <text x="0" y="275" font-family="sans-serif" font-size="18" fill="#94a3b8">Grade it. Fix it. Ship better prompts.</text>
+
+    <!-- Classification badges -->
+    <rect x="0" y="310" width="100" height="28" rx="14" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <text x="50" y="329" font-family="monospace" font-size="12" fill="#10b981" text-anchor="middle">Directive</text>
+
+    <rect x="112" y="310" width="110" height="28" rx="14" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <text x="167" y="329" font-family="monospace" font-size="12" fill="#3b82f6" text-anchor="middle">Structured</text>
+
+    <rect x="234" y="310" width="110" height="28" rx="14" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <text x="289" y="329" font-family="monospace" font-size="12" fill="#8b5cf6" text-anchor="middle">Generative</text>
+  </g>
+
+  <!-- Bottom bar -->
+  <rect x="0" y="600" width="1200" height="30" fill="#0f172a"/>
+  <text x="80" y="621" font-family="sans-serif" font-size="13" fill="#64748b">Claude Code Skill</text>
+  <text x="1120" y="621" font-family="sans-serif" font-size="13" fill="#64748b" text-anchor="end">R/T/S/C/E/N Framework</text>
+  <rect x="0" y="598" width="1200" height="2" fill="url(#accent)"/>
+</svg>

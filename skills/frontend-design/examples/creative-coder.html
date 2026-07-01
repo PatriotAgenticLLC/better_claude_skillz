@@ -1,0 +1,719 @@
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Creative Coder Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&amp;family=Syne:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Custom Font Assignments */
+      body {
+        font-family: 'Space Grotesk', sans-serif;
+      }
+      h1,
+      h2,
+      h3,
+      .display-font {
+        font-family: 'Syne', sans-serif;
+      }
+      /* Custom Cursor */
+      @media (pointer: fine) {
+        body {
+          cursor: none;
+        }
+      }
+      .cursor-dot,
+      .cursor-circle {
+        pointer-events: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        z-index: 9999;
+        transition:
+          width 0.3s,
+          height 0.3s,
+          background-color 0.3s;
+      }
+      .cursor-dot {
+        width: 8px;
+        height: 8px;
+        background-color: black;
+      }
+      .cursor-circle {
+        width: 40px;
+        height: 40px;
+        border: 1px solid rgba(0, 0, 0, 0.5);
+        transition: transform 0.1s ease-out;
+      }
+      /* Hover states for cursor */
+      body:has(a:hover) .cursor-circle,
+      body:has(button:hover) .cursor-circle,
+      body:has(.project-card:hover) .cursor-circle {
+        transform: translate(-50%, -50%) scale(2);
+        background-color: rgba(253, 224, 71, 0.3); /* Yellow tint */
+        border-color: transparent;
+      }
+      /* Blob Animation */
+      @keyframes move-blob {
+        0% {
+          transform: translate(0px, 0px) scale(1);
+        }
+        33% {
+          transform: translate(30px, -50px) scale(1.1);
+        }
+        66% {
+          transform: translate(-20px, 20px) scale(0.9);
+        }
+        100% {
+          transform: translate(0px, 0px) scale(1);
+        }
+      }
+      .animate-blob {
+        animation: move-blob 10s infinite;
+      }
+      .animation-delay-2000 {
+        animation-delay: 2s;
+      }
+      .animation-delay-4000 {
+        animation-delay: 4s;
+      }
+      /* Marquee Animation */
+      @keyframes marquee {
+        0% {
+          transform: translateX(0%);
+        }
+        100% {
+          transform: translateX(-100%);
+        }
+      }
+      .animate-marquee {
+        animation: marquee 20s linear infinite;
+      }
+      /* Utilities */
+      .text-outline {
+        -webkit-text-stroke: 1.5px black;
+        color: transparent;
+      }
+      .neo-shadow {
+        box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
+      }
+      .neo-shadow-sm {
+        box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 1);
+      }
+      .neo-shadow-hover:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 1);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-[#FFFDF5] text-slate-900 overflow-x-hidden selection:bg-[#F9A8D4] selection:text-black"
+  >
+    <!-- Custom Cursor Elements -->
+    <div id="cursor-dot" class="cursor-dot hidden md:block"></div>
+    <div id="cursor-circle" class="cursor-circle hidden md:block"></div>
+
+    <!-- Navigation -->
+    <nav
+      class="fixed top-0 w-full z-50 px-4 py-6 mix-blend-difference text-white"
+    >
+      <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <a
+          href="#"
+          class="text-2xl font-semibold tracking-tighter uppercase z-50"
+          >J/D.</a
+        >
+        <div class="hidden md:flex gap-8 text-sm font-medium tracking-tight">
+          <a
+            href="#work"
+            class="hover:underline decoration-2 underline-offset-4"
+            >Work</a
+          >
+          <a
+            href="#about"
+            class="hover:underline decoration-2 underline-offset-4"
+            >About</a
+          >
+          <a
+            href="#contact"
+            class="hover:underline decoration-2 underline-offset-4"
+            >Contact</a
+          >
+        </div>
+        <button
+          class="bg-white text-black px-5 py-2 rounded-full font-medium text-sm hover:scale-105 transition-transform duration-300"
+        >
+          Let's Talk
+        </button>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header
+      class="relative w-full min-h-screen flex flex-col justify-center items-center overflow-hidden pt-20"
+    >
+      <!-- Background Blobs -->
+      <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+        <div
+          class="absolute top-1/4 left-1/4 w-72 h-72 bg-[#FDE047] rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"
+        ></div>
+        <div
+          class="absolute top-1/3 right-1/4 w-96 h-96 bg-[#F9A8D4] rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"
+        ></div>
+        <div
+          class="absolute -bottom-32 left-1/2 w-80 h-80 bg-[#2563EB] rounded-full mix-blend-multiply filter blur-[80px] opacity-60 animate-blob animation-delay-4000"
+        ></div>
+      </div>
+
+      <div
+        class="max-w-7xl w-full px-4 md:px-8 relative z-10 flex flex-col justify-center"
+      >
+        <div class="space-y-[-1rem] md:space-y-[-3rem] w-full">
+          <!-- Line 1 -->
+          <div class="flex items-center gap-4">
+            <h1
+              class="text-[12vw] leading-none font-bold tracking-tighter text-slate-900 transform hover:skew-x-3 transition-transform duration-500 cursor-default"
+            >
+              CREATIVE
+            </h1>
+            <div
+              class="hidden md:flex h-16 w-32 bg-[#2563EB] rounded-full items-center justify-center rotate-6 neo-shadow-sm"
+            >
+              <iconify-icon
+                icon="solar:code-circle-linear"
+                class="text-white text-4xl"
+              ></iconify-icon>
+            </div>
+          </div>
+
+          <!-- Line 2 -->
+          <div class="flex items-center justify-end gap-4 w-full">
+            <div
+              class="hidden md:flex h-20 w-20 bg-[#F9A8D4] rounded-full items-center justify-center -rotate-12 neo-shadow-sm"
+            >
+              <iconify-icon
+                icon="solar:figma-file-linear"
+                class="text-black text-4xl"
+              ></iconify-icon>
+            </div>
+            <h1
+              class="text-[12vw] leading-none font-bold tracking-tighter text-slate-900 text-right transform hover:-skew-x-3 transition-transform duration-500 cursor-default"
+            >
+              CODER
+            </h1>
+          </div>
+
+          <!-- Line 3 -->
+          <div
+            class="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-6"
+          >
+            <span
+              class="text-xl md:text-3xl font-medium font-[Space_Grotesk] bg-black text-white px-4 py-1 rounded-full -rotate-2"
+            >
+              &amp;
+            </span>
+            <h1
+              class="text-[10vw] md:text-[8vw] leading-none font-semibold tracking-tighter text-slate-900 text-outline hover:text-[#2563EB] transition-colors duration-300"
+            >
+              PROBLEM SOLVER
+            </h1>
+          </div>
+        </div>
+
+        <p
+          class="mt-12 text-lg md:text-xl max-w-lg font-medium leading-relaxed tracking-tight text-slate-700"
+        >
+          Front-end developer crafting digital experiences with a blend of
+          pixel-perfect design and clean code. Based in the digital cloud.
+        </p>
+
+        <div class="mt-10 flex gap-4">
+          <a
+            href="#work"
+            class="px-8 py-4 bg-[#FDE047] border-2 border-black text-black font-bold text-lg rounded-xl neo-shadow hover:translate-y-1 hover:shadow-none transition-all duration-200"
+          >
+            View Projects
+          </a>
+          <a
+            href="#"
+            class="px-8 py-4 bg-white border-2 border-black text-black font-bold text-lg rounded-xl neo-shadow hover:translate-y-1 hover:shadow-none transition-all duration-200 flex items-center gap-2"
+          >
+            <iconify-icon
+              icon="solar:download-linear"
+              width="24"
+            ></iconify-icon>
+            CV
+          </a>
+        </div>
+      </div>
+
+      <!-- Scroll Indicator -->
+      <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
+        <iconify-icon
+          icon="solar:mouse-circle-linear"
+          class="text-4xl text-slate-400"
+        ></iconify-icon>
+      </div>
+    </header>
+
+    <!-- Marquee Separator -->
+    <div
+      class="w-full bg-black py-4 overflow-hidden border-y-4 border-black rotate-1 scale-105 z-20 relative my-12"
+    >
+      <div class="whitespace-nowrap flex animate-marquee">
+        <span
+          class="text-3xl md:text-5xl font-bold text-[#FDE047] mx-8 tracking-tighter font-[Syne]"
+          >JAVASCRIPT</span
+        >
+        <span
+          class="text-3xl md:text-5xl font-bold text-white mx-8 tracking-tighter font-[Syne]"
+          >•</span
+        >
+        <span
+          class="text-3xl md:text-5xl font-bold text-[#F9A8D4] mx-8 tracking-tighter font-[Syne]"
+          >REACT</span
+        >
+        <span
+          class="text-3xl md:text-5xl font-bold text-white mx-8 tracking-tighter font-[Syne]"
+          >•</span
+        >
+        <span
+          class="text-3xl md:text-5xl font-bold text-[#2563EB] mx-8 tracking-tighter font-[Syne]"
+          >TAILWIND</span
+        >
+        <span
+          class="text-3xl md:text-5xl font-bold text-white mx-8 tracking-tighter font-[Syne]"
+          >•</span
+        >
+        <span
+          class="text-3xl md:text-5xl font-bold text-[#FDE047] mx-8 tracking-tighter font-[Syne]"
+          >INTERACTION</span
+        >
+        <span
+          class="text-3xl md:text-5xl font-bold text-white mx-8 tracking-tighter font-[Syne]"
+          >•</span
+        >
+        <span
+          class="text-3xl md:text-5xl font-bold text-[#F9A8D4] mx-8 tracking-tighter font-[Syne]"
+          >UI/UX</span
+        >
+        <span
+          class="text-3xl md:text-5xl font-bold text-white mx-8 tracking-tighter font-[Syne]"
+          >•</span
+        >
+        <span
+          class="text-3xl md:text-5xl font-bold text-[#FDE047] mx-8 tracking-tighter font-[Syne]"
+          >JAVASCRIPT</span
+        >
+        <span
+          class="text-3xl md:text-5xl font-bold text-white mx-8 tracking-tighter font-[Syne]"
+          >•</span
+        >
+        <span
+          class="text-3xl md:text-5xl font-bold text-[#F9A8D4] mx-8 tracking-tighter font-[Syne]"
+          >REACT</span
+        >
+        <span
+          class="text-3xl md:text-5xl font-bold text-white mx-8 tracking-tighter font-[Syne]"
+          >•</span
+        >
+      </div>
+    </div>
+
+    <!-- Selected Works -->
+    <section id="work" class="py-24 px-4 bg-white relative">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row items-end justify-between mb-20">
+          <h2
+            class="text-6xl md:text-8xl font-bold tracking-tighter text-slate-900"
+          >
+            SELECTED <br />
+            <span class="text-[#2563EB]">WORKS</span>
+          </h2>
+          <p
+            class="text-lg font-medium text-slate-500 max-w-sm mt-6 md:mt-0 text-right"
+          >
+            A collection of digital products, prototypes, and experiments.
+          </p>
+        </div>
+
+        <!-- Projects Grid -->
+        <div class="flex flex-col gap-32">
+          <!-- Project 1 -->
+          <div class="project-card group relative w-full md:w-10/12 mx-auto">
+            <!-- Background Accent -->
+            <div
+              class="absolute inset-0 bg-[#FDE047] rounded-3xl border-2 border-black transform rotate-2 group-hover:rotate-6 transition-transform duration-500 z-0"
+            ></div>
+
+            <!-- Content Card -->
+            <div
+              class="relative bg-white rounded-3xl border-2 border-black p-4 md:p-8 z-10 transition-transform duration-500 group-hover:-translate-y-2 group-hover:-translate-x-2"
+            >
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div
+                  class="aspect-video bg-stone-100 rounded-xl overflow-hidden border border-stone-200 relative group-hover:scale-[1.02] transition-transform duration-500"
+                >
+                  <!-- Abstract UI Representation -->
+                  <div
+                    class="w-full h-full bg-gradient-to-br from-yellow-100 to-yellow-50 flex items-center justify-center"
+                  >
+                    <div
+                      class="w-3/4 h-3/4 bg-white shadow-lg rounded-lg border border-stone-100 p-4 space-y-3"
+                    >
+                      <div class="flex gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                      </div>
+                      <div class="h-8 w-1/3 bg-stone-100 rounded"></div>
+                      <div class="grid grid-cols-3 gap-2">
+                        <div class="h-24 bg-blue-100 rounded"></div>
+                        <div class="h-24 bg-pink-100 rounded"></div>
+                        <div class="h-24 bg-purple-100 rounded"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="space-y-6 px-2">
+                  <div>
+                    <div class="flex gap-2 mb-4">
+                      <span
+                        class="px-3 py-1 bg-black text-white text-xs font-semibold uppercase tracking-wider rounded-full"
+                        >E-Commerce</span
+                      >
+                      <span
+                        class="px-3 py-1 bg-transparent border border-black text-black text-xs font-semibold uppercase tracking-wider rounded-full"
+                        >2023</span
+                      >
+                    </div>
+                    <h3
+                      class="text-4xl md:text-5xl font-bold tracking-tighter mb-2"
+                    >
+                      NEO SHOP
+                    </h3>
+                    <p class="text-slate-600 text-lg leading-relaxed">
+                      A brutalist e-commerce template focused on high contrast
+                      and bold typography to drive conversions.
+                    </p>
+                  </div>
+                  <div
+                    class="flex flex-wrap gap-2 text-sm font-medium text-slate-500 font-mono"
+                  >
+                    <span>[Next.js]</span>
+                    <span>[Stripe]</span>
+                    <span>[Zustand]</span>
+                  </div>
+                  <button
+                    class="flex items-center gap-2 text-xl font-bold underline decoration-2 underline-offset-4 hover:text-[#2563EB] transition-colors"
+                  >
+                    Visit Site
+                    <iconify-icon
+                      icon="solar:arrow-right-up-linear"
+                      stroke-width="2"
+                    ></iconify-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project 2 (Inverted Layout) -->
+          <div class="project-card group relative w-full md:w-10/12 mx-auto">
+            <div
+              class="absolute inset-0 bg-[#F9A8D4] rounded-3xl border-2 border-black transform -rotate-1 group-hover:-rotate-3 transition-transform duration-500 z-0"
+            ></div>
+
+            <div
+              class="relative bg-white rounded-3xl border-2 border-black p-4 md:p-8 z-10 transition-transform duration-500 group-hover:-translate-y-2 group-hover:translate-x-2"
+            >
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="order-2 md:order-1 space-y-6 px-2">
+                  <div>
+                    <div class="flex gap-2 mb-4">
+                      <span
+                        class="px-3 py-1 bg-black text-white text-xs font-semibold uppercase tracking-wider rounded-full"
+                        >SaaS</span
+                      >
+                      <span
+                        class="px-3 py-1 bg-transparent border border-black text-black text-xs font-semibold uppercase tracking-wider rounded-full"
+                        >2024</span
+                      >
+                    </div>
+                    <h3
+                      class="text-4xl md:text-5xl font-bold tracking-tighter mb-2"
+                    >
+                      TASK FLOW
+                    </h3>
+                    <p class="text-slate-600 text-lg leading-relaxed">
+                      Productivity dashboard with drag-and-drop interactions and
+                      real-time collaboration features.
+                    </p>
+                  </div>
+                  <div
+                    class="flex flex-wrap gap-2 text-sm font-medium text-slate-500 font-mono"
+                  >
+                    <span>[React]</span>
+                    <span>[Firebase]</span>
+                    <span>[Tailwind]</span>
+                  </div>
+                  <button
+                    class="flex items-center gap-2 text-xl font-bold underline decoration-2 underline-offset-4 hover:text-[#F9A8D4] transition-colors"
+                  >
+                    Case Study
+                    <iconify-icon
+                      icon="solar:arrow-right-up-linear"
+                      stroke-width="2"
+                    ></iconify-icon>
+                  </button>
+                </div>
+                <div
+                  class="order-1 md:order-2 aspect-video bg-stone-100 rounded-xl overflow-hidden border border-stone-200 relative group-hover:scale-[1.02] transition-transform duration-500"
+                >
+                  <!-- Abstract UI Representation -->
+                  <div
+                    class="w-full h-full bg-gradient-to-bl from-pink-100 to-blue-50 flex items-center justify-center p-6"
+                  >
+                    <div
+                      class="w-full h-full bg-white border-2 border-black rounded-lg p-3 flex gap-4"
+                    >
+                      <div
+                        class="w-16 h-full bg-stone-100 rounded border border-stone-300"
+                      ></div>
+                      <div class="flex-1 space-y-2">
+                        <div class="h-8 w-1/2 bg-stone-100 rounded mb-4"></div>
+                        <div
+                          class="h-16 w-full bg-[#F9A8D4] rounded border border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                        ></div>
+                        <div
+                          class="h-16 w-full bg-[#FDE047] rounded border border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project 3 -->
+          <div class="project-card group relative w-full md:w-10/12 mx-auto">
+            <div
+              class="absolute inset-0 bg-[#2563EB] rounded-3xl border-2 border-black transform rotate-1 group-hover:rotate-3 transition-transform duration-500 z-0"
+            ></div>
+
+            <div
+              class="relative bg-white rounded-3xl border-2 border-black p-4 md:p-8 z-10 transition-transform duration-500 group-hover:-translate-y-2 group-hover:-translate-x-2"
+            >
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div
+                  class="aspect-video bg-stone-100 rounded-xl overflow-hidden border border-stone-200 relative group-hover:scale-[1.02] transition-transform duration-500"
+                >
+                  <div
+                    class="w-full h-full bg-[#2563EB] flex items-center justify-center relative overflow-hidden"
+                  >
+                    <div
+                      class="absolute w-40 h-40 bg-white rounded-full blur-2xl top-0 left-0 opacity-20"
+                    ></div>
+                    <div class="text-white text-6xl font-bold font-[Syne]">
+                      API
+                    </div>
+                  </div>
+                </div>
+                <div class="space-y-6 px-2">
+                  <div>
+                    <div class="flex gap-2 mb-4">
+                      <span
+                        class="px-3 py-1 bg-black text-white text-xs font-semibold uppercase tracking-wider rounded-full"
+                        >Dev Tools</span
+                      >
+                      <span
+                        class="px-3 py-1 bg-transparent border border-black text-black text-xs font-semibold uppercase tracking-wider rounded-full"
+                        >2023</span
+                      >
+                    </div>
+                    <h3
+                      class="text-4xl md:text-5xl font-bold tracking-tighter mb-2"
+                    >
+                      DOCS GEN
+                    </h3>
+                    <p class="text-slate-600 text-lg leading-relaxed">
+                      Automated documentation generator for REST APIs with a
+                      beautiful, dark-mode default UI.
+                    </p>
+                  </div>
+                  <div
+                    class="flex flex-wrap gap-2 text-sm font-medium text-slate-500 font-mono"
+                  >
+                    <span>[Node.js]</span>
+                    <span>[Vue]</span>
+                    <span>[GraphQL]</span>
+                  </div>
+                  <button
+                    class="flex items-center gap-2 text-xl font-bold underline decoration-2 underline-offset-4 hover:text-[#2563EB] transition-colors"
+                  >
+                    View on Github
+                    <iconify-icon
+                      icon="solar:arrow-right-up-linear"
+                      stroke-width="2"
+                    ></iconify-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services / Stack Section -->
+    <section class="py-24 bg-[#FFFDF5] relative overflow-hidden">
+      <!-- Floating shapes bg -->
+      <div
+        class="absolute right-0 top-1/4 w-64 h-64 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"
+      ></div>
+      <div
+        class="absolute left-0 bottom-1/4 w-64 h-64 bg-green-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"
+      ></div>
+
+      <div class="max-w-7xl mx-auto px-4 relative z-10">
+        <h2
+          class="text-5xl md:text-7xl font-bold tracking-tighter text-center mb-16"
+        >
+          MY
+          <span class="relative inline-block px-4">
+            <span
+              class="absolute inset-0 bg-[#FDE047] -skew-y-2 transform -z-10 border-2 border-black neo-shadow-sm"
+            ></span>
+            PLAYGROUND
+          </span>
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Stack Card -->
+          <div
+            class="p-8 bg-white border-2 border-black rounded-2xl hover:bg-[#F9A8D4] transition-colors duration-300 group neo-shadow-sm hover:neo-shadow cursor-default"
+          >
+            <iconify-icon
+              icon="solar:pallete-2-linear"
+              class="text-4xl mb-6 group-hover:scale-110 transition-transform duration-300"
+            ></iconify-icon>
+            <h3 class="text-2xl font-bold font-[Syne] mb-2">Creative UI</h3>
+            <p class="text-sm font-medium opacity-80">
+              Designing interfaces that are not just functional but memorable.
+              Playing with typography, layout, and motion.
+            </p>
+          </div>
+
+          <div
+            class="p-8 bg-white border-2 border-black rounded-2xl hover:bg-[#FDE047] transition-colors duration-300 group neo-shadow-sm hover:neo-shadow cursor-default"
+          >
+            <iconify-icon
+              icon="solar:code-square-linear"
+              class="text-4xl mb-6 group-hover:scale-110 transition-transform duration-300"
+            ></iconify-icon>
+            <h3 class="text-2xl font-bold font-[Syne] mb-2">Frontend Dev</h3>
+            <p class="text-sm font-medium opacity-80">
+              Writing clean, semantic, and accessible code. Expert in React,
+              Vue, and modern CSS architectures.
+            </p>
+          </div>
+
+          <div
+            class="p-8 bg-white border-2 border-black rounded-2xl hover:bg-[#2563EB] hover:text-white transition-colors duration-300 group neo-shadow-sm hover:neo-shadow cursor-default"
+          >
+            <iconify-icon
+              icon="solar:rocket-2-linear"
+              class="text-4xl mb-6 group-hover:scale-110 transition-transform duration-300"
+            ></iconify-icon>
+            <h3 class="text-2xl font-bold font-[Syne] mb-2">Performance</h3>
+            <p class="text-sm font-medium opacity-80">
+              Optimizing core web vitals and ensuring buttery smooth 60fps
+              animations across devices.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer / Contact -->
+    <footer
+      id="contact"
+      class="bg-black text-[#FFFDF5] pt-20 pb-10 px-4 rounded-t-[3rem] relative overflow-hidden mt-12"
+    >
+      <div class="max-w-7xl mx-auto flex flex-col items-center text-center">
+        <div class="mb-4">
+          <span
+            class="px-4 py-2 border border-[#FFFDF5] rounded-full text-xs font-mono uppercase tracking-widest"
+            >Available for hire</span
+          >
+        </div>
+
+        <h2
+          class="text-[12vw] leading-[0.9] font-bold tracking-tighter font-[Syne] mb-8 hover:text-[#FDE047] transition-colors duration-300 cursor-pointer"
+        >
+          LET'S TALK
+        </h2>
+
+        <p class="max-w-md text-lg text-gray-400 mb-12">
+          Have an idea? Let's build something squishy and awesome together.
+        </p>
+
+        <a
+          href="mailto:hello@creative.dev"
+          class="inline-flex items-center gap-3 px-8 py-4 bg-[#2563EB] text-white font-bold text-xl rounded-full hover:scale-110 hover:bg-[#F9A8D4] hover:text-black transition-all duration-300"
+        >
+          hello@creative.dev
+          <iconify-icon
+            icon="solar:letter-linear"
+            class="text-2xl"
+          ></iconify-icon>
+        </a>
+
+        <div class="w-full h-px bg-gray-800 my-16"></div>
+
+        <div
+          class="w-full flex flex-col md:flex-row justify-between items-center gap-6 text-sm font-medium text-gray-500"
+        >
+          <p>© 2024 Creative Coder. All rights reserved.</p>
+          <div class="flex gap-6">
+            <a href="#" class="hover:text-white transition-colors">Twitter</a>
+            <a href="#" class="hover:text-white transition-colors">LinkedIn</a>
+            <a href="#" class="hover:text-white transition-colors">Github</a>
+            <a href="#" class="hover:text-white transition-colors">Dribbble</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Simple Custom Cursor Logic
+      const cursorDot = document.getElementById('cursor-dot');
+      const cursorCircle = document.getElementById('cursor-circle');
+
+      // Only activate custom cursor on non-touch devices
+      if (window.matchMedia('(pointer: fine)').matches) {
+        document.addEventListener('mousemove', (e) => {
+          const posX = e.clientX;
+          const posY = e.clientY;
+
+          // Update dot position instantly
+          cursorDot.style.left = `${posX}px`;
+          cursorDot.style.top = `${posY}px`;
+
+          // Update circle position with slight delay (handled by CSS transition usually, but can be forced here)
+          cursorCircle.style.left = `${posX}px`;
+          cursorCircle.style.top = `${posY}px`;
+        });
+      }
+    </script>
+  </body>
+</html>

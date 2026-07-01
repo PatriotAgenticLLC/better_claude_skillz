@@ -1,0 +1,26 @@
+{
+  "_comment": "Optional registry template. Fill in your own projects, or delete this file to let /project auto-discover git repos under ~/projects. Fields: name (required), alias (optional short name), path (required), category (optional group label), stack (optional).",
+  "projects": [
+    {
+      "name": "example-api",
+      "alias": "api",
+      "path": "~/projects/services/example-api",
+      "category": "services",
+      "stack": "Python/FastAPI"
+    },
+    {
+      "name": "example-web-app",
+      "alias": "web",
+      "path": "~/projects/web/example-web-app",
+      "category": "web",
+      "stack": "TypeScript/React"
+    },
+    {
+      "name": "example-cli",
+      "alias": "cli",
+      "path": "~/projects/tools/example-cli",
+      "category": "tools",
+      "stack": "Go"
+    }
+  ]
+}

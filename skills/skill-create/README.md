@@ -36,5 +36,5 @@ Copy-Item -Recurse skill-create "$env:USERPROFILE\.claude\skills\"
 
 ---
 **Based on:** [Everything Claude Code](https://github.com/affaan-m/everything-claude-code) by @affaan-m
-**Augmented by:** Nick Martin, [PatriotAgentic LLC](https://github.com/mindmatter-aia)
+**Augmented by:** Nick Martin, Founder - [PatriotAgentic LLC](https://patriotagentic.com)
 **License:** MIT

@@ -83,5 +83,5 @@ The shipped entries reference projects the author worked on. They're useful as w
 - Code reviewer agents (`python-reviewer`, `go-reviewer`, `code-reviewer`, `security-reviewer`) — dispatched automatically when `/challenge` runs against source code.
 
 ---
-**Author:** Nick Martin, [PatriotAgentic LLC](https://github.com/mindmatter-aia)
+**Author:** Nick Martin, Founder - [PatriotAgentic LLC](https://patriotagentic.com)
 **License:** MIT

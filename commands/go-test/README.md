@@ -41,5 +41,5 @@ Copy-Item go-test.md "$env:USERPROFILE\.claude\commands\"
 - Skill: `skills/golang-testing/`
 
 ---
-**Author:** Nick Martin, [PatriotAgentic LLC](https://github.com/mindmatter-aia)
+**Author:** Nick Martin, Founder - [PatriotAgentic LLC](https://patriotagentic.com)
 **License:** MIT

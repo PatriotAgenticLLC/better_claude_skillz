@@ -32,5 +32,5 @@ Copy-Item -Recurse iterative-retrieval "$env:USERPROFILE\.claude\skills\"
 
 ---
 **Based on:** [The Longform Guide](https://x.com/affaanmustafa) by @affaanmustafa
-**Augmented by:** Nick Martin, [PatriotAgentic LLC](https://github.com/mindmatter-aia)
+**Augmented by:** Nick Martin, Founder - [PatriotAgentic LLC](https://patriotagentic.com)
 **License:** MIT
