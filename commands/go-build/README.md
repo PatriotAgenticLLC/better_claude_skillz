@@ -40,5 +40,5 @@ Copy-Item go-build.md "$env:USERPROFILE\.claude\commands\"
 - Agent: `agents/go-build-resolver.md`
 
 ---
-**Author:** Nick Martin, [PatriotAgentic LLC](https://github.com/mindmatter-aia)
+**Author:** Nick Martin, Founder - [PatriotAgentic LLC](https://patriotagentic.com)
 **License:** MIT

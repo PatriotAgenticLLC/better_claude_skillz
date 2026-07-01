@@ -40,5 +40,5 @@ Copy-Item prime-quick.md "$env:USERPROFILE\.claude\commands\"
 - `/prime-full` -- Comprehensive alternative for deep dives, onboarding, or major refactors
 
 ---
-**Author:** Nick Martin, [PatriotAgentic LLC](https://github.com/mindmatter-aia)
+**Author:** Nick Martin, Founder - [PatriotAgentic LLC](https://patriotagentic.com)
 **License:** MIT

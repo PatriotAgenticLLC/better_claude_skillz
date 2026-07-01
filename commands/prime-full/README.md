@@ -39,5 +39,5 @@ Copy-Item prime-full.md "$env:USERPROFILE\.claude\commands\"
 - `/prime-quick` -- Lighter alternative using 60% fewer tokens (recommended for most sessions)
 
 ---
-**Author:** Nick Martin, [PatriotAgentic LLC](https://github.com/mindmatter-aia)
+**Author:** Nick Martin, Founder - [PatriotAgentic LLC](https://patriotagentic.com)
 **License:** MIT

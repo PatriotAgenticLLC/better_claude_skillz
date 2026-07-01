@@ -33,5 +33,5 @@ Copy-Item -Recurse postgres-patterns "$env:USERPROFILE\.claude\skills\"
 
 ---
 **Based on:** [Supabase Agent Skills](https://github.com/supabase/agent-skills) (MIT)
-**Augmented by:** Nick Martin, [PatriotAgentic LLC](https://github.com/mindmatter-aia)
+**Augmented by:** Nick Martin, Founder - [PatriotAgentic LLC](https://patriotagentic.com)
 **License:** MIT

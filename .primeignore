@@ -1,0 +1,11 @@
+# better_claude_skillz .primeignore — exclude README duplicates from /prime
+
+# Each agent/command/skill has both a .md and a README.md
+# Only need the main .md files, not the READMEs
+agents/*/README.md
+commands/*/README.md
+skills/*/README.md
+
+# Optimize-context has its own docs
+optimize-context/CHANGELOG.md
+optimize-context/INSTALL.md

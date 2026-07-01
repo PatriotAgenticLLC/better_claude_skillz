@@ -1,16 +1,16 @@
-# Shared Skillz -- Claude Code Toolkit
+# Better Claude Skillz -- Claude Code Toolkit
 
 A curated collection of commands, agents, and skills for [Claude Code](https://docs.anthropic.com/en/docs/claude-code), Anthropic's official CLI for Claude.
 
-**Total items:** 65 (8 commands + 13 agents + 44 skills)
+**Total items:** 85 (9 commands + 13 agents + 63 skills)
 
 ---
 
 ## Table of Contents
 
-- [Commands](#commands) (8)
+- [Commands](#commands) (9)
 - [Agents](#agents) (13)
-- [Skills](#skills) (44)
+- [Skills](#skills) (63)
 - [Installation](#installation)
 - [Contributing](#contributing)
 - [License](#license)
@@ -23,6 +23,7 @@ Slash commands that invoke specific workflows in Claude Code.
 
 | Command | Description |
 |---------|-------------|
+| [`/brainstorm`](commands/brainstorm/) | Scan a workspace for automation, improvement, and build opportunities |
 | [`/challenge`](commands/challenge/) | Quality gate that pressure-tests any work before shipping |
 | [`/go-build`](commands/go-build/) | Fix Go build errors, vet warnings, and linter issues incrementally |
 | [`/go-review`](commands/go-review/) | Comprehensive Go code review for idiomatic patterns and security |
@@ -107,6 +108,9 @@ Reusable workflow patterns activated as slash commands.
 | [`/coding-standards`](skills/coding-standards/) | Universal coding standards for TypeScript, JavaScript, React, Node.js |
 | [`/prompt-audit`](skills/prompt-audit/) | Discover, audit, and rewrite LLM prompts using the R/T/S/C/E/N framework |
 | [`/refactor-clean`](skills/refactor-clean/) | Safely identify and remove dead code with test verification |
+| [`/lazy`](skills/lazy/) | Enforce minimal-code discipline -- write the least code that fully works |
+| [`/deps-audit`](skills/deps-audit/) | Scan projects for dependency vulnerabilities and version conflicts |
+| [`/extract-shared`](skills/extract-shared/) | Find cross-project code duplication and propose a shared package |
 
 ### Testing
 
@@ -118,6 +122,9 @@ Reusable workflow patterns activated as slash commands.
 | [`/test-coverage`](skills/test-coverage/) | Analyze coverage and generate missing tests to reach 80%+ |
 | [`/golang-testing`](skills/golang-testing/) | Go testing patterns: table-driven tests, benchmarks, fuzzing |
 | [`/python-testing`](skills/python-testing/) | Python testing with pytest, TDD, fixtures, mocking |
+| [`/test`](skills/test/) | Universal test runner -- auto-detects project type and runs the suite |
+| [`/a11y-check`](skills/a11y-check/) | WCAG accessibility audits: semantics, ARIA, contrast, keyboard nav |
+| [`/perf-profile`](skills/perf-profile/) | Profile Python and Node.js performance -- slow endpoints, leaks, CPU |
 
 ### Language Patterns
 
@@ -128,6 +135,7 @@ Reusable workflow patterns activated as slash commands.
 | [`/golang-patterns`](skills/golang-patterns/) | Idiomatic Go patterns, concurrency, and best practices |
 | [`/python-patterns`](skills/python-patterns/) | Pythonic idioms, PEP 8, type hints, and best practices |
 | [`/postgres-patterns`](skills/postgres-patterns/) | PostgreSQL query optimization, schema design, and indexing |
+| [`/clickhouse-io`](skills/clickhouse-io/) | ClickHouse patterns, query optimization, and analytics best practices |
 
 ### Security
 
@@ -147,6 +155,7 @@ Reusable workflow patterns activated as slash commands.
 | [`/strategic-compact`](skills/strategic-compact/) | Context compaction at logical intervals |
 | [`/iterative-retrieval`](skills/iterative-retrieval/) | Progressive context retrieval for multi-agent workflows |
 | [`/create-prd`](skills/create-prd/) | Create Product Requirements Document from conversation |
+| [`/writing-style`](skills/writing-style/) | Anti-AI-slop enforcement for prose, copy, and documentation |
 
 ### Continuous Learning
 
@@ -175,12 +184,37 @@ Reusable workflow patterns activated as slash commands.
 |-------|-------------|
 | [`/rca`](skills/rca/) | Root cause analysis for bugs |
 | [`/implement-fix`](skills/implement-fix/) | Implement bug fix based on RCA |
+| [`/build-fix`](skills/build-fix/) | Incrementally fix TypeScript and build errors with verification |
 
 ### Python Review
 
 | Skill | Description |
 |-------|-------------|
 | [`/python-review`](skills/python-review/) | Python code review for PEP 8, type hints, security, idioms |
+
+### API and Contracts
+
+| Skill | Description |
+|-------|-------------|
+| [`/api-contract`](skills/api-contract/) | Generate OpenAPI specs from code and detect breaking API changes |
+
+### Research and Web
+
+| Skill | Description |
+|-------|-------------|
+| [`/firecrawl`](skills/firecrawl/) | Web scraping, search, and crawling via the Firecrawl CLI |
+| [`/supadata`](skills/supadata/) | Fetch video transcripts and social/web metadata via the Supadata API |
+
+### Project and Workflow
+
+| Skill | Description |
+|-------|-------------|
+| [`/project`](skills/project/) | Navigate, list, and switch between projects in your workspace |
+| [`/init-project`](skills/init-project/) | Scaffold a new project with a standard structure |
+| [`/set-working-dir`](skills/set-working-dir/) | Change working directory or switch project by path or name |
+| [`/release`](skills/release/) | Bump version, generate changelog from commits, and tag |
+| [`/wrapup`](skills/wrapup/) | End-of-session workflow: review, commit, and capture learnings |
+| [`/config-audit`](skills/config-audit/) | Audit a Claude Code config stack for duplication, staleness, gaps |
 
 ---
 
@@ -190,8 +224,8 @@ Reusable workflow patterns activated as slash commands.
 
 **Linux/macOS:**
 ```bash
-git clone https://github.com/mindmatter-aia/shared_skillz.git
-cd shared_skillz
+git clone https://github.com/PatriotAgenticLLC/better_claude_skillz.git
+cd better_claude_skillz
 
 # Commands
 cp commands/*/*.md ~/.claude/commands/
@@ -214,8 +248,8 @@ cp -r optimize-context ~/.claude/skills/
 
 **Windows PowerShell:**
 ```powershell
-git clone https://github.com/mindmatter-aia/shared_skillz.git
-cd shared_skillz
+git clone https://github.com/PatriotAgenticLLC/better_claude_skillz.git
+cd better_claude_skillz
 
 # Commands
 Get-ChildItem commands\*\*.md | ForEach-Object {
@@ -267,6 +301,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for submission guidelines.
 - [Homunculus](https://github.com/humanplane/homunculus) by humanplane -- Instinct-based learning system
 - [Supabase Agent Skills](https://github.com/supabase/agent-skills) -- PostgreSQL best practices
 - [Liam Ottley / Morningside AI](https://www.morningside.ai/) -- R/T/S/C/E/N prompt structure inspiration
+- [ponytail](https://github.com/DietrichGebert/ponytail) by DietrichGebert -- minimal-code philosophy behind `/lazy` (independent implementation)
+- [Firecrawl](https://firecrawl.dev) -- web scraping/crawling CLI wrapped by `/firecrawl`
+- [Supadata](https://supadata.ai) -- transcript/metadata API wrapped by `/supadata`
 
 ---
 
@@ -278,7 +315,7 @@ Copyright (c) 2026 Nick Martin, PatriotAgentic LLC
 
 ---
 
-**Maintained by:** [mindmatter-aia](https://github.com/mindmatter-aia)
-**Issues:** [GitHub Issues](https://github.com/mindmatter-aia/shared_skillz/issues)
-**Last Updated:** March 2026
-**Items Count:** 65 (8 commands + 13 agents + 44 skills)
+**Maintained by:** [PatriotAgentic LLC](https://github.com/PatriotAgenticLLC)
+**Issues:** [GitHub Issues](https://github.com/PatriotAgenticLLC/better_claude_skillz/issues)
+**Last Updated:** June 2026
+**Items Count:** 85 (9 commands + 13 agents + 63 skills)

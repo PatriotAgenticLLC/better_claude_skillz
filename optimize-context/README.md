@@ -341,7 +341,7 @@ This skill is part of the Everything Claude Code methodology and is provided as-
 
 ## Credits
 
-**Author:** Nick Martin, [PatriotAgentic LLC](https://github.com/mindmatter-aia)
+**Author:** Nick Martin, Founder - [PatriotAgentic LLC](https://patriotagentic.com)
 **Date:** February 10, 2026
 
 **Integrates with:**

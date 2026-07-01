@@ -45,5 +45,5 @@ Copy-Item planner.md "$env:USERPROFILE\.claude\agents\"
 ```
 
 ---
-**Author:** Nick Martin, [PatriotAgentic LLC](https://github.com/mindmatter-aia)
+**Author:** Nick Martin, Founder - [PatriotAgentic LLC](https://patriotagentic.com)
 **License:** MIT
