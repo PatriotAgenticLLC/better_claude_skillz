@@ -78,9 +78,22 @@ Never suggest excluding, and refuse patterns that match:
 - **Files CLAUDE.md links to** — grep CLAUDE.md for relative file paths; anything it references is load-bearing context
 - **Rule-mandated reads** — scan `.claude/rules/*.md` for directories the rules require reading
 
+### 4b. Establish the Prime Cost Model (what actually gets read)
+
+`.primeignore` savings depend entirely on **how `/prime` reads** — model it before estimating anything:
+
+- **Full mode** full-reads every surviving doc and source file → savings ≈ `bytes ÷ 4` of what you exclude. This is where a bloated survivor set hurts most (a >100K prime is almost always full mode).
+- **Quick mode** full-reads only CLAUDE.md + README (100 lines) + entry point (100 lines), then **greps signatures** from source (`^class |^def |^export |^function `) and merely *lists* everything else. A source file's quick-mode cost ≈ its signature-line count × ~12 tokens, NOT `bytes ÷ 4`. Docs/data/binary that quick mode never reads cost ~one listing line each.
+
+Detect the user's usual mode (ask if unknown; default full, since that's where optimization pays). Estimate and prioritize against that mode:
+- Full mode → rank candidates by `bytes ÷ 4`.
+- Quick mode → excluding a doc/data file saves little (it wasn't read); the real quick-mode lever is **grep breadth** — the *count* of surviving source files, since each contributes signature lines. Rank by file-count of source subtrees, not byte size.
+
+Always report the **fully-read floor** — the token cost of the protected, always-read set (CLAUDE.md + README head + entry point). Prime cannot go below this via `.primeignore`; if the user's target is under the floor, say so and point them at trimming CLAUDE.md / the injected rules stack / connected MCP servers instead.
+
 ### 5. Categorize Every Tracked File
 
-**KEEP:** source files in actively developed areas, configuration/manifests, primary docs, the protected set.
+**KEEP:** source files in the architectural core (the modules CLAUDE.md's architecture section actually names), configuration/manifests, primary docs, the protected set.
 
 **SUGGEST EXCLUDE — built-in categories** (see `default-patterns.md` for the full library):
 - **Historical artifacts:** archived plans, past code reviews, session handoffs, brainstorm docs (`plans/archive/`, `.claude/handoffs/`, `.claude/brainstorms/`, `.claude/code-reviews/`, `_archive/`, `old/`, `deprecated/`)
@@ -92,7 +105,8 @@ Never suggest excluding, and refuse patterns that match:
 
 **SUGGEST EXCLUDE — derived by scan (not just the hardcoded list):**
 - **Name-convention scan:** any tracked directory matching `archive|handoff|brainstorm|render|snapshot|deprecated|old` — the project's own junk-drawer conventions beat a canned list
-- **Size/binary scan:** `git ls-files | tr '\n' '\0' | xargs -0 wc -c 2>/dev/null | sort -rn | head -20`; flag files >100KB and binary assets (`*.png`, `*.pdf`, `*.jpg`, media) as their own category
+- **Large single files (type-agnostic):** `git ls-files | tr '\n' '\0' | xargs -0 wc -c 2>/dev/null | sort -rn | head -20`; flag **any** surviving file over ~25K tokens (~100KB) regardless of extension — catches large tracked HTML/JSON/generated docs, not just binaries. Also flag all binary assets (`*.png`, `*.pdf`, `*.jpg`, media) as their own category.
+- **Broad non-core source subtrees (opt-in, warned):** a source directory with many files that is NOT part of the architectural core CLAUDE.md names — e.g. a dozen per-provider integration/connector dirs, a self-contained sidecar, generated clients. In full mode these are full-read; excluding them can be the single largest win. Present as its own category with an explicit warning: "these are real source, read on-demand via Read/Grep — exclude only if they're not your current working surface." Never fold them silently into another category, and always leave the core (routers, main app, data layer, the modules CLAUDE.md describes) visible.
 - **Dense directories:** `git ls-files | sed 's|/[^/]*$||' | sort | uniq -c | sort -rn | head -20`; directories with >50 tracked files of data, migrations, or fixtures
 - **Git-cold directories (optional signal):** directories with no commits in 6+ months are exclusion candidates; mention but weight below the other signals
 
@@ -133,8 +147,11 @@ Group by category. For each: name, **verified** file count, **measured** token e
 ```
 ## .primeignore Recommendations for [project-name]
 
+Prime mode optimized for: [full | quick]
 Tracked files: X total
 Currently excluded (verified): Y (Z%)
+Survivor text prime can read/grep: ~AK tokens  →  ~BK after these patterns
+Fully-read floor (CLAUDE.md + README head + entry, cannot be excluded): ~CK tokens
 Survivors worth attention: [list any large/binary/historical files currently surviving]
 
 ### Category 1: ... (N files verified, ~XK tokens measured)
@@ -145,6 +162,7 @@ Files matched (sample): ...
 
 ---
 Resulting exclusion: X% (Y files survive prime)
+Projected prime cost: ~floor + read-survivors (state the number, and if it can't reach the user's target, name what else must shrink — CLAUDE.md, the injected rules stack, or connected MCP servers)
 Approve categories? (numbers, "all", or "none")
 ```
 
