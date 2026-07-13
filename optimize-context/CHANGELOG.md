@@ -4,6 +4,17 @@ All notable changes to the `/optimize-context` skill will be documented in this 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2.2.0] - 2026-07-12
+
+Graceful degradation outside git. The skill's ground truth is `git ls-files`, so running `--reconcile` in a non-git directory hard-failed with "not a git repository". Git stays the verified, preferred path — it is the only faithful gitignore-syntax matcher and the only way to verify a count instead of guessing — but the skill no longer dies without it.
+
+### Added
+- **Step 0 — ground-truth source**: detect `git rev-parse --is-inside-work-tree`. In a repo, the verified flow as before. Outside a repo, first recommend `git init` (one non-destructive command that unlocks the verified path for any dir you prime repeatedly); if declined or impossible (read-only mount, third-party tree, synced vault), fall back to **best-effort mode**.
+- **Best-effort mode**: `find`-based discovery with a built-in junk-skip (+ parse a local `.gitignore` if present), approximate `fnmatch`/glob matching, every output labeled `no git — counts are ESTIMATES, unverified`. The verify-against-the-artifact guarantee, accurate `--reconcile` counts, and the allowlist-survivor check are explicitly marked unavailable rather than faked.
+
+### Changed
+- Core Principle now states the git requirement outright and how the skill degrades when git is absent — an estimate is never presented as verified.
+
 ## [2.1.0] - 2026-07-12
 
 Prime-cost-model release. Driven by a follow-up finding: after v2's rename, a production repo's `/prime full` still cost ~128K because the `.primeignore` had never been reconciled — ~347K of readable survivor text remained, dominated by `.claude/handoffs/` (64 files), a single 141KB `.md`, `viz/` renders, and 76 non-core integration source files. v2's scans caught the first three; the source subtree was a structural blind spot ("never exclude source").

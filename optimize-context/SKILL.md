@@ -48,7 +48,23 @@ comm -23 <(git ls-files | sort) \
 git ls-files -ci --exclude='PATTERN'
 ```
 
+This principle **requires git** — it is the only faithful matcher for gitignore syntax and the only way to verify a count instead of guessing it. Outside a git repo the skill degrades to best-effort estimates (see Step 0); when that happens, say so plainly and never present an estimated count as verified.
+
 ## Process
+
+### 0. Ground-Truth Source (git check — do this first)
+
+Run `git rev-parse --is-inside-work-tree 2>/dev/null`.
+
+- **Inside a git repo (default, verified path):** use the git-native flow below. All counts come from git's own matcher; the verification and `--reconcile` guarantees hold. This is strongly preferred.
+- **Not a git repo:** do NOT hard-fail.
+  1. **First recommend `git init`.** For any directory you prime repeatedly, this is the right fix — one non-destructive command that unlocks the fully-verified path plus version history. Weakening the analysis to avoid it is a bad trade.
+  2. **If the user declines or can't init** (read-only mount, third-party tree, a synced vault where `.git` is unwelcome), run **best-effort mode** and label every output `no git — counts are ESTIMATES, unverified`:
+     - **Discovery:** `find . -type f` minus a built-in junk-skip (`.git`, `node_modules`, `.venv`, `venv`, `__pycache__`, `dist`, `build`, `.next`, `target`, `.pytest_cache`) and minus anything matched by a local `.gitignore` if one exists (parse it).
+     - **Matching:** approximate with `fnmatch`/glob — this is NOT gitignore-faithful (negation, `**`, anchoring, and parent-dir re-inclusion may differ). Never claim a verified count.
+     - **Unavailable in this mode:** the verify-against-the-artifact guarantee, accurate `--reconcile` counts, and the allowlist-survivor check all depend on git — say so explicitly rather than fake them.
+
+The rest of this process assumes the verified git path; in best-effort mode, substitute the fallbacks above and downgrade every "verified" claim to "estimated".
 
 ### 1. Detect Project Type
 
