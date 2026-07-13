@@ -14,6 +14,10 @@ This skill implements a **three-layer file exclusion model** for Claude Code pro
 
 The skill manages Layer 3 — **soft skips** via a project-level `.primeignore` file.
 
+## What's New in 2.2
+
+- **Works outside git — carefully.** Ground truth is `git ls-files`, so a non-git directory used to hard-fail. Now the skill detects it, first recommends `git init` (the right fix for anything you prime repeatedly), and if that's declined or impossible falls back to a **best-effort mode** using `find` + approximate matching — with every count loudly labeled `unverified`. Git stays the preferred, verified path; the skill just no longer refuses to run without it.
+
 ## What's New in 2.1
 
 - **Prime cost model.** The skill now knows the difference between `full` mode (full-reads everything → `bytes ÷ 4` savings) and `quick` mode (full-reads only CLAUDE.md/README/entry, greps signatures from source, lists the rest). It estimates and prioritizes against the mode you actually use instead of assuming every file is fully read.
@@ -193,6 +197,8 @@ optimize-context/
 **A:** Delete `.primeignore` from your project. `/prime` works normally without it.
 
 ## Version History
+
+**v2.2.0** (2026-07-12) — Graceful degradation outside git (`git init` recommendation + best-effort fallback). See CHANGELOG.md.
 
 **v2.1.0** (2026-07-12) — Prime cost model (full vs. quick), fully-read floor, broad non-core source subtree category, type-agnostic large-file flag. See CHANGELOG.md.
 
