@@ -8,6 +8,34 @@ If .gitignore already handles it, it does not belong here.
 
 ## Universal Patterns (Any Project)
 
+### Historical Session Artifacts
+```
+.claude/handoffs/
+.claude/brainstorms/
+.claude/code-reviews/
+plans/archive/
+```
+**Why**: Session handoffs, brainstorms, and archived plans accumulate fast in Claude Code projects and are pure history. NEVER exclude the active half of a split directory (e.g. `plans/` itself when active plans live there — exclude only `plans/archive/`).
+**Typical savings**: 20K-150K tokens
+
+### Auto-Loaded Claude Config
+```
+.claude/commands/
+.claude/agents/
+.claude/rules/
+```
+**Why**: Claude Code loads these itself (slash commands, agents, rules); reading them again during /prime is redundant.
+**Typical savings**: 5K-20K tokens
+
+### Binary Assets & Large Files
+```
+*.png
+*.pdf
+*.jpg
+```
+**Why**: Tracked images, renders, and documents can dominate the byte count. Also flag any single tracked file >100KB found via `git ls-files | xargs wc -c | sort -rn`.
+**Typical savings**: highly variable — often the single largest category
+
 ### Archives & Deprecated
 ```
 _archive/
@@ -152,4 +180,7 @@ When /optimize-context scans a project:
 2. Check each pattern category against tracked files
 3. Only suggest patterns that match actual files in the project
 4. Prefer directory-level patterns over individual file patterns
-5. Always report estimated token savings per pattern
+5. **Verify every pattern with `git ls-files -ci --exclude='PATTERN'`** — the real match count and measured bytes go in the header comment; never infer scope from the pattern text
+6. Report measured token savings (matched bytes ÷ 4) per pattern
+
+This library is a starting point, not a ceiling: also scan the project's own conventions (directory names matching `archive|handoff|brainstorm|render|snapshot|deprecated|old`) and its largest tracked files.
