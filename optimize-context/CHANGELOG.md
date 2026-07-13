@@ -4,6 +4,20 @@ All notable changes to the `/optimize-context` skill will be documented in this 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2.1.0] - 2026-07-12
+
+Prime-cost-model release. Driven by a follow-up finding: after v2's rename, a production repo's `/prime full` still cost ~128K because the `.primeignore` had never been reconciled — ~347K of readable survivor text remained, dominated by `.claude/handoffs/` (64 files), a single 141KB `.md`, `viz/` renders, and 76 non-core integration source files. v2's scans caught the first three; the source subtree was a structural blind spot ("never exclude source").
+
+### Added
+- **Prime cost model (Step 4b)**: distinguishes full mode (`bytes ÷ 4`, full-reads everything) from quick mode (full-reads only CLAUDE.md + README head + entry; greps signatures from source; lists the rest). Estimates and prioritizes against the detected mode instead of assuming every file is fully read.
+- **Fully-read floor reporting**: the token cost of the always-read protected set (CLAUDE.md + README head + entry) that `.primeignore` can never reduce — so a sub-target request gets an honest "trim CLAUDE.md / rules stack / MCP servers instead" when the floor is already above it.
+- **Broad non-core source subtree category (opt-in, warned)**: lets the skill recommend excluding many-file provider/connector/sidecar source dirs that aren't the architectural core CLAUDE.md names — often the single largest full-mode win — without ever silently hiding the core.
+- **Type-agnostic large-file flag**: flags any surviving file over ~25K tokens regardless of extension (catches large tracked HTML/JSON/generated docs, not just binaries).
+
+### Changed
+- KEEP definition narrowed from "source in actively developed areas" to "source in the architectural core (modules CLAUDE.md names)"
+- Recommendation output now leads with the optimized-for mode, survivor-text before/after, and the fully-read floor
+
 ## [2.0.0] - 2026-07-12
 
 Ground-up rework driven by a year of real usage: append-only pattern files drift into lies. On a production repo, a pattern labeled "(1 file)" silently excluded 473 test files, and after eight append runs the files *surviving* `/prime` were mostly historical session handoffs and megabytes of PNGs — exactly what should have been excluded.

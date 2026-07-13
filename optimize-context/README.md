@@ -14,6 +14,13 @@ This skill implements a **three-layer file exclusion model** for Claude Code pro
 
 The skill manages Layer 3 — **soft skips** via a project-level `.primeignore` file.
 
+## What's New in 2.1
+
+- **Prime cost model.** The skill now knows the difference between `full` mode (full-reads everything → `bytes ÷ 4` savings) and `quick` mode (full-reads only CLAUDE.md/README/entry, greps signatures from source, lists the rest). It estimates and prioritizes against the mode you actually use instead of assuming every file is fully read.
+- **Fully-read floor.** Reports the token cost of the always-read set (CLAUDE.md + README head + entry) that `.primeignore` can never reduce — so if your target is below the floor, it says so and points you at CLAUDE.md, the injected rules stack, or connected MCP servers.
+- **Broad non-core source subtrees.** A new opt-in, warned category for many-file provider/connector/sidecar source dirs that aren't the architectural core — often the single largest full-mode win, which v2's "never exclude source" rule structurally couldn't recommend.
+- **Type-agnostic large-file flag.** Flags any surviving file over ~25K tokens regardless of extension (large tracked HTML/JSON/generated docs, not just binaries).
+
 ## What's New in 2.0
 
 v2.0 is a ground-up rework driven by what a year of real usage revealed: append-only pattern files drift into lies. On one production repo, a pattern labeled "(1 file)" silently excluded 473 test files, and after eight append runs the survivors of `/prime` were mostly historical session handoffs and 2MB of PNGs — the exact files that should have been excluded.
@@ -186,6 +193,8 @@ optimize-context/
 **A:** Delete `.primeignore` from your project. `/prime` works normally without it.
 
 ## Version History
+
+**v2.1.0** (2026-07-12) — Prime cost model (full vs. quick), fully-read floor, broad non-core source subtree category, type-agnostic large-file flag. See CHANGELOG.md.
 
 **v2.0.0** (2026-07-12) — Verified counts, `--reconcile`, allowlist mode, derived protected set, renamed to `.primeignore`. See CHANGELOG.md.
 
