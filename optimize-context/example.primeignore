@@ -1,0 +1,74 @@
+# .primeignore — Soft Context Exclusion
+# These files are NOT blocked. They remain fully accessible.
+# /prime will skip them during context loading to save tokens.
+# Edit freely. Run /optimize-context --reconcile to refresh.
+#
+# Every [auto] pattern's count is verified with:
+#   git ls-files -ci --exclude='PATTERN'
+#
+# NOT listed here (handled by other layers):
+#   - .gitignore patterns (node_modules, dist, .env, etc.)
+#   - permissions.deny in .claude/settings.json (secrets)
+
+# Example patterns - customize for your project
+
+# Historical session artifacts
+.claude/handoffs/                 # [auto] session handoffs
+.claude/brainstorms/              # [auto] brainstorm docs
+.claude/code-reviews/             # [auto] past review artifacts
+plans/archive/                    # [auto] completed plans (active plans/ stays visible)
+
+# Archive and deprecated code
+_archive/                         # [auto] old code
+old/                              # [auto] deprecated
+deprecated/                       # [auto] archived features
+
+# Auto-loaded Claude config (Claude Code loads these itself)
+.claude/commands/                 # [auto] slash commands
+.claude/agents/                   # [auto] agent definitions
+.claude/rules/                    # [auto] rules
+
+# Large workflow/automation exports
+n8n/workflows/*.json              # [auto] workflow exports
+
+# Database migrations (historical)
+db/migrations/                    # [auto] past migrations
+alembic/versions/                 # [auto] Python migrations
+migrations/                       # [auto] generic migrations
+
+# Data directories
+data/seeds/                       # [auto] seed data
+data/fixtures/                    # [auto] test fixtures
+fixtures/                         # [auto] test data
+
+# Generated code
+generated/                        # [auto] codegen output
+prisma/generated/                 # [auto] Prisma client
+*.generated.ts                    # [auto] generated TypeScript
+*.generated.js                    # [auto] generated JavaScript
+
+# Binary assets and large files (>100KB)
+*.png                             # [auto] images
+*.pdf                             # [auto] documents
+
+# Lock files (if tracked)
+package-lock.json                 # [auto] resolved dep tree
+pnpm-lock.yaml                    # [auto] resolved dep tree
+
+# Custom patterns (no [auto] tag - always preserved during --reconcile)
+# Add your project-specific patterns below:
+
+
+# ------------------------------------------------------------------
+# ALLOWLIST ALTERNATIVE — use instead of the above when cumulative
+# exclusion passes ~70%. Exclude everything, re-include what prime
+# should read. The !*/ line is required: gitignore semantics cannot
+# re-include a file whose parent directory is excluded.
+# ------------------------------------------------------------------
+# *
+# !*/
+# !.primeignore
+# !CLAUDE.md
+# !README.md
+# !src/main.py
+# !docs/architecture.md

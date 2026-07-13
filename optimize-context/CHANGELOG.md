@@ -4,6 +4,30 @@ All notable changes to the `/optimize-context` skill will be documented in this 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2.0.0] - 2026-07-12
+
+Ground-up rework driven by a year of real usage: append-only pattern files drift into lies. On a production repo, a pattern labeled "(1 file)" silently excluded 473 test files, and after eight append runs the files *surviving* `/prime` were mostly historical session handoffs and megabytes of PNGs — exactly what should have been excluded.
+
+### Changed (BREAKING)
+- **Renamed `.claudeignore` → `.primeignore`** to match the `prime-quick`/`prime-full` commands in this repo, which support it natively. Migrate with `mv .claudeignore .primeignore` then `/optimize-context --reconcile`.
+- Modes are now: *(default)* create/append, `analyze`, `--reconcile` (replaces `sync`)
+- Negation patterns (`!`) are now supported — required for allowlist mode
+
+### Added
+- **Verify-against-the-artifact discipline**: every per-pattern count comes from `git ls-files -ci --exclude='PATTERN'`; whole-file ground truth from `git ls-files -ci --exclude-from=.primeignore`; mandatory post-write verification
+- **Measured token estimates** (matched bytes ÷ 4) instead of per-file guesses
+- **`--reconcile` mode**: full regeneration — collapses dated appendix sections, drops zero-match and subsumed patterns, corrects label drift; preserves untagged user patterns. Auto-recommended when ≥3 dated sections exist or any label is off by >2x
+- **Allowlist flip**: at >70% cumulative exclusion, proposes inverting to `*` / `!*/` / `!includes` form (drift-safe: new files default to excluded)
+- **Derived protected set**: entry points from manifest/Dockerfile/CLAUDE.md run instructions, files CLAUDE.md links to, rule-mandated directories
+- **Environment-derived categories**: name-convention scan (`archive|handoff|brainstorm|render|snapshot|deprecated|old`), size/binary scan (>100KB, media), dense-directory scan, git-cold signal
+- **Active/archive split rule**: never blanket-exclude a directory the project splits into active vs. archived halves
+- New built-in historical-artifact categories: `.claude/handoffs/`, `.claude/brainstorms/`, `plans/archive/`
+- Existing-file audit: flags stale (zero-match), subsumed, and mislabeled patterns before proposing additions
+
+### Fixed
+- Cumulative exclusion check (was per-run only, so repeated runs could sail past the 80% warning)
+- Category labels that understate a pattern's real scope (the "(1 file)" → 473 files class of error)
+
 ## [1.0.0] - 2026-02-10
 
 ### Added
@@ -58,16 +82,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Planned Features
-- Auto-tagging with file counts and sizes
 - Integration with `/learn` for session-informed patterns
 - Support for project-specific pattern templates
-- `.claudeignore` validation command
-- Dry-run mode for `sync`
-- Pattern impact analytics (actual token savings tracking)
+- `/prime` staleness line: warn when .primeignore is older than N days/commits or new tracked files match no pattern
+- Pattern impact analytics (actual token savings tracking across sessions)
 
 ---
 
 ## Version History
+
+**v2.0.0** - Verified counts, `--reconcile`, allowlist mode, `.primeignore` rename
+- Every pattern verified against `git ls-files -ci` (delivered the planned "validation command" and "auto-tagging with counts" as built-in steps)
+- Tested on a 1,672-file production repo (found 87% cumulative exclusion with handoffs/PNGs as survivors)
 
 **v1.0.0** - Initial public release
 - Core functionality complete

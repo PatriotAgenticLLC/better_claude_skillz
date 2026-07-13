@@ -1,14 +1,14 @@
 ---
 name: optimize-context
-description: Scan project for large/low-signal files and generate .claudeignore for smarter /prime loading
-argument-hint: "[create|analyze|sync]"
+description: Scan project, then generate or reconcile .primeignore patterns for smarter /prime loading
+argument-hint: "[analyze|--reconcile]"
 ---
 
-# /optimize-context — Smart Context Exclusion
+# /optimize-context — Generate or Reconcile .primeignore
 
 ## Purpose
 
-Manage a `.claudeignore` file that tells `/prime` which tracked files to skip during context loading. Files listed in `.claudeignore` remain **fully accessible** — they are not blocked. They are simply not loaded by default during `/prime` or broad exploration.
+Manage a `.primeignore` file that tells `/prime` which tracked files to skip during bulk context loading. Files listed in `.primeignore` remain **fully accessible** — they are not blocked, just not loaded by default.
 
 This is Layer 3 of the exclusion model:
 
@@ -16,180 +16,172 @@ This is Layer 3 of the exclusion model:
 |-------|-----------|--------|
 | Hard Block | `permissions.deny` | Cannot read at all (for secrets) |
 | Noise Filter | `.gitignore` | Not tracked, not visible (for junk) |
-| **Soft Skip** | **`.claudeignore`** | **Tracked and readable, but skipped by `/prime`** |
+| **Soft Skip** | **`.primeignore`** | **Tracked and readable, but skipped by `/prime`** |
 
 ## When to Use
 
 - Setting up a new project for the first time
 - After noticing `/prime` loaded large files that weren't useful
 - After adding large data files, fixtures, or archives to the project
-- Periodically (quarterly) to review what's being skipped
+- When `/prime` feels slow or token-heavy
 
 ## Arguments
 
 `$ARGUMENTS` options:
-- **`create`** (default if no argument) — Scan project, generate `.claudeignore`
-- **`analyze`** — Scan project and report findings without writing any files
-- **`sync`** — Re-scan and update existing `.claudeignore` (preserves user additions)
+- *(none, default)* — Scan project; create `.primeignore` if missing, otherwise propose additions
+- **`analyze`** — Scan and report findings without writing any files
+- **`--reconcile`** — Regenerate the entire `.primeignore` from scratch: collapse dated appendix sections, drop subsumed and zero-match patterns, refresh every count against ground truth. User-added patterns (lines without a `# [auto]` tag) are always preserved.
+
+**Auto-escalate to reconcile:** if the existing `.primeignore` has ≥3 dated "Added by /optimize-context" sections, OR verification (Step 3) finds any category whose real match count exceeds its labeled count by >2x, recommend `--reconcile` and get confirmation before proceeding in append mode. Append-only accretion is how pattern labels drift into lies.
+
+## Core Principle: Verify Against the Artifact
+
+**Never infer what a pattern matches by reading it. Ask git.** Ignore-glob semantics (patterns don't cross `/`, parent-dir exclusion blocks child re-inclusion, anchoring rules) routinely surprise even careful authors. Every count, every claim, every header comment in this skill's output must come from git's own matcher:
+
+```bash
+# Ground truth for the whole file:
+git ls-files -ci --exclude-from=.primeignore          # what IS excluded
+comm -23 <(git ls-files | sort) \
+         <(git ls-files -ci --exclude-from=.primeignore | sort)   # what survives
+
+# Ground truth for a single candidate pattern:
+git ls-files -ci --exclude='PATTERN'
+```
 
 ## Process
 
-### Mode: `create` (Default)
+### 1. Detect Project Type
 
-1. **Check for existing `.claudeignore`**
-   - If one exists, warn and suggest `sync` mode instead
-   - If none exists, proceed
+Check for manifest files: `package.json` (Node/TS), `requirements.txt`/`pyproject.toml` (Python), `composer.json` (PHP), `go.mod` (Go), `Cargo.toml` (Rust). None → generic. Use `default-patterns.md` (in this skill's directory) as the pattern reference library for the detected type.
 
-2. **Detect what `.gitignore` already covers**
-   - Read `.gitignore` from project root
-   - Parse patterns — these are Layer 2, already handled
-   - Do NOT duplicate them in `.claudeignore`
+### 2. Inventory and Existing State
 
-3. **Scan project structure for soft-skip candidates**
+- `git ls-files | wc -l` — total tracked files
+- Read `.gitignore` (do NOT recommend patterns duplicating it — `git ls-files` already omits untracked files)
+- Read `.claude/settings.json` deny rules if present
+- If `.primeignore` exists, run the ground-truth commands above and record: **cumulative exclusion %**, the survivor list, and how old the file is (`git log -1 --format=%ci -- .primeignore`)
 
-   Use `git ls-files` to get all tracked files, then identify:
+### 3. Audit the Existing File (if present)
 
-   **Category A: Large individual files (>50KB or >2000 lines)**
-   ```bash
-   git ls-files | xargs wc -l 2>/dev/null | sort -rn | head -30
-   ```
-   Flag files >2000 lines that are NOT source code entry points.
+For each existing pattern, check with `git ls-files -ci --exclude='PATTERN'`:
+- **Zero-match patterns** → flag for removal (stale)
+- **Subsumed patterns** (a later, broader pattern covers them entirely) → flag for removal
+- **Label drift** (header comment count ≠ real count) → flag for correction
+- **Rule conflicts** — a pattern that hides files project rules or CLAUDE.md depend on (see Step 4)
 
-   **Category B: Dense directories (>50 tracked files in one dir)**
-   ```bash
-   git ls-files | sed 's|/[^/]*$||' | sort | uniq -c | sort -rn | head -20
-   ```
-   Flag directories with high file counts that are data, migrations, or fixtures.
+### 4. Derive the Protected Set (per-project, not hardcoded)
 
-   **Category C: Known low-signal patterns**
-   Check for the presence of:
-   - `_archive/`, `old/`, `deprecated/` — archived code
-   - `migrations/`, `db/migrations/` — migration history (keep latest few)
-   - `fixtures/`, `testdata/`, `__fixtures__/` — test data
-   - `*.generated.*`, `generated/` — codegen output
-   - `*.min.js`, `*.min.css` — minified assets
-   - `*.sql` files >100 lines — large SQL dumps
-   - `*.json` files >100 lines — large JSON (API specs, fixture data, workflow exports)
-   - `n8n/workflows/*.json` — workflow exports (large, machine-readable)
-   - `pageindex/data/`, `data/` — indexed/ingested data directories
+Never suggest excluding, and refuse patterns that match:
+- `CLAUDE.md`, `README.md` (root), `.primeignore` itself
+- All manifest files found in Step 1
+- **The project's actual entry points** — derive from manifest `scripts`/`main` fields, Dockerfile `CMD`, and CLAUDE.md run instructions, not just a generic list (`app.py`, `index.ts`, `main.py`, `server.js`, `main.go`)
+- **Files CLAUDE.md links to** — grep CLAUDE.md for relative file paths; anything it references is load-bearing context
+- **Rule-mandated reads** — scan `.claude/rules/*.md` for directories the rules require reading
 
-   **Category D: Session-informed patterns (if available)**
-   Review current conversation for files that were:
-   - Read but never referenced in subsequent responses
-   - Read multiple times with no benefit
-   (This is supplementary — project scan is the primary signal.)
+### 5. Categorize Every Tracked File
 
-4. **Present findings to user**
+**KEEP:** source files in actively developed areas, configuration/manifests, primary docs, the protected set.
 
-   Output a categorized report:
-   ```
-   ## Soft-Skip Candidates
+**SUGGEST EXCLUDE — built-in categories** (see `default-patterns.md` for the full library):
+- **Historical artifacts:** archived plans, past code reviews, session handoffs, brainstorm docs (`plans/archive/`, `.claude/handoffs/`, `.claude/brainstorms/`, `.claude/code-reviews/`, `_archive/`, `old/`, `deprecated/`)
+- **Reference documentation:** tech-stack docs, domain guides meant for on-demand lookup
+- **Duplicative system docs:** files repeating CLAUDE.md content
+- **Auto-loaded Claude config:** `.claude/commands/`, `.claude/agents/`, `.claude/rules/` (Claude Code loads these itself; reading them during prime is redundant)
+- **Data files:** CSV, XLSX, SQLite, JSON data, fixtures, seed files, migration history
+- **Generated docs, lock files, minified assets, IDE/workspace config, CI pipelines**
 
-   ### Large Files (tracked, >2000 lines)
-   - n8n/workflows/chat_pipeline_v6.json (3,200 lines, ~45K tokens)
-   - db/seed-data.sql (1,800 lines, ~25K tokens)
+**SUGGEST EXCLUDE — derived by scan (not just the hardcoded list):**
+- **Name-convention scan:** any tracked directory matching `archive|handoff|brainstorm|render|snapshot|deprecated|old` — the project's own junk-drawer conventions beat a canned list
+- **Size/binary scan:** `git ls-files | tr '\n' '\0' | xargs -0 wc -c 2>/dev/null | sort -rn | head -20`; flag files >100KB and binary assets (`*.png`, `*.pdf`, `*.jpg`, media) as their own category
+- **Dense directories:** `git ls-files | sed 's|/[^/]*$||' | sort | uniq -c | sort -rn | head -20`; directories with >50 tracked files of data, migrations, or fixtures
+- **Git-cold directories (optional signal):** directories with no commits in 6+ months are exclusion candidates; mention but weight below the other signals
 
-   ### Dense Directories
-   - db/migrations/ (47 files, ~15K tokens total)
+**Active/archive split rule:** never blanket-exclude a directory whose contents the project splits into active vs. archived (e.g. `plans/` when the workflow says active plans live there and completed ones move to `plans/archive/`). Exclude only the archive half. Check project rules before proposing any whole-directory pattern.
 
-   ### Archive/Deprecated
-   - _archive/ (12 files, ~20K tokens total)
+### 6. Verify and Measure Each Candidate
 
-   ### Data/Fixtures
-   - pageindex/data/ (8 files, ~30K tokens total)
+For every candidate pattern, before presenting it:
+1. `git ls-files -ci --exclude='PATTERN'` → the **real** file count (this number goes in the header comment)
+2. Pipe the matched list to `wc -c`, divide bytes by 4 → **measured** token estimate (no per-file guessing)
 
-   **Estimated context savings per /prime run: ~135K tokens**
+### 7. Cumulative Exclusion Check — Allowlist Flip
 
-   These files will remain fully readable. They just won't be loaded
-   during /prime or broad exploration by default.
-   ```
+Compute the **cumulative** exclusion % (existing + proposed, via `--exclude-from` on the would-be file — not per-run).
 
-5. **Ask user for confirmation**
-   - Present the proposed `.claudeignore` content
-   - Wait for user approval before writing
+- **>70% excluded:** recommend flipping to **allowlist form** — shorter, self-documenting, and drift-safe (new files default to excluded instead of silently leaking into prime):
 
-6. **Write `.claudeignore`**
+  ```
+  # Allowlist mode: exclude everything, re-include what prime should read.
+  # The !*/ line is required — gitignore semantics cannot re-include a file
+  # whose parent directory is excluded.
+  *
+  !*/
+  !.primeignore
+  !CLAUDE.md
+  !README.md
+  !src/main.py
+  !docs/architecture.md
+  ```
 
-   Generate the file at project root with clear documentation:
-   ```
-   # .claudeignore — Soft Context Exclusion
-   # These files are NOT blocked. They remain fully accessible.
-   # /prime will skip them during context loading to save tokens.
-   # Edit freely. Run /optimize-context sync to refresh.
-   #
-   # NOT listed here (handled by other layers):
-   #   - .gitignore patterns (node_modules, dist, .env, etc.)
-   #   - permissions.deny in .claude/settings.json (secrets)
+  Verify the allowlist the same way: the survivor list from `comm -23` must equal the intended include set.
+- **>80% excluded and staying denylist:** warn explicitly and require confirmation.
 
-   # Large workflow/data exports
-   n8n/workflows/*.json
+### 8. Present Recommendations
 
-   # Archive and deprecated code
-   _archive/
+Group by category. For each: name, **verified** file count, **measured** token estimate, exact patterns, and a sample of matched files. Then:
 
-   # Database migrations (historical)
-   db/migrations/
-
-   # PageIndex ingested data
-   pageindex/data/
-
-   # Large fixture/seed data
-   db/seed-data.sql
-   ```
-
-7. **Report success**
-   ```
-   Created .claudeignore with N patterns.
-   /prime will now skip these files during context loading.
-   Files remain fully accessible — just ask to read any of them.
-   Run /optimize-context sync to update after project changes.
-   ```
-
-### Mode: `analyze`
-
-Same as steps 2-4 of `create`, but stops after presenting findings. Does NOT write any files. Useful for understanding what `/optimize-context create` would do before committing.
-
-### Mode: `sync`
-
-1. Read existing `.claudeignore`
-2. Separate user-added patterns (anything without a `# [auto]` tag) from auto-generated patterns
-3. Re-run the project scan (same as `create` steps 2-3)
-4. Merge: keep all user patterns, replace auto-generated patterns with fresh scan results
-5. Present diff to user
-6. Write updated `.claudeignore` after confirmation
-
-Auto-generated lines should be tagged:
 ```
-_archive/  # [auto] archive directory, 12 files
+## .primeignore Recommendations for [project-name]
+
+Tracked files: X total
+Currently excluded (verified): Y (Z%)
+Survivors worth attention: [list any large/binary/historical files currently surviving]
+
+### Category 1: ... (N files verified, ~XK tokens measured)
+Pattern: `...`
+Files matched (sample): ...
+
+[If reconciling] ### Removals: M stale/subsumed patterns, K label corrections
+
+---
+Resulting exclusion: X% (Y files survive prime)
+Approve categories? (numbers, "all", or "none")
 ```
-User-added lines have no tag and are always preserved.
 
-## `.claudeignore` Format
+**CRITICAL: Do NOT write anything until the user explicitly approves.** (`analyze` mode always stops here.)
 
-Gitignore-style syntax:
-- `#` for comments
+### 9. Apply
+
+- **Reconcile mode:** rewrite the whole file — one clean set of category sections, no dated appendices, header `# Reconciled by /optimize-context on YYYY-MM-DD`. Preserve user-added patterns (no `# [auto]` tag) verbatim.
+- **Append mode:** append under a dated header, but first remove any existing `# [auto]` pattern the new ones subsume
+- Every generated pattern carries a `# [auto]` tag; category header comments carry the **verified** count and **measured** tokens
+
+### 10. Post-Write Verification (mandatory)
+
+Rerun the ground-truth commands against the written file and report:
+- Real excluded count and % (from `git ls-files -ci --exclude-from=.primeignore`, not arithmetic)
+- Survivor summary by top-level directory
+- Any protected-set file that ended up excluded → **fix immediately before finishing**
+- Reminder: "Files are still accessible on-demand via Read, Grep, and Glob"
+
+## `.primeignore` Format
+
+Gitignore-compatible syntax:
+- `#` for comments, blank lines ignored
 - `directory/` to skip an entire directory
 - `*.extension` for file type patterns
 - `path/to/specific-file.json` for individual files
-- One pattern per line
-- Blank lines ignored
-- NO negation patterns (keep it simple — if you need a file, just read it)
+- `!pattern` negation to force-include (needed for allowlist mode; remember `!*/`)
+- Auto-generated lines tagged `# [auto]`; untagged lines are user-added and always preserved
 
 ## Integration with `/prime`
 
-After `.claudeignore` is created, `/prime` will:
-1. Read `.claudeignore` at the start of context loading
-2. When using `git ls-files`, `find`, or `ls` to discover files, skip paths matching `.claudeignore` patterns
-3. When deciding which files to read, skip matches
-4. Report skipped categories in the output summary
-5. Include a note: "Skipped N files via .claudeignore. Run /optimize-context sync to update."
-
-Files are still readable on demand. If during a task the user says "read the migration files" or "look at the n8n workflow JSON", Claude reads them normally.
+The `prime-quick` and `prime-full` commands in this repo already read `.primeignore` at Step 0: they parse the patterns, filter all listing/reading, protect `CLAUDE.md`/manifests/entry points regardless of patterns, and report "X files excluded by .primeignore (~YK tokens saved)". Files are always readable on demand — if the user asks for a skipped file, read it normally.
 
 ## Notes
 
-- `.claudeignore` should be committed to git (it's project configuration, not a secret)
-- Add `.claudeignore` to `.gitignore` only if team members don't want shared skip patterns
-- The skill lives in dev-env (global), but `.claudeignore` is per-project (local)
-- Never put secrets patterns here — use `permissions.deny` for that
-- If `.gitignore` already covers a pattern, don't duplicate it in `.claudeignore`
+- `.primeignore` should be committed to git (project configuration, not a secret)
+- Never put secret patterns here — use `permissions.deny` for that
+- If `.gitignore` already covers a pattern, don't duplicate it here
+- All commands above are git-native and BSD/GNU-portable
+- Run `--reconcile` periodically; a `.primeignore` older than ~30 days or ~50 commits in an active repo is presumptively stale
