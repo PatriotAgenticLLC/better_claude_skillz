@@ -10,8 +10,9 @@
 # - Put a word boundary only where the term starts or ends with a letter or digit.
 #   Phrases ending in punctuation ("certainly!") get no trailing boundary, so
 #   "Certainly! Here it is." matches.
-# - Single words are base forms; also match common inflections
-#   (leverage, leverages, leveraged, leveraging).
+# - Single words are base forms; also match these inflections: +s, +es, +d, +ed, +ing,
+#   e-drop +ing (leverage to leveraging), and y to ies (synergy to synergies). So
+#   unleash also matches unleashes. tests/test_banned_list.py `forms` is the reference.
 # - Hyphenated terms should also match with a space (game-changer, game changer).
 # - Openers ("in today's fast-paced", "in a world where", "continues to evolve") and
 #   closers ("in conclusion", "in summary", "in essence") are banned at the start or end
