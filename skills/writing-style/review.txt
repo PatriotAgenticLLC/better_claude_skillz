@@ -1,0 +1,45 @@
+# writing-style review list (FLAG tier: banned only in one sense)
+# Derived by hand from the Tier 1 words in SKILL.md that carry a qualifier in
+# parentheses. tests/test_banned_list.py fails if this file and SKILL.md drift apart.
+# A checker should flag these for a human (or a model pass) rather than fail, since
+# each has a normal literal or technical meaning. The sense that is banned is in the
+# comment above each term.
+#
+# Format: one lowercase term per line; lines starting with # are comments.
+# Matching rules for a checker (tests/test_banned_list.py `matches` is the reference):
+# - Case-insensitive. Normalize curly apostrophes to straight ones first (’ to ').
+# - Put a word boundary only where the term starts or ends with a letter or digit.
+#   Phrases ending in punctuation ("certainly!") get no trailing boundary, so
+#   "Certainly! Here it is." matches.
+# - Single words are base forms; also match common inflections
+#   (leverage, leverages, leveraged, leveraging).
+# - Hyphenated terms should also match with a space (game-changer, game changer).
+
+# metaphorical, as in "harness the power"; a test harness is fine
+harness
+# metaphorical
+navigate
+# as a verb
+underscore
+# non-technical; query or code optimization is fine
+optimize
+# non-technical
+optimise
+# as in "capitalize on"; letter case is fine
+capitalize
+# non-technical
+dynamic
+# non-technical; the Agile method is fine
+agile
+# as an adjective; the client name Elevated is fine
+elevated
+# metaphorical
+landscape
+# metaphorical
+realm
+# metaphorical
+journey
+# non-technical
+ecosystem
+# metaphorical
+toolkit
