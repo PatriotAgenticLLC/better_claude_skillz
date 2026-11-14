@@ -91,6 +91,18 @@ def matches(term, text):
     return re.search(left + re.escape(term) + right, text) is not None
 
 
+def forms(term):
+    """Inflections banned.txt asks a checker to match, for single-word terms only."""
+    if not re.fullmatch(r"[a-z]+", term):
+        return {term}
+    out = {term, term + "s", term + "es", term + "d", term + "ed", term + "ing"}
+    if term.endswith("e"):
+        out.add(term[:-1] + "ing")
+    if term.endswith("y"):
+        out.add(term[:-1] + "ies")
+    return out
+
+
 def diff(expected, actual, name):
     return f"in SKILL.md only: {sorted(expected - actual)}; in {name} only: {sorted(actual - expected)}"
 
@@ -150,10 +162,13 @@ def test_no_em_dash_en_dash_or_rule():
     "In today\u2019s fast-paced world, owners need answers.",
     "Let me know if you have any questions.",
     "We leveraged the data.",  # inflection: matched by the stem rule in banned.txt notes
+    "We are leveraging the data.",  # e-drop ing
+    "It unleashes value.",  # es
+    "Real synergies emerge.",  # y to ies
 ])
 def test_slop_is_caught(sentence):
     banned = read_list("banned.txt")
-    stems = {t + suffix for t in banned for suffix in ("", "s", "d", "ed", "ing")}
+    stems = {f for t in banned for f in forms(t)}
     assert any(matches(t, sentence) for t in stems), sentence
 
 
@@ -162,9 +177,14 @@ def test_slop_is_caught(sentence):
     "Let me know if Tuesday works.",
     "Of course the invoice went out on Monday.",
     "The test harness runs the query optimizer on every build.",
+    # Near-misses on the inflected forms: stems that share a prefix with a banned
+    # term (synergy, empower, foster, tackle) but are not one of its inflections.
+    "The synergistic effect of the two doses was small.",
+    "Empowerment zones were renewed, and the fosterage program ended.",
+    "A tackler missed him, and the tacklebox stayed in the truck.",
 ])
 def test_plain_writing_passes(sentence):
-    hits = [t for t in read_list("banned.txt") if matches(t, sentence)]
+    hits = [t for b in read_list("banned.txt") for t in forms(b) if matches(t, sentence)]
     assert not hits, f"{sentence!r} hit {hits}"
 
 
