@@ -14,7 +14,12 @@ Enforces human-sounding prose across every text output by banning AI vocabulary,
 - Tiered banned-word list (never-use vs avoid-clustering) plus banned openers, closers, and chatbot artifacts
 - Catalog of structural anti-patterns: binary contrasts, dramatic fragmentation, and seven "fake depth" formulas
 - Claude-specific tells to eliminate (epistemic hedging, copula avoidance, over-qualification)
+- Machine-readable word lists (`banned.txt`, `review.txt`, `avoid-clustering.txt`) with a drift-guard test (`tests/test_banned_list.py`)
 - Before/after rewrites and a pre-delivery self-check protocol, including the "Horoscope Test"
+
+## Sync
+
+Synced from claude-config; the source commit is recorded in `SYNCED-FROM`. Do not edit the synced files here.
 
 ## Installation
 

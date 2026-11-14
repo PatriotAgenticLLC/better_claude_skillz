@@ -1,0 +1,30 @@
+# writing-style avoid-clustering list (WARN tier, never fail)
+# Derived by hand from the Tier 2 section of SKILL.md in this folder, which is the source.
+# tests/test_banned_list.py fails if the two drift apart.
+#
+# Format: one lowercase term or phrase per line; lines starting with # are comments.
+# Matching notes for a checker:
+# - Fine once in a long document. Warn when two or more appear close together
+#   (for example within the same paragraph or about 100 words).
+# - Transitions count mainly at the start of a sentence.
+# - Suggested fixes: "in order to" -> "to"; "due to the fact that" -> "because".
+
+# Transitions
+furthermore
+moreover
+additionally
+indeed
+subsequently
+accordingly
+consequently
+thus
+
+# Phrases
+it's worth noting that
+it is important to note that
+in order to
+at the end of the day
+when it comes to
+at its core
+the reality is
+due to the fact that

@@ -1,0 +1,130 @@
+# writing-style banned list (FAIL tier)
+# Derived by hand from SKILL.md in this folder, which is the source. Edit SKILL.md first,
+# then this file; tests/test_banned_list.py fails if the two drift apart.
+# This is the list code should fail on. Words banned only in one sense are in
+# review.txt (flag for a human); Tier 2 (warn) is in avoid-clustering.txt.
+#
+# Format: one lowercase term or phrase per line; lines starting with # are comments.
+# Matching rules for a checker (tests/test_banned_list.py `matches` is the reference):
+# - Case-insensitive. Normalize curly apostrophes to straight ones first (’ to ').
+# - Put a word boundary only where the term starts or ends with a letter or digit.
+#   Phrases ending in punctuation ("certainly!") get no trailing boundary, so
+#   "Certainly! Here it is." matches.
+# - Single words are base forms; also match common inflections
+#   (leverage, leverages, leveraged, leveraging).
+# - Hyphenated terms should also match with a space (game-changer, game changer).
+# - Openers ("in today's fast-paced", "in a world where", "continues to evolve") and
+#   closers ("in conclusion", "in summary", "in essence") are banned at the start or end
+#   of a section; matching them anywhere is an acceptable approximation.
+# - "of course!", "certainly!", "absolutely!" are the chatbot interjection form only;
+#   "of course" inside a normal sentence is fine, which the ! enforces.
+# - The PatriotAgentic Brand Book (pa-aic docs/brand/PatriotAgentic-Brand-Book.md)
+#   governs brand terms. Its banned words are all here. Its Retired terms list is not
+#   copied; a brand checker should read it from the Book.
+
+# Tier 1 verbs
+delve
+embark
+endeavour
+endeavor
+leverage
+unlock
+unleash
+foster
+showcase
+illuminate
+elucidate
+tackle
+streamline
+empower
+reimagine
+revolutionize
+spearhead
+forge
+transform
+
+# Tier 1 adjectives
+robust
+seamless
+groundbreaking
+transformative
+cutting-edge
+pivotal
+paramount
+multifaceted
+comprehensive
+tailored
+scalable
+next-generation
+best-in-class
+unprecedented
+vibrant
+intricate
+compelling
+invaluable
+remarkable
+nuanced
+innovative
+
+# Tier 1 nouns
+tapestry
+testament
+intersection
+synergy
+paradigm
+
+# Tier 1 adverbs
+deeply
+truly
+fundamentally
+inherently
+simply
+inevitably
+crucially
+importantly
+interestingly
+significantly
+notably
+
+# Phrases: openers
+in today's fast-paced
+in today's digital
+in today's ever-changing
+in today's ever-evolving
+in today's competitive
+continues to evolve
+in the ever-evolving landscape of
+in a world where
+
+# Phrases: closers
+in conclusion
+in summary
+in essence
+the future remains bright
+only time will tell
+one thing is certain
+
+# Phrases: promotional fluff
+unlock your full potential
+revolutionize the way
+to the next level
+harness the power of
+embark on a journey
+game-changer
+supercharge
+digital transformation
+
+# Phrases: chatbot artifacts
+i hope this helps!
+of course!
+certainly!
+absolutely!
+great question!
+would you like me to
+let me know if you have any questions
+let me know if you need anything else
+feel free to reach out
+
+# Phrases: hedges and copula dodges
+it's worth mentioning
+serves as
